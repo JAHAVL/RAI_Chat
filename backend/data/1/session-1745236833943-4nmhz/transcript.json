@@ -1,0 +1,74 @@
+[
+    {
+        "turn_id": "543ba73a-a987-433e-a105-857966f17068",
+        "timestamp": "2025-04-21T08:00:36.017040",
+        "user_input": "Hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-24T08:00:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user greeted me.",
+                    "tier2": "The user sent a simple greeting of 'Hi'.  There is no explicit request or question."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-24T08:00:01Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hi there!",
+                    "tier2": "Hello!  How can I help you this morning?",
+                    "tier3": "Good morning! It's nice to hear from you.  Is there anything specific I can assist you with today?"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "7dd3ca22-f411-4ef9-9b8f-ce4a4b8e34d7",
+        "timestamp": "2025-04-21T08:00:41.853646",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-24T08:00:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martell is.",
+                    "tier2": "The user is asking for information about the identity and background of Dan Martell.  This likely requires accessing information beyond my current knowledge base."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-24T08:00:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "I'll need to do a quick web search to get you the information you need about Dan Martell.",
+                    "tier2": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I need to perform a web search for information on Dan Martell.  I'll provide you with a summary once I have the results.",
+                    "tier3": "[SEARCH: Dan Martell biography]"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "ea828aa7-79ac-43c7-804b-05aed548ec02",
+        "timestamp": "2025-04-21T08:00:47.393362",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-21T08:00:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is asking for information about Dan Martell.",
+                    "tier2": "The user wants to know who Dan Martell is, likely requesting biographical information.  This requires accessing external information sources."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-21T08:00:01Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Dan Martell is a Canadian entrepreneur, investor, and author.",
+                    "tier2": "He's known for founding successful companies like Spheric Technologies and Clarity.fm, and for his book, \"Buy Back Your Time.\"  He's also a prominent figure in the SaaS and business coaching worlds.",
+                    "tier3": "Dan Martell is a Canadian entrepreneur, investor, and author known for his expertise in software-as-a-service (SaaS) and efficient time management. He founded several successful companies, including Spheric Technologies and Clarity.fm.  His book, \"Buy Back Your Time,\" focuses on productivity and time management strategies.  He's also a popular business coach and keynote speaker.  His estimated net worth is around $80 million."
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "e024d889-14cf-4d91-b883-cf3dbc2aa229",
+            "timestamp": "2025-04-23T13:03:23.905469",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T13:05:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's request is simple; they want to hear a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T13:05:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a simple play on words, hopefully you find it amusing.\",\n      \"tier3\": \"Here's a short joke I hope you enjoy:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "2e14375e-ee6a-42e3-8c15-c099bdf038f4",
+            "timestamp": "2025-04-23T13:03:23.910253",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T13:05:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's request is simple; they want to hear a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T13:05:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a simple play on words, hopefully you find it amusing.\",\n      \"tier3\": \"Here's a short joke I hope you enjoy:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T13:05:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's request is simple; they want to hear a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T13:05:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a simple play on words, hopefully you find it amusing.\",\n      \"tier3\": \"Here's a short joke I hope you enjoy:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

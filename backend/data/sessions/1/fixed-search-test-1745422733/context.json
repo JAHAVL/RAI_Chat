@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "174964c9-cded-4062-9635-da8f4df38a4d",
+            "timestamp": "2025-04-23T15:38:55.895827",
+            "user_input": "[SEARCH: Dan Martell founder]",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:40:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information about Dan Martell's founding activities.\",\n      \"tier2\": \"The user's prompt is a direct instruction to perform a web search with the query 'Dan Martell founder'.  This indicates a desire to learn about companies or projects Dan Martell has founded.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:40:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I've started a search engine query for 'Dan Martell founder' to find information about the companies and projects he's founded.  I'll need to wait for the results to provide you with a complete answer. \",\n      \"tier3\": \"[SEARCH: Dan Martell founder]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "02bee993-92d4-4add-8fcf-7a309dfc43cb",
+            "timestamp": "2025-04-23T15:38:55.903858",
+            "user_input": "[SEARCH: Dan Martell founder]",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:40:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information about Dan Martell's founding activities.\",\n      \"tier2\": \"The user's prompt is a direct instruction to perform a web search with the query 'Dan Martell founder'.  This indicates a desire to learn about companies or projects Dan Martell has founded.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:40:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I've started a search engine query for 'Dan Martell founder' to find information about the companies and projects he's founded.  I'll need to wait for the results to provide you with a complete answer. \",\n      \"tier3\": \"[SEARCH: Dan Martell founder]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:40:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information about Dan Martell's founding activities.\",\n      \"tier2\": \"The user's prompt is a direct instruction to perform a web search with the query 'Dan Martell founder'.  This indicates a desire to learn about companies or projects Dan Martell has founded.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:40:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I've started a search engine query for 'Dan Martell founder' to find information about the companies and projects he's founded.  I'll need to wait for the results to provide you with a complete answer. \",\n      \"tier3\": \"[SEARCH: Dan Martell founder]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "1121192f-ca50-4961-9b8c-6d59b46c067b",
+            "timestamp": "2025-04-21T21:55:59.582689",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is a simple query asking for their name, which has been previously established in the conversation history.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  Is there anything else I can help you with tonight?\",\n      \"tier3\": \"Based on my previous interaction with you, I recall that your name is Jordan.  I'm always happy to assist you further if you have any other questions or requests.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "9d80e0c4-9023-4504-910f-f617a5636ec4",
+            "timestamp": "2025-04-21T21:55:59.587715",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is a simple query asking for their name, which has been previously established in the conversation history.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  Is there anything else I can help you with tonight?\",\n      \"tier3\": \"Based on my previous interaction with you, I recall that your name is Jordan.  I'm always happy to assist you further if you have any other questions or requests.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is a simple query asking for their name, which has been previously established in the conversation history.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:55:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  Is there anything else I can help you with tonight?\",\n      \"tier3\": \"Based on my previous interaction with you, I recall that your name is Jordan.  I'm always happy to assist you further if you have any other questions or requests.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

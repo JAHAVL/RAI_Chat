@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "82ca7111-3b89-4d46-b1ba-6097cc3d1e18",
+            "timestamp": "2025-04-21T22:00:47.079182",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-04T22:00:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is simple; they want to know what name the AI assistant has stored for them.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-04T22:00:01Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I have you in my system as Jordan.  Is that correct?\",\n      \"tier3\": \"Based on my current memory, your name is Jordan.  I'm always learning, so please let me know if that information needs updating.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "3a9612c0-9b7b-4f7b-ace0-d26e60849d46",
+            "timestamp": "2025-04-21T22:00:47.082634",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-04T22:00:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is simple; they want to know what name the AI assistant has stored for them.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-04T22:00:01Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I have you in my system as Jordan.  Is that correct?\",\n      \"tier3\": \"Based on my current memory, your name is Jordan.  I'm always learning, so please let me know if that information needs updating.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-04T22:00:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's request is simple; they want to know what name the AI assistant has stored for them.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-04T22:00:01Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I have you in my system as Jordan.  Is that correct?\",\n      \"tier3\": \"Based on my current memory, your name is Jordan.  I'm always learning, so please let me know if that information needs updating.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

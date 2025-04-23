@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "16763638-47e4-4b83-a513-35766108c238",
+            "timestamp": "2025-04-23T10:40:03.119245",
+            "user_input": "This is a test message for our fixed session management system",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:41:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"This message serves as a test to verify the functionality of the session management system.  No specific actions or information are requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:41:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've received your test message.\",\n      \"tier2\": \"Your test message has been successfully processed. The session management system appears to be functioning correctly. Let me know if you have any other tests or requests.\",\n      \"tier3\": \"The test message was received and processed without errors.  This indicates that the basic message handling and session persistence mechanisms are operational.  Further testing may be needed to fully validate the system's capabilities under various conditions (e.g., multiple users, concurrent requests, long sessions).\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "9bd36bee-e8b1-4a86-96a4-9519e2ea0f59",
+            "timestamp": "2025-04-23T10:40:03.125275",
+            "user_input": "This is a test message for our fixed session management system",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:41:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"This message serves as a test to verify the functionality of the session management system.  No specific actions or information are requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:41:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've received your test message.\",\n      \"tier2\": \"Your test message has been successfully processed. The session management system appears to be functioning correctly. Let me know if you have any other tests or requests.\",\n      \"tier3\": \"The test message was received and processed without errors.  This indicates that the basic message handling and session persistence mechanisms are operational.  Further testing may be needed to fully validate the system's capabilities under various conditions (e.g., multiple users, concurrent requests, long sessions).\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:41:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"This message serves as a test to verify the functionality of the session management system.  No specific actions or information are requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:41:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've received your test message.\",\n      \"tier2\": \"Your test message has been successfully processed. The session management system appears to be functioning correctly. Let me know if you have any other tests or requests.\",\n      \"tier3\": \"The test message was received and processed without errors.  This indicates that the basic message handling and session persistence mechanisms are operational.  Further testing may be needed to fully validate the system's capabilities under various conditions (e.g., multiple users, concurrent requests, long sessions).\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

@@ -1,0 +1,42 @@
+[
+    {
+        "turn_id": "5f242964-b37d-4174-a4e1-d91646422bfa",
+        "timestamp": "2025-04-08T08:14:15.904942",
+        "user_input": "hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "prompt_tiers": {
+                    "tier1": "Analysis N/A",
+                    "tier2": "Analysis N/A"
+                }
+            },
+            "llm_response": {
+                "response_tiers": {
+                    "tier1": "This is a mock response to: 'hi...'",
+                    "tier2": "This is a mock response to: 'hi...'",
+                    "tier3": "This is a mock response to: 'hi...'"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "1c175195-1719-4b4f-b219-96c78d8b82bb",
+        "timestamp": "2025-04-08T08:14:25.673870",
+        "user_input": "test",
+        "llm_output": {
+            "user_message_analysis": {
+                "prompt_tiers": {
+                    "tier1": "Analysis N/A",
+                    "tier2": "Analysis N/A"
+                }
+            },
+            "llm_response": {
+                "response_tiers": {
+                    "tier1": "This is a mock response to: 'test...'",
+                    "tier2": "This is a mock response to: 'test...'",
+                    "tier3": "This is a mock response to: 'test...'"
+                }
+            }
+        }
+    }
+]

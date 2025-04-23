@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "5fd9e015-7553-44c3-8082-2ce029a70062",
+            "timestamp": "2025-04-23T15:17:26.028838",
+            "user_input": "[SEARCH: Dan Martell]",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:20:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information on Dan Martell.\",\n      \"tier2\": \"The user's prompt is a single search query, specifically requesting information about the individual Dan Martell.  This indicates a need for external information beyond my current knowledge base.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:20:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for Dan Martell.  I'll need to wait for the results to formulate a response.\",\n      \"tier2\": \"I've started a web search for 'Dan Martell' as requested. Once I receive the search results, I will process the information and provide you with a summary. This may take a few moments.\",\n      \"tier3\": \"[SEARCH: Dan Martell]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "1ffbaed4-a2aa-4a84-b56b-713907acf2d7",
+            "timestamp": "2025-04-23T15:17:26.033947",
+            "user_input": "[SEARCH: Dan Martell]",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:20:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information on Dan Martell.\",\n      \"tier2\": \"The user's prompt is a single search query, specifically requesting information about the individual Dan Martell.  This indicates a need for external information beyond my current knowledge base.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:20:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for Dan Martell.  I'll need to wait for the results to formulate a response.\",\n      \"tier2\": \"I've started a web search for 'Dan Martell' as requested. Once I receive the search results, I will process the information and provide you with a summary. This may take a few moments.\",\n      \"tier3\": \"[SEARCH: Dan Martell]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:20:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for information on Dan Martell.\",\n      \"tier2\": \"The user's prompt is a single search query, specifically requesting information about the individual Dan Martell.  This indicates a need for external information beyond my current knowledge base.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:20:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for Dan Martell.  I'll need to wait for the results to formulate a response.\",\n      \"tier2\": \"I've started a web search for 'Dan Martell' as requested. Once I receive the search results, I will process the information and provide you with a summary. This may take a few moments.\",\n      \"tier3\": \"[SEARCH: Dan Martell]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

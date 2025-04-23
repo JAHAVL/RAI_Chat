@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "3a50903b-3f51-476f-8e4d-d1b0b7a4f4dc",
+            "timestamp": "2025-04-23T10:51:05.942564",
+            "user_input": "Testing the fixed session management system",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T10:52:44Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"The user's message is a simple test to check if the system correctly maintains and uses information from previous interactions within a single session.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T10:52:45Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I understand.  Your test message has been received.\",\n      \"tier2\": \"I've received your test message and the session management system appears to be functioning correctly.  I'm ready for further instructions or questions.\",\n      \"tier3\": \"The session management system is working as expected. I've registered your test message and am ready to continue our conversation. Let me know what else you'd like to test or discuss.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "11ba57cb-bd7f-401a-ba4d-3ed050f00231",
+            "timestamp": "2025-04-23T10:51:05.947031",
+            "user_input": "Testing the fixed session management system",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T10:52:44Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"The user's message is a simple test to check if the system correctly maintains and uses information from previous interactions within a single session.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T10:52:45Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I understand.  Your test message has been received.\",\n      \"tier2\": \"I've received your test message and the session management system appears to be functioning correctly.  I'm ready for further instructions or questions.\",\n      \"tier3\": \"The session management system is working as expected. I've registered your test message and am ready to continue our conversation. Let me know what else you'd like to test or discuss.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T10:52:44Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the session management system.\",\n      \"tier2\": \"The user's message is a simple test to check if the system correctly maintains and uses information from previous interactions within a single session.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T10:52:45Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I understand.  Your test message has been received.\",\n      \"tier2\": \"I've received your test message and the session management system appears to be functioning correctly.  I'm ready for further instructions or questions.\",\n      \"tier3\": \"The session management system is working as expected. I've registered your test message and am ready to continue our conversation. Let me know what else you'd like to test or discuss.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

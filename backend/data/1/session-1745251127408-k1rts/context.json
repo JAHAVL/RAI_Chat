@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "62ebaf14-2ea4-4d73-8d17-e3cd0f81a528",
+            "timestamp": "2025-04-21T15:58:47.949302",
+            "user_input": "hi",
+            "llm_output": {
+                "status": "success",
+                "text": "Hi there! How can I help you today?\n"
+            }
+        },
+        {
+            "turn_id": "5e9cce35-9468-48b2-8ca7-18d0dcd0352b",
+            "timestamp": "2025-04-21T15:58:47.952744",
+            "user_input": "hi",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "Hi there! How can I help you today?\n"
+                    },
+                    "response": "Hi there! How can I help you today?\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

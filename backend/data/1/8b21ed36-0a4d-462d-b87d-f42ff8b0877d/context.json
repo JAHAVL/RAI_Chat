@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "1d7ecdd9-43f9-4a80-8227-8ef805043def",
+            "timestamp": "2025-04-14T02:10:07.327167",
+            "user_input": "Hello, how are you?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-26T02:12:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is greeting me and asking how I am.",
+                        "tier2": "The user's prompt is a simple, polite greeting and inquiry about my well-being.  It doesn't require any specific action or information retrieval."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-26T02:12:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I'm doing great, thanks for asking! How are you?",
+                        "tier2": "I'm doing well, thank you for asking! It's a bit late, but I'm ready to assist you. How can I help you tonight?",
+                        "tier3": "I'm doing fantastic, thank you for asking!  It's always a pleasure to connect with users.  How can I assist you today?"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I'm doing well, thank you for asking! It's a bit late, but I'm ready to assist you. How can I help you tonight?"
+}

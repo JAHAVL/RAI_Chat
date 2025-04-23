@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "2f89c7cf-48ab-4e8e-8ccc-59bb454e98a5",
+            "timestamp": "2025-04-14T02:17:57.715299",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T02:18:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating they are initiating a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T02:18:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello!  It's nice to hear from you. How can I help you today?",
+                        "tier3": "Hello! It's nice to chat with you.  Is there anything specific you'd like assistance with?"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Hello!  It's nice to hear from you. How can I help you today?"
+}

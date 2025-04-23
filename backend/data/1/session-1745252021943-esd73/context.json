@@ -1,0 +1,71 @@
+{
+    "messages": [
+        {
+            "turn_id": "e58eff10-30fa-4ceb-b553-a19106a8d608",
+            "timestamp": "2025-04-21T16:13:42.533411",
+            "user_input": "hi",
+            "llm_output": {
+                "status": "success",
+                "text": "Hi there! How can I help you today?\n"
+            }
+        },
+        {
+            "turn_id": "cd14d99d-94c4-4d81-ad52-e700cdd21adf",
+            "timestamp": "2025-04-21T16:13:42.535041",
+            "user_input": "hi",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "Hi there! How can I help you today?\n"
+                    },
+                    "response": "Hi there! How can I help you today?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "28ad5bbd-1523-4fc9-8f30-dff80abcaea1",
+            "timestamp": "2025-04-21T16:18:41.935439",
+            "user_input": "I have a dog named Koda",
+            "llm_output": {
+                "status": "success",
+                "text": "That's lovely!  Is Koda a good boy/girl?  What kind of dog is he/she?\n"
+            }
+        },
+        {
+            "turn_id": "5501e9e3-65ee-489a-96c4-3a5e33dc37ed",
+            "timestamp": "2025-04-21T16:18:41.938053",
+            "user_input": "I have a dog named Koda",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "That's lovely!  Is Koda a good boy/girl?  What kind of dog is he/she?\n"
+                    },
+                    "response": "That's lovely!  Is Koda a good boy/girl?  What kind of dog is he/she?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "1467f135-4c3b-4249-b79f-0fc1eb243563",
+            "timestamp": "2025-04-21T16:18:45.535614",
+            "user_input": "What is my dogs name?",
+            "llm_output": {
+                "status": "success",
+                "text": "I do not have access to personal information about you, including your dog's name.  To know your dog's name, you'll have to tell me!\n"
+            }
+        },
+        {
+            "turn_id": "d5451f50-9440-47a5-bd89-4ddf35fdcc48",
+            "timestamp": "2025-04-21T16:18:45.537130",
+            "user_input": "What is my dogs name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I do not have access to personal information about you, including your dog's name.  To know your dog's name, you'll have to tell me!\n"
+                    },
+                    "response": "I do not have access to personal information about you, including your dog's name.  To know your dog's name, you'll have to tell me!\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

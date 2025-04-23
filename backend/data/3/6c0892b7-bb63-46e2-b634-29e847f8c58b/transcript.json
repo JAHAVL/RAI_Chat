@@ -1,0 +1,26 @@
+[
+    {
+        "turn_id": "89de02f6-5430-4f56-9350-07fa0c27e861",
+        "timestamp": "2025-04-04T21:45:35.343087",
+        "user_input": "Hello",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-02T21:45:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user greeted me.",
+                    "tier2": "The user's message is a simple greeting, requiring a friendly response."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-02T21:45:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hello there!",
+                    "tier2": "It's nice to hear from you!  How can I help you this evening?",
+                    "tier3": "Hello! I'm ready to assist you.  Please let me know what you need."
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,53 @@
+{
+    "messages": [
+        {
+            "turn_id": "5290dd8a-f0b9-4a3a-9a37-8d85efde538a",
+            "timestamp": "2025-04-05T13:14:28.308367",
+            "user_input": "Jordan",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T13:14:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user provided their name, Jordan.",
+                        "tier2": "The user's input consists solely of their first name, 'Jordan'.  This suggests they are identifying themselves or initiating a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T13:14:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi Jordan, nice to meet you!",
+                        "tier2": "Hello Jordan! It's a pleasure to meet you. How can I help you today?",
+                        "tier3": "Hello Jordan!  It's great to meet you.  I'm ready to assist you with whatever you need. Please let me know how I can be of service."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "9f67ada2-9419-4650-8579-ebe3ddd50e5a",
+            "timestamp": "2025-04-05T13:14:34.137776",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-07T13:16:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for their name.",
+                        "tier2": "The user's prompt is a simple question requesting their name, which was previously established in the conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-07T13:16:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Your name is Jordan.",
+                        "tier2": "I remember that your name is Jordan.  Is there anything else I can help you with today?",
+                        "tier3": "Based on our previous interaction, your name is Jordan. I am designed to remember this information about you throughout our conversation."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I remember that your name is Jordan.  Is there anything else I can help you with today?"
+}

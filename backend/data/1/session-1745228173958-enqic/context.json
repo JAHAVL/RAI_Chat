@@ -1,0 +1,53 @@
+{
+    "messages": [
+        {
+            "turn_id": "cd0a2d61-cd39-4979-95d9-00e6737b55be",
+            "timestamp": "2025-04-21T05:36:15.752993",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-26T05:36:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me.",
+                        "tier2": "The user sent a simple greeting, indicating the start of a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-26T05:36:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello!  It's nice to chat with you this morning. How can I help you today?",
+                        "tier3": "Hello! It's nice to chat with you this morning.  How can I assist you today?  Please let me know if there's anything I can do for you."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "ea9342b4-f1e8-4d10-9ed8-dc8ec937027f",
+            "timestamp": "2025-04-21T05:36:33.124769",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-26T05:36:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted the assistant with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation.  No specific request or question was made."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-26T05:36:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there! How can I help you today?",
+                        "tier2": "Hello! It's great to hear from you.  Is there anything specific I can assist you with this morning?",
+                        "tier3": "Hi!  It's nice to chat with you. Please let me know if there's anything I can do to help you."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Hello! It's great to hear from you.  Is there anything specific I can assist you with this morning?"
+}

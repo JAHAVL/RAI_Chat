@@ -1,0 +1,74 @@
+[
+    {
+        "turn_id": "39d7580a-45cc-4996-8a0b-d8ee9523a20a",
+        "timestamp": "2025-04-19T23:34:41.609088",
+        "user_input": "hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-02T23:34:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user greeted me with 'hi'.",
+                    "tier2": "The user's prompt is a simple greeting, indicating the start of a conversation."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-02T23:34:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hello!",
+                    "tier2": "Hello there!  How can I help you tonight?",
+                    "tier3": "Hi!  It's late, but I'm here and ready to assist you with anything you need. Let me know how I can help."
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "71930479-b184-4688-8777-e395726e3989",
+        "timestamp": "2025-04-19T23:34:49.563569",
+        "user_input": "who is dan martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-10-27T23:36:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martel is.",
+                    "tier2": "The user is asking for information about a person named Dan Martel.  They likely want biographical details or information about his profession."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-10-27T23:36:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "I'll need to do a quick web search to get you information on Dan Martel.",
+                    "tier2": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I'll perform a web search for relevant information about Dan Martel. This will give me the most up-to-date details.",
+                    "tier3": "[SEARCH: Dan Martel biography]"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "1bc21bb2-b9d5-4dc8-b442-5553fd97795b",
+        "timestamp": "2025-04-19T23:34:54.906147",
+        "user_input": "who is dan martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-07-27T23:34:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martell is.",
+                    "tier2": "The user is asking for biographical information about Dan Martell, likely seeking details about his life, career, and accomplishments."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-07-27T23:34:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Dan Martell is a Canadian entrepreneur, investor, and author known for his expertise in SaaS and time management.",
+                    "tier2": "He's a successful serial entrepreneur who founded companies like Spheric Technologies and Clarity.fm.  He's also a well-regarded business coach and author, often sharing his insights on building successful businesses and managing time effectively. His estimated net worth is quite substantial.",
+                    "tier3": "Dan Martell is a Canadian entrepreneur, investor, and author. He's known for his expertise in software-as-a-service (SaaS) and efficient time management.  He's founded several successful companies, including Spheric Technologies and Clarity.fm.  He's also a popular keynote speaker and business coach, sharing his knowledge and experience with aspiring entrepreneurs. His estimated net worth is in the tens of millions of dollars.  His work often focuses on helping others build and scale their own businesses."
+                }
+            }
+        }
+    }
+]

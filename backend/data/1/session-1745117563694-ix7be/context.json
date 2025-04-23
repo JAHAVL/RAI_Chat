@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "6d5bf8bc-4fbe-4a39-9b9e-f334607661d4",
+            "timestamp": "2025-04-19T22:52:45.628591",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-04T22:52:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is initiating a conversation with a greeting.",
+                        "tier2": "The user has sent a simple 'hi' to begin a conversation.  There is no specific request or question at this time."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-04T22:52:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hello there!",
+                        "tier2": "Hi!  How can I help you this evening?",
+                        "tier3": "Hello! It's late, but I'm here and ready to assist you.  Please let me know how I can be of service."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "4d4947db-f587-43a0-b890-e58b3ae70472",
+            "timestamp": "2025-04-19T22:52:53.690986",
+            "user_input": "who is dan martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T22:52:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martel is.",
+                        "tier2": "The user is requesting information about the identity and background of a person named Dan Martel.  They are seeking biographical details."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T22:52:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "To answer your question, I'll need to perform a web search. One moment please.",
+                        "tier2": "I don't have access to a real-time, updated database of biographical information. To provide you with the most accurate and current details about Dan Martel, I need to conduct a web search. This will give me access to the latest information available online.",
+                        "tier3": "[SEARCH: Dan Martel biography]"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "036ea398-337f-4cd5-852c-ab28d7678c9b",
+            "timestamp": "2025-04-19T22:52:59.153764",
+            "user_input": "who is dan martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T22:52:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is requesting biographical information about Dan Martell, seeking details about his life, career, and accomplishments."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T22:52:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Dan Martell is a Canadian entrepreneur, investor, and author known for his expertise in SaaS and time management.",
+                        "tier2": "Dan Martell is a successful Canadian entrepreneur, investor, and author. He's recognized for his work in the SaaS (Software as a Service) industry and his expertise in time management.  He's founded several companies and is also a well-known author and speaker.",
+                        "tier3": "Dan Martell is a Canadian entrepreneur, investor, and author known for his expertise in SaaS (Software as a Service) and efficient time management. He's founded several successful companies and is a sought-after speaker and coach.  His career highlights include founding companies like Spheric Technologies and Clarity.fm.  He's also a best-selling author, sharing his knowledge and experience to help others achieve success.  His estimated net worth is quite substantial, reportedly around $80 million."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Dan Martell is a successful Canadian entrepreneur, investor, and author. He's recognized for his work in the SaaS (Software as a Service) industry and his expertise in time management.  He's founded several companies and is also a well-known author and speaker."
+}

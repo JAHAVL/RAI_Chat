@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "1303026a-182e-4c42-8595-c64364884c7b",
+            "timestamp": "2025-04-05T13:05:13.187393",
+            "user_input": "I am testing",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T13:05:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is testing the system.",
+                        "tier2": "The user's message 'I am testing' indicates they are performing a test of the system's functionality."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T13:05:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Okay, Jordan.  How can I help you with your test?",
+                        "tier2": "I understand you're testing the system.  Please let me know what you'd like me to do. I'm ready for your instructions.",
+                        "tier3": "I'm ready to assist you with your test, Jordan. Please provide me with specific instructions or tasks you would like me to perform.  I can help with various tasks, including scheduling, information retrieval, text generation, and more. Let me know how I can be of service!"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I understand you're testing the system.  Please let me know what you'd like me to do. I'm ready for your instructions."
+}

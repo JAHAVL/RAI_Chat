@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "afdfbe1a-7d72-4335-98a3-bbb347314dc2",
+            "timestamp": "2025-04-21T21:52:59.060505",
+            "user_input": "hi",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greeted me with 'hi'.\",\n      \"tier2\": \"The user's message is a simple greeting, indicating the start of a conversation.  There is no specific request or question.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:52:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan! How can I help you this evening?\",\n      \"tier3\": \"Hello! It's nice to chat with you.  Is there anything I can assist you with tonight?\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "1967b408-510d-497d-94bf-ed8a54784099",
+            "timestamp": "2025-04-21T21:52:59.063005",
+            "user_input": "hi",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greeted me with 'hi'.\",\n      \"tier2\": \"The user's message is a simple greeting, indicating the start of a conversation.  There is no specific request or question.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:52:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan! How can I help you this evening?\",\n      \"tier3\": \"Hello! It's nice to chat with you.  Is there anything I can assist you with tonight?\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-03T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greeted me with 'hi'.\",\n      \"tier2\": \"The user's message is a simple greeting, indicating the start of a conversation.  There is no specific request or question.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-03T21:52:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan! How can I help you this evening?\",\n      \"tier3\": \"Hello! It's nice to chat with you.  Is there anything I can assist you with tonight?\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "091a5aa9-889e-4cbb-ad82-e170d806e87d",
+            "timestamp": "2025-04-05T13:14:15.811223",
+            "user_input": "New Test",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-26T13:14:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to start a new test.",
+                        "tier2": "The user's message 'New Test' indicates their intention to begin a new test, the nature of which is currently unspecified."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-26T13:14:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Okay, what kind of test would you like to run?",
+                        "tier2": "I'm ready for your new test.  To help me understand what you need, please tell me more about the test. What type of test is it? What are we testing?",
+                        "tier3": "I understand you'd like to start a new test. To best assist you, I need some more information.  Please describe the test:  What are we testing? What are the parameters? What is the expected outcome?  Providing more details will allow me to better support you in conducting the test."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I'm ready for your new test.  To help me understand what you need, please tell me more about the test. What type of test is it? What are we testing?"
+}

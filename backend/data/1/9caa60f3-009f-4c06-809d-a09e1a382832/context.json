@@ -1,0 +1,53 @@
+{
+    "messages": [
+        {
+            "turn_id": "19aea371-b5b0-41b2-ac40-8b5bcf1704b3",
+            "timestamp": "2025-04-05T01:43:22.420088",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-04T01:44:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-04T01:44:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello! How can I help you this morning?",
+                        "tier3": "Hi! It's late, but I'm here and ready to assist you.  What can I do for you?"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "44c425e5-b35b-4e84-8406-e1942bbeaa6f",
+            "timestamp": "2025-04-05T01:47:59.743658",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-04T01:48:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted the assistant with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation.  There is no specific request or question."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-04T01:48:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello! How can I help you today?",
+                        "tier3": "Hi! It's still pretty late, but I'm here and ready to help. What's up?"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Hello! How can I help you today?"
+}

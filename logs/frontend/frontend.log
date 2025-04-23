@@ -1,0 +1,510 @@
+
+> ai-assistant@1.0.0 start
+> webpack serve --mode development --config webpack.config.js --port 8081
+
+<i> [webpack-dev-server] [HPM] Proxy created: /api  -> http://localhost:6102
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:8081/, http://[::1]:8081/
+<i> [webpack-dev-server] On Your Network (IPv4): http://192.168.1.67:8081/
+<i> [webpack-dev-server] On Your Network (IPv6): http://[fd8e:fc2d:ad2d:3216:8a5:206f:25ff:d51a]:8081/
+<i> [webpack-dev-server] Content not from webpack is served from '/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/public' directory
+<i> [webpack-dev-server] 404s will fallback to '/index.html'
+asset bundle.js 4.33 MiB [emitted] (name: main)
+asset index.html 1.97 KiB [emitted]
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 306 KiB
+  modules by path ./src/services/ 116 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 1206 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.34 MiB
+  asset bundle.js 4.3 MiB [emitted] (name: main)
+  asset main.be807cd6591b468d2508.hot-update.js 44.9 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.be807cd6591b468d2508.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.34 MiB = bundle.js 4.3 MiB main.be807cd6591b468d2508.hot-update.js 44.9 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 263 KiB
+  modules by path ./src/services/ 73 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+
+ERROR in ./src/services/chat/messageService.ts
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/src/services/chat/messageService.ts: Unexpected reserved word 'let'. (169:6)
+
+  167 |       // Always prefer tier3 (most detailed response) when available
+  168 |       // Fall back to tier2, then tier1
+> 169 |       let content = tier3 || tier2 || tier1 || 'No response received';
+      |       ^
+  170 |       
+  171 |       // If this is a response after a web search, check for search results
+  172 |       // to ensure they're displayed properly
+    at constructor (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:360:19)
+    at TypeScriptParserMixin.raise (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:3338:19)
+    at TypeScriptParserMixin.checkReservedWord (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11936:12)
+    at TypeScriptParserMixin.checkReservedWord (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9235:13)
+    at TypeScriptParserMixin.parseIdentifierName (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11916:12)
+    at TypeScriptParserMixin.parseIdentifier (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11891:23)
+    at TypeScriptParserMixin.parseExprAtom (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11127:27)
+    at TypeScriptParserMixin.parseExprSubscripts (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10785:23)
+    at TypeScriptParserMixin.parseUpdate (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10770:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10750:23)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9690:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10603:61)
+    at TypeScriptParserMixin.parseExprOpBaseRightExpr (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10690:34)
+    at TypeScriptParserMixin.parseExprOpRightExpr (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10685:21)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10651:27)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9231:18)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10657:21)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9231:18)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10657:21)
+    at TypeScriptParserMixin.parseExprOp (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9231:18)
+    at TypeScriptParserMixin.parseExprOps (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10612:17)
+    at TypeScriptParserMixin.parseMaybeConditional (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10585:23)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10538:21)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9639:20)
+    at /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10507:39
+    at TypeScriptParserMixin.allowInAnd (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12121:16)
+    at TypeScriptParserMixin.parseMaybeAssignAllowIn (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10507:17)
+    at TypeScriptParserMixin.parseVar (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:13048:91)
+    at TypeScriptParserMixin.parseVarStatement (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12894:10)
+    at TypeScriptParserMixin.parseVarStatement (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9335:31)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12515:23)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9365:18)
+    at TypeScriptParserMixin.parseStatementLike (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12432:17)
+    at TypeScriptParserMixin.parseStatementListItem (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12412:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12980:61)
+    at TypeScriptParserMixin.parseBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12973:10)
+    at TypeScriptParserMixin.parseBlock (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12961:10)
+    at TypeScriptParserMixin.parseTryStatement (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12869:23)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12469:21)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9365:18)
+    at TypeScriptParserMixin.parseStatementLike (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12432:17)
+    at TypeScriptParserMixin.parseStatementListItem (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12412:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12980:61)
+    at TypeScriptParserMixin.parseBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12973:10)
+    at TypeScriptParserMixin.parseBlock (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12961:10)
+    at TypeScriptParserMixin.parseFunctionBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11810:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11796:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9095:18)
+    at TypeScriptParserMixin.parseMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11754:31)
+    at TypeScriptParserMixin.parseMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9956:26)
+ @ ./src/services/chat/index.ts 6:0-46 10:0-124
+ @ ./src/AppLayout.tsx 21:0-69 66:19-47 79:4-32 83:4-40 86:4-37 89:4-41 92:4-40
+ @ ./src/App.tsx 20:0-42 406:33-44
+ @ ./src/index.tsx 4:0-24 13:7-10
+
+webpack 5.98.0 compiled with 1 error in 842 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.4 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.c24433d82a43efd4b1c8.hot-update.js 78.3 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.c24433d82a43efd4b1c8.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.4 MiB = bundle.js 4.33 MiB main.c24433d82a43efd4b1c8.hot-update.js 78.3 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 306 KiB
+  modules by path ./src/services/ 116 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 976 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.37 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.9e80bf7b189cec69637b.hot-update.js 45.7 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.9e80bf7b189cec69637b.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.37 MiB = bundle.js 4.33 MiB main.9e80bf7b189cec69637b.hot-update.js 45.7 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 306 KiB
+  modules by path ./src/services/ 116 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 817 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.37 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.01c29e64c89b28643a5f.hot-update.js 46.4 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.01c29e64c89b28643a5f.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.37 MiB = bundle.js 4.33 MiB main.01c29e64c89b28643a5f.hot-update.js 46.4 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 307 KiB
+  modules by path ./src/services/ 117 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 803 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.37 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.1dd77835e3b4f847e0a0.hot-update.js 46.1 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.1dd77835e3b4f847e0a0.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.37 MiB = bundle.js 4.33 MiB main.1dd77835e3b4f847e0a0.hot-update.js 46.1 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 306 KiB
+  modules by path ./src/services/ 116 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 851 ms
+assets by status 1.97 KiB [cached] 1 asset
+asset bundle.js 4.33 MiB [emitted] (name: main)
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 306 KiB
+  modules by path ./src/services/ 116 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 832 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.f889d323689a0b25ce31.hot-update.js 47.7 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.f889d323689a0b25ce31.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.f889d323689a0b25ce31.hot-update.js 47.7 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 308 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 890 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.8ec8171fb55ea81a9879.hot-update.js 48 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.8ec8171fb55ea81a9879.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.8ec8171fb55ea81a9879.hot-update.js 48 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 308 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 46.6 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 829 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.48 MiB
+  asset bundle.js 4.29 MiB [emitted] (name: main)
+  asset main.64b706119a75533cad15.hot-update.js 186 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.64b706119a75533cad15.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.48 MiB = bundle.js 4.29 MiB main.64b706119a75533cad15.hot-update.js 186 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 261 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 39 bytes [built] [code generated] [1 error]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+
+ERROR in ./src/api/rai_api.ts
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/src/api/rai_api.ts: Unexpected token (390:21)
+
+  388 |       }
+  389 |       
+> 390 |     relatedMessageId?: string
+      |                      ^
+  391 |   ): Promise<SystemMessageResponse> {
+  392 |     return this._request<SystemMessageResponse>('/system-messages', 'POST', {
+  393 |       session_id: sessionId,
+    at constructor (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:360:19)
+    at TypeScriptParserMixin.raise (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:3338:19)
+    at TypeScriptParserMixin.unexpected (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:3358:16)
+    at TypeScriptParserMixin.parseExprAtom (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11153:16)
+    at TypeScriptParserMixin.parseExprSubscripts (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10785:23)
+    at TypeScriptParserMixin.parseUpdate (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10770:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10750:23)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9690:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10603:61)
+    at TypeScriptParserMixin.parseExprOps (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10608:23)
+    at TypeScriptParserMixin.parseMaybeConditional (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10585:23)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10538:21)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9639:20)
+    at /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10507:39
+    at TypeScriptParserMixin.allowInAnd (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12126:12)
+    at TypeScriptParserMixin.parseMaybeAssignAllowIn (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10507:17)
+    at TypeScriptParserMixin.parseConditional (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10595:30)
+    at TypeScriptParserMixin.parseConditional (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9464:18)
+    at TypeScriptParserMixin.parseMaybeConditional (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10589:17)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10538:21)
+    at TypeScriptParserMixin.parseMaybeAssign (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9639:20)
+    at TypeScriptParserMixin.parseExpressionBase (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10491:23)
+    at /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10487:39
+    at TypeScriptParserMixin.allowInAnd (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12121:16)
+    at TypeScriptParserMixin.parseExpression (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:10487:17)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12559:23)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9365:18)
+    at TypeScriptParserMixin.parseStatementLike (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12432:17)
+    at TypeScriptParserMixin.parseStatementListItem (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12412:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12980:61)
+    at TypeScriptParserMixin.parseBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12973:10)
+    at TypeScriptParserMixin.parseBlock (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12961:10)
+    at TypeScriptParserMixin.parseTryStatement (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12869:23)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12469:21)
+    at TypeScriptParserMixin.parseStatementContent (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9365:18)
+    at TypeScriptParserMixin.parseStatementLike (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12432:17)
+    at TypeScriptParserMixin.parseStatementListItem (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12412:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12980:61)
+    at TypeScriptParserMixin.parseBlockBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12973:10)
+    at TypeScriptParserMixin.parseBlock (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:12961:10)
+    at TypeScriptParserMixin.parseFunctionBody (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11810:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11796:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9095:18)
+    at TypeScriptParserMixin.parseMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:11754:31)
+    at TypeScriptParserMixin.parseMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9956:26)
+    at TypeScriptParserMixin.pushClassMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:13386:30)
+    at TypeScriptParserMixin.pushClassMethod (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9569:11)
+    at TypeScriptParserMixin.parseClassMemberWithIsStatic (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:13297:14)
+    at TypeScriptParserMixin.parseClassMemberWithIsStatic (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9435:11)
+    at callParseClassMemberWithIsStatic (/Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/RAI_Chat/frontend/node_modules/@babel/parser/lib/index.js:9398:14)
+ @ ./src/services/AppInitService.ts 18:0-42 82:18-43 88:20-45 98:18-43 102:18-43
+ @ ./src/App.tsx 24:0-55 399:4-29
+ @ ./src/index.tsx 4:0-24 13:7-10
+
+webpack 5.98.0 compiled with 1 error in 787 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.55 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.9aade9c1325362e8f3fa.hot-update.js 225 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.9aade9c1325362e8f3fa.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.55 MiB = bundle.js 4.33 MiB main.9aade9c1325362e8f3fa.hot-update.js 225 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 310 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.2 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 771 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.9eaffa02d61a6d94e332.hot-update.js 51.2 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.9eaffa02d61a6d94e332.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.9eaffa02d61a6d94e332.hot-update.js 51.2 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 310 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.2 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 930 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.6ae583700fdce7d1a66a.hot-update.js 51.2 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.6ae583700fdce7d1a66a.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.6ae583700fdce7d1a66a.hot-update.js 51.2 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 310 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.3 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 821 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.27b0d3c7b25277cf54a9.hot-update.js 51.3 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.27b0d3c7b25277cf54a9.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.27b0d3c7b25277cf54a9.hot-update.js 51.3 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 310 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.3 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 819 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.38 MiB
+  asset bundle.js 4.33 MiB [emitted] (name: main)
+  asset main.f338001c88eea2a03ba4.hot-update.js 48.1 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.f338001c88eea2a03ba4.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.38 MiB = bundle.js 4.33 MiB main.f338001c88eea2a03ba4.hot-update.js 48.1 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 310 KiB
+  modules by path ./src/services/ 118 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.3 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 863 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.39 MiB
+  asset bundle.js 4.34 MiB [emitted] (name: main)
+  asset main.c48f462fe4b98087a850.hot-update.js 51.6 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.c48f462fe4b98087a850.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.39 MiB = bundle.js 4.34 MiB main.c48f462fe4b98087a850.hot-update.js 51.6 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 313 KiB
+  modules by path ./src/services/ 122 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.3 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 830 ms
+assets by status 1.97 KiB [cached] 1 asset
+assets by path *.js 4.39 MiB
+  asset bundle.js 4.34 MiB [emitted] (name: main)
+  asset main.b4764c7c9b08170df323.hot-update.js 51.9 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.b4764c7c9b08170df323.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 4.39 MiB = bundle.js 4.34 MiB main.b4764c7c9b08170df323.hot-update.js 51.9 KiB
+orphan modules 33.4 KiB [orphan] 24 modules
+runtime modules 27.5 KiB 14 modules
+modules by path ./node_modules/ 3.35 MiB 190 modules
+modules by path ./src/ 314 KiB
+  modules by path ./src/services/ 122 KiB 9 modules
+  modules by path ./src/pages/Main_Chat_UI/ 42.3 KiB
+    ./src/pages/Main_Chat_UI/components/HeaderComponent.tsx 3.55 KiB [built] [code generated]
+    + 6 modules
+  modules by path ./src/*.tsx 45.7 KiB
+    ./src/index.tsx 931 bytes [built] [code generated]
+    + 3 modules
+  ./src/contexts/AuthContext.tsx 26 KiB [built] [code generated]
+  ./src/api/rai_api.ts 48.3 KiB [built] [code generated]
+  ./src/modules/chat_library/ChatLibrary.tsx 29.2 KiB [built] [code generated]
+./shared/theme.ts 1.68 KiB [built] [code generated]
+webpack 5.98.0 compiled successfully in 876 ms

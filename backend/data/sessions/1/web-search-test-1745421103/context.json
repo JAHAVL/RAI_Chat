@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "b8e56d12-9111-4d5a-b3ff-6b3b9dcafcb1",
+            "timestamp": "2025-04-23T15:11:45.282974",
+            "user_input": "Search the web for: latest AI research papers 2025",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:16:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for the latest AI research papers from 2025.\",\n      \"tier2\": \"The user wants me to perform a web search to find recently published research papers in the field of artificial intelligence.  Specifically, they are interested in papers published in 2025.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:16:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for \\\"latest AI research papers 2025\\\".  The results will depend on what is currently available online.  Please note that 2025 is still ongoing, so the availability of papers might be limited.\",\n      \"tier3\": \"[SEARCH: latest AI research papers 2025]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "603aa357-ff8c-43c4-9dfe-2c3b3cbda56f",
+            "timestamp": "2025-04-23T15:11:45.286250",
+            "user_input": "Search the web for: latest AI research papers 2025",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:16:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for the latest AI research papers from 2025.\",\n      \"tier2\": \"The user wants me to perform a web search to find recently published research papers in the field of artificial intelligence.  Specifically, they are interested in papers published in 2025.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:16:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for \\\"latest AI research papers 2025\\\".  The results will depend on what is currently available online.  Please note that 2025 is still ongoing, so the availability of papers might be limited.\",\n      \"tier3\": \"[SEARCH: latest AI research papers 2025]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T15:16:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a web search for the latest AI research papers from 2025.\",\n      \"tier2\": \"The user wants me to perform a web search to find recently published research papers in the field of artificial intelligence.  Specifically, they are interested in papers published in 2025.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T15:16:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for \\\"latest AI research papers 2025\\\".  The results will depend on what is currently available online.  Please note that 2025 is still ongoing, so the availability of papers might be limited.\",\n      \"tier3\": \"[SEARCH: latest AI research papers 2025]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

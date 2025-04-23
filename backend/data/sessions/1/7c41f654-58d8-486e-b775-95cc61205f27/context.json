@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "1d3c8307-3a61-42eb-a1dd-727d6cd8c670",
+            "timestamp": "2025-04-23T03:10:13.945726",
+            "user_input": "This is test message 1",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user sent a test message.\",\n      \"tier2\": \"This is the first test message in the current conversation.  It contains no specific requests or questions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I received your test message.\",\n      \"tier2\": \"Your test message has been received and processed.  Is there anything else I can help you with?\",\n      \"tier3\": \"Test message 1 received and acknowledged.  Awaiting further instructions.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "7f2b663b-3376-4e68-a6b2-a390b6ea80cd",
+            "timestamp": "2025-04-23T03:10:13.950594",
+            "user_input": "This is test message 1",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user sent a test message.\",\n      \"tier2\": \"This is the first test message in the current conversation.  It contains no specific requests or questions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I received your test message.\",\n      \"tier2\": \"Your test message has been received and processed.  Is there anything else I can help you with?\",\n      \"tier3\": \"Test message 1 received and acknowledged.  Awaiting further instructions.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user sent a test message.\",\n      \"tier2\": \"This is the first test message in the current conversation.  It contains no specific requests or questions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I received your test message.\",\n      \"tier2\": \"Your test message has been received and processed.  Is there anything else I can help you with?\",\n      \"tier3\": \"Test message 1 received and acknowledged.  Awaiting further instructions.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

@@ -1,0 +1,49 @@
+{
+    "messages": [
+        {
+            "turn_id": "6418eab7-9f5b-4dae-b583-00017f1726a4",
+            "timestamp": "2025-04-23T13:06:21.861306",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:08:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:08:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a play on words, highlighting the double meaning of \\\"make up.\\\"\",\n      \"tier3\": \"Why don't scientists trust atoms? Because they make up everything!\\n\\nThis is a simple pun, playing on the dual meaning of \\\"make up.\\\"  It suggests that atoms are the fundamental building blocks of matter, and also that they are known for being untruthful or deceptive (making things up).\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "e69d23f8-f40b-4d4f-88ff-43be8f5484b2",
+            "timestamp": "2025-04-23T13:06:21.866638",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:08:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:08:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a play on words, highlighting the double meaning of \\\"make up.\\\"\",\n      \"tier3\": \"Why don't scientists trust atoms? Because they make up everything!\\n\\nThis is a simple pun, playing on the dual meaning of \\\"make up.\\\"  It suggests that atoms are the fundamental building blocks of matter, and also that they are known for being untruthful or deceptive (making things up).\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:08:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:08:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything!  It's a play on words, highlighting the double meaning of \\\"make up.\\\"\",\n      \"tier3\": \"Why don't scientists trust atoms? Because they make up everything!\\n\\nThis is a simple pun, playing on the dual meaning of \\\"make up.\\\"  It suggests that atoms are the fundamental building blocks of matter, and also that they are known for being untruthful or deceptive (making things up).\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        },
+        {
+            "turn_id": "fd1bc940-82fe-4fd4-a8c4-e4e081315bc1",
+            "timestamp": "2025-04-23T13:06:56.670145",
+            "user_input": "Search the web for the latest AI developments",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user's prompt is a broad request for information regarding recent advancements in artificial intelligence.  No specific area of AI or source is specified.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'll need to search the web for that. One moment.\",\n      \"tier2\": \"To answer your question about the latest AI developments, I need to perform a web search to access the most up-to-date information. I'll get right on that.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "00d810cd-95fd-425b-8ec1-4c19f6e0895d",
+            "timestamp": "2025-04-23T13:06:56.676210",
+            "user_input": "Search the web for the latest AI developments",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user's prompt is a broad request for information regarding recent advancements in artificial intelligence.  No specific area of AI or source is specified.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'll need to search the web for that. One moment.\",\n      \"tier2\": \"To answer your question about the latest AI developments, I need to perform a web search to access the most up-to-date information. I'll get right on that.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-28T13:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user's prompt is a broad request for information regarding recent advancements in artificial intelligence.  No specific area of AI or source is specified.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-28T13:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'll need to search the web for that. One moment.\",\n      \"tier2\": \"To answer your question about the latest AI developments, I need to perform a web search to access the most up-to-date information. I'll get right on that.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

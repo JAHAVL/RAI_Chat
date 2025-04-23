@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "30afd8cf-ecb4-4a25-8df7-24106dad1aba",
+            "timestamp": "2025-04-05T13:02:38.770328",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T13:02:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for their name.",
+                        "tier2": "The user's request is a simple query asking for their name, which is information that should be readily available from the conversation's memory."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T13:02:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Your name is Jordan.",
+                        "tier2": "I have access to your information and know your name is Jordan.  Is there anything else I can help you with today?",
+                        "tier3": "Based on the information I have access to, your name is Jordan. I hope this helps!"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I have access to your information and know your name is Jordan.  Is there anything else I can help you with today?"
+}

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "e288ce27-c76d-4f4b-afe3-c482728f44c8",
+            "timestamp": "2025-04-23T14:58:18.313137",
+            "user_input": "What is the latest news about artificial intelligence?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants the latest news about artificial intelligence.\",\n      \"tier2\": \"The user is requesting an update on current events and developments in the field of artificial intelligence.  They are looking for recent news stories or announcements.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:58:30Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"To give you the most up-to-date information, I'll need to perform a web search.\",\n      \"tier2\": \"I don't have access to a real-time, continuously updated news feed.  To answer your question accurately, I need to search the web for the latest AI news. This will ensure I provide you with the most current information available.\",\n      \"tier3\": \"[SEARCH: latest news artificial intelligence]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "c3932fbd-36cb-4f4c-a44a-a3aa33dfdbb6",
+            "timestamp": "2025-04-23T14:58:18.322826",
+            "user_input": "What is the latest news about artificial intelligence?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants the latest news about artificial intelligence.\",\n      \"tier2\": \"The user is requesting an update on current events and developments in the field of artificial intelligence.  They are looking for recent news stories or announcements.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:58:30Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"To give you the most up-to-date information, I'll need to perform a web search.\",\n      \"tier2\": \"I don't have access to a real-time, continuously updated news feed.  To answer your question accurately, I need to search the web for the latest AI news. This will ensure I provide you with the most current information available.\",\n      \"tier3\": \"[SEARCH: latest news artificial intelligence]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants the latest news about artificial intelligence.\",\n      \"tier2\": \"The user is requesting an update on current events and developments in the field of artificial intelligence.  They are looking for recent news stories or announcements.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:58:30Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"To give you the most up-to-date information, I'll need to perform a web search.\",\n      \"tier2\": \"I don't have access to a real-time, continuously updated news feed.  To answer your question accurately, I need to search the web for the latest AI news. This will ensure I provide you with the most current information available.\",\n      \"tier3\": \"[SEARCH: latest news artificial intelligence]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

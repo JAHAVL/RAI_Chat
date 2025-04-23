@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "eaff5eca-982b-4d0c-9eae-fa02dd55b1cb",
+            "timestamp": "2025-04-21T22:35:31.483138",
+            "user_input": "hi",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-02T22:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is initiating a conversation with a greeting.\",\n      \"tier2\": \"The user has sent a simple 'hi' to start a conversation, indicating they wish to interact.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-02T22:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan!  It's late, but I'm here if you need anything. How can I help you tonight?\",\n      \"tier3\": \"Hello Jordan! It's 10:35 PM where I am.  I hope you're doing well.  I'm ready to assist you with anything you need, whether it's answering questions, helping with tasks, or just chatting.  Let me know what's on your mind!\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "04967492-81f2-4b3d-889a-3dc156933174",
+            "timestamp": "2025-04-21T22:35:31.489147",
+            "user_input": "hi",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-02T22:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is initiating a conversation with a greeting.\",\n      \"tier2\": \"The user has sent a simple 'hi' to start a conversation, indicating they wish to interact.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-02T22:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan!  It's late, but I'm here if you need anything. How can I help you tonight?\",\n      \"tier3\": \"Hello Jordan! It's 10:35 PM where I am.  I hope you're doing well.  I'm ready to assist you with anything you need, whether it's answering questions, helping with tasks, or just chatting.  Let me know what's on your mind!\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-02T22:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is initiating a conversation with a greeting.\",\n      \"tier2\": \"The user has sent a simple 'hi' to start a conversation, indicating they wish to interact.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-02T22:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hey there!\",\n      \"tier2\": \"Hey Jordan!  It's late, but I'm here if you need anything. How can I help you tonight?\",\n      \"tier3\": \"Hello Jordan! It's 10:35 PM where I am.  I hope you're doing well.  I'm ready to assist you with anything you need, whether it's answering questions, helping with tasks, or just chatting.  Let me know what's on your mind!\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "turn_id": "a4bea4a0-c869-4d1d-80a8-4bdeb4773ffd",
+        "timestamp": "2025-04-08T08:00:31.325152",
+        "user_input": "Hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "prompt_tiers": {
+                    "tier1": "Analysis N/A",
+                    "tier2": "Analysis N/A"
+                }
+            },
+            "llm_response": {
+                "response_tiers": {
+                    "tier1": "This is a mock response to: 'Hi...'",
+                    "tier2": "This is a mock response to: 'Hi...'",
+                    "tier3": "This is a mock response to: 'Hi...'"
+                }
+            }
+        }
+    }
+]

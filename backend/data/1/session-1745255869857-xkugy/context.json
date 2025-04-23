@@ -1,0 +1,71 @@
+{
+    "messages": [
+        {
+            "turn_id": "ad29e871-3ab8-4065-89fd-afc8325a189e",
+            "timestamp": "2025-04-21T17:17:50.358321",
+            "user_input": "hi",
+            "llm_output": {
+                "status": "success",
+                "text": "Hi there! How can I help you today?\n"
+            }
+        },
+        {
+            "turn_id": "a1de50fc-641e-4925-904c-41e3067457b5",
+            "timestamp": "2025-04-21T17:17:50.363124",
+            "user_input": "hi",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "Hi there! How can I help you today?\n"
+                    },
+                    "response": "Hi there! How can I help you today?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "5edad7d2-daef-413b-82fc-c8037846a562",
+            "timestamp": "2025-04-21T17:17:54.432041",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "status": "success",
+                "text": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+            }
+        },
+        {
+            "turn_id": "575e3f97-8c12-4bd1-82bb-d2fc7817d8f2",
+            "timestamp": "2025-04-21T17:17:54.433673",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                    },
+                    "response": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "1ec6b7c2-907d-4db2-afd9-4b3699750e44",
+            "timestamp": "2025-04-21T17:17:57.362259",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+            }
+        },
+        {
+            "turn_id": "cc0c140e-b922-493e-8ca5-c61c051b9f97",
+            "timestamp": "2025-04-21T17:17:57.366818",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                    },
+                    "response": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

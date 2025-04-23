@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "db4ff007-a53a-41bd-8720-75a41829e7b5",
+            "timestamp": "2025-04-19T23:52:09.696452",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-02T23:52:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation.  No specific requests or questions were made."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-02T23:52:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hi! How can I help you tonight?",
+                        "tier3": "Hello! It's late, but I'm here if you need anything.  Let me know how I can assist you."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "9b92704d-5ccd-41b9-a78e-56f6849110da",
+            "timestamp": "2025-04-19T23:52:16.999457",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-10-27T23:53:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his career."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-10-27T23:53:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I'll need to do a quick web search to get you that information.",
+                        "tier2": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I need to perform a web search for information about Dan Martell.",
+                        "tier3": "[SEARCH: Dan Martell biography]"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "38716287-c1cd-4a4f-93fc-132da5655d7f",
+            "timestamp": "2025-04-19T23:52:23.045854",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-10-27T23:52:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is asking for biographical information about Dan Martell, seeking details about his life, career, and accomplishments."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-10-27T23:52:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Dan Martell is a Canadian entrepreneur, author, and investor.",
+                        "tier2": "He's known for his success in the tech industry, founding companies like SaaS Academy and Martell Ventures.  He's also a best-selling author and a frequent keynote speaker.",
+                        "tier3": "Dan Martell is a Canadian entrepreneur, author, and investor with a reported net worth of $80 million. He's known for his work in the SaaS (Software as a Service) industry and has founded several successful companies, including SaaS Academy and Martell Ventures.  He's also the author of the book \"Buy Back Your Time\" and is a sought-after keynote speaker at various tech conferences and events. His career has involved building and scaling multiple businesses, often sharing his entrepreneurial journey and insights through his online presence and speaking engagements. He is also known for his candid discussions about his past struggles and his path to success."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "He's known for his success in the tech industry, founding companies like SaaS Academy and Martell Ventures.  He's also a best-selling author and a frequent keynote speaker."
+}

@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "1f4fe061-d279-4246-a94d-66fdd654a95d",
+            "timestamp": "2025-04-05T13:14:43.543313",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T13:14:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for their name.",
+                        "tier2": "The user's request is a simple inquiry about their name, which is information the system should already have access to from its memory."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T13:14:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Your name is Jordan.",
+                        "tier2": "I have access to your name from my memory.  It appears your name is Jordan. Is there anything else I can help you with today?",
+                        "tier3": "Based on the information I have stored, your name is Jordan.  I am able to access and remember information about you to help make our interactions smoother and more efficient."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "d7960843-624a-4fda-a9c4-b40cb1ba5ac2",
+            "timestamp": "2025-04-05T13:14:52.604453",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T13:14:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his work."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T13:14:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I don't have access to that information right now, Jordan.  Let me quickly search for you.",
+                        "tier2": "To answer your question about Dan Martell, I need to perform a web search to gather the necessary information.  I'll do that right away and get back to you with the details.",
+                        "tier3": "[SEARCH: Dan Martell biography]"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "aa5379c2-2fc2-4611-9c86-75bcc06ce7a6",
+            "timestamp": "2025-04-05T13:14:57.979940",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-26T13:14:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for information about Dan Martell.",
+                        "tier2": "The user wants to know who Dan Martell is, likely requesting biographical information or details about his career."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-26T13:14:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Dan Martell is a Canadian entrepreneur, author, and speaker known for his work in the SaaS industry.",
+                        "tier2": "He's a serial entrepreneur who has founded several successful companies.  He's also a well-regarded coach and mentor for other entrepreneurs, particularly those in the SaaS space.  His book, 'Buy Back Your Time,' is also quite popular.",
+                        "tier3": "Dan Martell is a Canadian entrepreneur, author, and keynote speaker. He's best known for his book, *Buy Back Your Time*, and for his work in the software-as-a-service (SaaS) industry.  He's founded several companies, including Spheric Technologies, Clarity.fm, and Flowtown, demonstrating a successful track record in building and selling businesses.  Beyond his entrepreneurial ventures, Martell is a prominent coach and mentor, guiding other entrepreneurs, particularly those in the SaaS sector, on how to improve their sales and build their teams.  Different sources report his net worth to vary, ranging from $30 million to $80 million. His early life involved challenges and legal issues, but he overcame these obstacles to achieve significant success.  He's currently married to Renee Warren Martell."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "He's a serial entrepreneur who has founded several successful companies.  He's also a well-regarded coach and mentor for other entrepreneurs, particularly those in the SaaS space.  His book, 'Buy Back Your Time,' is also quite popular."
+}

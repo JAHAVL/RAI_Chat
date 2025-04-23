@@ -1,0 +1,26 @@
+[
+    {
+        "turn_id": "f3d2394b-b19e-4d0f-bd37-dade3af009c7",
+        "timestamp": "2025-04-05T13:02:01.397717",
+        "user_input": "Test",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-08T13:01:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to test the system.",
+                    "tier2": "The user's message 'Test' is a simple test to check if the system is functioning correctly and responding to input."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-08T13:01:00Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Test successful!",
+                    "tier2": "I received your test message and am responding as expected.  This confirms that the system is functioning correctly and able to process your input.  I'm ready for further instructions.",
+                    "tier3": "The system has successfully received and processed your test message.  This indicates that all communication channels are open and functioning as intended.  I am prepared to assist you with any further requests or tasks."
+                }
+            }
+        }
+    }
+]

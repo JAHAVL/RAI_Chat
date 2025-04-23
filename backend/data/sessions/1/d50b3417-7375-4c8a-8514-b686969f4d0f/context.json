@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "e0a02c97-414c-4bbb-9dd0-3353fa78d754",
+            "timestamp": "2025-04-23T11:56:39.886260",
+            "user_input": "Hi, how are you today?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T11:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is greeting me and asking how I am.\",\n      \"tier2\": \"The user's prompt is a simple greeting and polite inquiry about my well-being.  It doesn't require any specific action or information retrieval.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T11:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm doing great, thanks for asking! How are you?\",\n      \"tier2\": \"I'm doing well, thank you for asking!  It's a pleasure to chat with you. How's your day going so far?\",\n      \"tier3\": \"I am functioning optimally and ready to assist you.  Thank you for your kind inquiry. How is your day progressing?\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "aa002532-2295-4a21-8255-125027054504",
+            "timestamp": "2025-04-23T11:56:39.889800",
+            "user_input": "Hi, how are you today?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T11:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is greeting me and asking how I am.\",\n      \"tier2\": \"The user's prompt is a simple greeting and polite inquiry about my well-being.  It doesn't require any specific action or information retrieval.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T11:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm doing great, thanks for asking! How are you?\",\n      \"tier2\": \"I'm doing well, thank you for asking!  It's a pleasure to chat with you. How's your day going so far?\",\n      \"tier3\": \"I am functioning optimally and ready to assist you.  Thank you for your kind inquiry. How is your day progressing?\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T11:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is greeting me and asking how I am.\",\n      \"tier2\": \"The user's prompt is a simple greeting and polite inquiry about my well-being.  It doesn't require any specific action or information retrieval.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T11:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm doing great, thanks for asking! How are you?\",\n      \"tier2\": \"I'm doing well, thank you for asking!  It's a pleasure to chat with you. How's your day going so far?\",\n      \"tier3\": \"I am functioning optimally and ready to assist you.  Thank you for your kind inquiry. How is your day progressing?\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

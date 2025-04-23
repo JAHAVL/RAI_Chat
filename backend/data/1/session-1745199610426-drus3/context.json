@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "df5dd48a-5da2-437c-ad24-6d6fa5144b98",
+            "timestamp": "2025-04-20T21:40:12.358838",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T21:40:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's prompt is a simple greeting, indicating the start of a conversation.  No specific request or question was made."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T21:40:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello! How can I help you this evening?",
+                        "tier3": "Hi! It's good to connect with you.  Is there anything I can assist you with tonight?"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "a2938df3-a337-4910-8d93-c29596fee7db",
+            "timestamp": "2025-04-20T21:40:17.638191",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-10-27T21:40:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his career."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-10-27T21:40:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I'll need to do a quick web search to get you that information.",
+                        "tier2": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I need to perform a web search for 'Dan Martell'.",
+                        "tier3": "[SEARCH: Dan Martell biography]"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "efe452d4-9e6b-47f8-8f97-d8cfb65f6c04",
+            "timestamp": "2025-04-20T21:40:17.967726",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-10-27T21:40:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his career."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-10-27T21:40:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I'll need to do a quick web search to get you that information.",
+                        "tier2": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I need to perform a web search for 'Dan Martell'.",
+                        "tier3": "[SEARCH: Dan Martell biography]"
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I don't have access to a real-time, updated database of biographical information. To answer your question accurately, I need to perform a web search for 'Dan Martell'."
+}

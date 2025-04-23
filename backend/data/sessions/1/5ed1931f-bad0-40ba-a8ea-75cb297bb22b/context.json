@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "00a63706-bdac-49c1-8557-95714d68701c",
+            "timestamp": "2025-04-23T02:51:28.612778",
+            "user_input": "Hello RAI!",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:54:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greets me.\",\n      \"tier2\": \"The user is initiating a conversation by saying hello.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:54:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello there!\",\n      \"tier2\": \"It's nice to hear from you! How can I help you this morning?\",\n      \"tier3\": \"It's great to connect!  I'm ready to assist you with whatever you need.  Please let me know how I can be of service.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "c048de95-e6fe-48a5-9116-e22278b90b97",
+            "timestamp": "2025-04-23T02:51:28.621072",
+            "user_input": "Hello RAI!",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:54:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greets me.\",\n      \"tier2\": \"The user is initiating a conversation by saying hello.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:54:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello there!\",\n      \"tier2\": \"It's nice to hear from you! How can I help you this morning?\",\n      \"tier3\": \"It's great to connect!  I'm ready to assist you with whatever you need.  Please let me know how I can be of service.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:54:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greets me.\",\n      \"tier2\": \"The user is initiating a conversation by saying hello.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:54:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello there!\",\n      \"tier2\": \"It's nice to hear from you! How can I help you this morning?\",\n      \"tier3\": \"It's great to connect!  I'm ready to assist you with whatever you need.  Please let me know how I can be of service.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

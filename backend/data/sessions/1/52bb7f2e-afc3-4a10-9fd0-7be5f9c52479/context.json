@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "b9b7ecf9-1ea4-4b32-a984-46578b89e827",
+            "timestamp": "2025-04-23T02:56:22.903475",
+            "user_input": "What is RAI?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a search is needed to determine the intended meaning.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:58:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things depending on the context. To answer your question accurately, I need more information.\",\n      \"tier2\": \"The acronym 'RAI' is quite broad and has various meanings.  To help me understand what you're looking for, could you provide some context? For example, what field or industry are you interested in?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "573b1dcd-0366-4a45-b5da-760e89bac6b8",
+            "timestamp": "2025-04-23T02:56:22.908147",
+            "user_input": "What is RAI?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a search is needed to determine the intended meaning.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:58:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things depending on the context. To answer your question accurately, I need more information.\",\n      \"tier2\": \"The acronym 'RAI' is quite broad and has various meanings.  To help me understand what you're looking for, could you provide some context? For example, what field or industry are you interested in?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:58:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a search is needed to determine the intended meaning.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:58:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things depending on the context. To answer your question accurately, I need more information.\",\n      \"tier2\": \"The acronym 'RAI' is quite broad and has various meanings.  To help me understand what you're looking for, could you provide some context? For example, what field or industry are you interested in?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

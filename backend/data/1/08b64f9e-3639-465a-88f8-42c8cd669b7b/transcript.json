@@ -1,0 +1,26 @@
+[
+    {
+        "turn_id": "2c9c4798-0c97-473e-ba3a-9f088abd824f",
+        "timestamp": "2025-04-05T13:02:31.603676",
+        "user_input": "My name is Jordan",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-07-26T13:02:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is stating their name is Jordan.",
+                    "tier2": "The user's prompt is a simple declaration of their name, Jordan.  No further action or information is requested."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-07-26T13:02:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hi Jordan, nice to meet you!",
+                    "tier2": "It's a pleasure to meet you, Jordan.  I'll remember your name for our conversation. Is there anything I can help you with today?",
+                    "tier3": "Hello Jordan! I'm glad to know your name.  I'll keep that in mind for our conversation. Please let me know if there's anything you need assistance with."
+                }
+            }
+        }
+    }
+]

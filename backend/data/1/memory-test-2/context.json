@@ -1,0 +1,49 @@
+{
+    "messages": [
+        {
+            "turn_id": "408b1b8c-c619-41ed-85e4-24480f83f976",
+            "timestamp": "2025-04-21T16:23:32.696652",
+            "user_input": "My dog is named Buddy. He is a golden retriever.",
+            "llm_output": {
+                "status": "success",
+                "text": "That's nice!  Golden Retrievers make wonderful companions.  Is Buddy a good boy?\n"
+            }
+        },
+        {
+            "turn_id": "3d67949c-9d86-4c95-8988-56813cfd1fd2",
+            "timestamp": "2025-04-21T16:23:32.705997",
+            "user_input": "My dog is named Buddy. He is a golden retriever.",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "That's nice!  Golden Retrievers make wonderful companions.  Is Buddy a good boy?\n"
+                    },
+                    "response": "That's nice!  Golden Retrievers make wonderful companions.  Is Buddy a good boy?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "01e5ef5a-9644-4045-b854-23a3c98946ce",
+            "timestamp": "2025-04-21T16:23:41.961911",
+            "user_input": "What breed is my dog?",
+            "llm_output": {
+                "status": "success",
+                "text": "I can't see your dog! To help you figure out your dog's breed, I need some information. Please tell me about your dog:\n\n* **Pictures:**  The best way to get a breed guess is to provide clear pictures.  Include full body shots, headshots, and shots showing their size relative to something familiar (like a person or a door).\n* **Size and Weight:** How tall and heavy is your dog?\n* **Coat:** Describe the coat - long, short, wiry, curly, smooth? What color is it?\n* **Temperament:** Is your dog energetic, lazy, friendly, shy, etc.?\n* **Any other distinguishing features:** Does your dog have any unique markings, ear shape, tail shape, or other characteristics?\n\nOnce I have this information, I can give you a better idea of what breed (or mix of breeds) your dog might be.  Keep in mind that even with pictures, a definitive answer is only possible with a DNA test.\n"
+            }
+        },
+        {
+            "turn_id": "5c9eb9cc-e343-4479-a3b1-24121731c383",
+            "timestamp": "2025-04-21T16:23:41.964899",
+            "user_input": "What breed is my dog?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I can't see your dog! To help you figure out your dog's breed, I need some information. Please tell me about your dog:\n\n* **Pictures:**  The best way to get a breed guess is to provide clear pictures.  Include full body shots, headshots, and shots showing their size relative to something familiar (like a person or a door).\n* **Size and Weight:** How tall and heavy is your dog?\n* **Coat:** Describe the coat - long, short, wiry, curly, smooth? What color is it?\n* **Temperament:** Is your dog energetic, lazy, friendly, shy, etc.?\n* **Any other distinguishing features:** Does your dog have any unique markings, ear shape, tail shape, or other characteristics?\n\nOnce I have this information, I can give you a better idea of what breed (or mix of breeds) your dog might be.  Keep in mind that even with pictures, a definitive answer is only possible with a DNA test.\n"
+                    },
+                    "response": "I can't see your dog! To help you figure out your dog's breed, I need some information. Please tell me about your dog:\n\n* **Pictures:**  The best way to get a breed guess is to provide clear pictures.  Include full body shots, headshots, and shots showing their size relative to something familiar (like a person or a door).\n* **Size and Weight:** How tall and heavy is your dog?\n* **Coat:** Describe the coat - long, short, wiry, curly, smooth? What color is it?\n* **Temperament:** Is your dog energetic, lazy, friendly, shy, etc.?\n* **Any other distinguishing features:** Does your dog have any unique markings, ear shape, tail shape, or other characteristics?\n\nOnce I have this information, I can give you a better idea of what breed (or mix of breeds) your dog might be.  Keep in mind that even with pictures, a definitive answer is only possible with a DNA test.\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

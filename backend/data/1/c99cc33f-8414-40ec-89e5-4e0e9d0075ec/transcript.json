@@ -1,0 +1,22 @@
+[
+    {
+        "turn_id": "69638d31-e4a3-43a1-86b8-89cf215a53d9",
+        "timestamp": "2025-04-14T02:04:42.861981",
+        "user_input": "hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "prompt_tiers": {
+                    "tier1": "Analysis N/A",
+                    "tier2": "Analysis N/A"
+                }
+            },
+            "llm_response": {
+                "response_tiers": {
+                    "tier1": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1088a4320>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+                    "tier2": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1088a4320>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+                    "tier3": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1088a4320>: Failed to establish a new connection: [Errno 61] Connection refused'))"
+                }
+            }
+        }
+    }
+]

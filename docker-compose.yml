@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: rai-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: rai_chat
+      MYSQL_USER: rai_user
+      MYSQL_PASSWORD: rai_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - rai-network
+      - llm-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+  # External LLM Engine reference
+  # The actual LLM Engine runs from its own docker-compose.yml in the llm_Engine directory
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+    container_name: rai-backend
+    ports:
+      - "6102:6102"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=rai_user
+      - MYSQL_PASSWORD=rai_password
+      - MYSQL_DATABASE=rai_chat
+      - LLM_ENGINE_URL=http://rai-llm-engine:6101
+      - HOST=0.0.0.0
+      - PORT=6102
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+      - ./logs/backend:/app/logs/backend
+      - ./logs/llm_engine:/app/logs/llm_engine
+      - ./logs/startup:/app/logs/startup
+    networks:
+      - rai-network
+      - llm-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+    container_name: rai-frontend
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - BACKEND_URL=http://backend:6102
+      - REACT_APP_API_URL=http://localhost:6102/api
+      - REACT_APP_LLM_API_URL=http://localhost:6101/api
+      - PORT=8081
+      - HOST=0.0.0.0
+    volumes:
+      - ./frontend:/app
+      - ./logs/frontend:/app/logs/frontend
+    networks:
+      - rai-network
+      - llm-network
+    depends_on:
+      - backend
+
+networks:
+  rai-network:
+    driver: bridge
+  llm-network:
+    external: true
+
+volumes:
+  mysql_data:

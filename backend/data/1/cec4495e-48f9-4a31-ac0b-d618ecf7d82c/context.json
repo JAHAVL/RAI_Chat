@@ -1,0 +1,49 @@
+{
+    "messages": [
+        {
+            "turn_id": "c7a402c9-2211-40c5-917f-afe648bb6e54",
+            "timestamp": "2025-04-21T18:03:33.850794",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "status": "success",
+                "text": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+            }
+        },
+        {
+            "turn_id": "02bbba2a-c286-4933-9352-64bf93d9797f",
+            "timestamp": "2025-04-21T18:03:33.852438",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                    },
+                    "response": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "78d05a23-4488-44da-9b49-2abdee47e9a5",
+            "timestamp": "2025-04-21T18:03:34.347433",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+            }
+        },
+        {
+            "turn_id": "4b037de5-ec8d-4d4e-8989-d4fa3f2c8c69",
+            "timestamp": "2025-04-21T18:03:34.350769",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                    },
+                    "response": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

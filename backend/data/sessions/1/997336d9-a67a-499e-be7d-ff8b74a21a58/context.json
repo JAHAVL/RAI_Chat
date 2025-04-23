@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "4a6ce78d-07ec-45f1-ad57-9194bf5b2f8a",
+            "timestamp": "2025-04-23T16:18:37.181823",
+            "user_input": "My name is Jordan and I love programming in Python. I also like to go hiking on weekends.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T16:18:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Jordan introduced himself, stating his interests in Python programming and weekend hiking.\",\n      \"tier2\": \"Jordan shared that his name is Jordan, he enjoys programming using Python, and he likes to go hiking on weekends.  This provides some background information about his interests.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T16:18:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, that's great! Python is a fantastic language, and hiking is a wonderful way to spend weekends.\",\n      \"tier2\": \"It's nice to meet you, Jordan.  I'm glad to hear you enjoy programming in Python and hiking. Those are both excellent hobbies.  Is there anything I can help you with today?\",\n      \"tier3\": \"It's a pleasure to meet you, Jordan.  Python is indeed a powerful and versatile programming language, and I understand the appeal of hiking as a relaxing weekend activity.  I'm here to assist you with any tasks or questions you may have.  Please let me know how I can help.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "30552834-61f9-4474-834c-b56ffee76f1d",
+            "timestamp": "2025-04-23T16:18:37.195917",
+            "user_input": "My name is Jordan and I love programming in Python. I also like to go hiking on weekends.",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T16:18:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Jordan introduced himself, stating his interests in Python programming and weekend hiking.\",\n      \"tier2\": \"Jordan shared that his name is Jordan, he enjoys programming using Python, and he likes to go hiking on weekends.  This provides some background information about his interests.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T16:18:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, that's great! Python is a fantastic language, and hiking is a wonderful way to spend weekends.\",\n      \"tier2\": \"It's nice to meet you, Jordan.  I'm glad to hear you enjoy programming in Python and hiking. Those are both excellent hobbies.  Is there anything I can help you with today?\",\n      \"tier3\": \"It's a pleasure to meet you, Jordan.  Python is indeed a powerful and versatile programming language, and I understand the appeal of hiking as a relaxing weekend activity.  I'm here to assist you with any tasks or questions you may have.  Please let me know how I can help.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-26T16:18:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Jordan introduced himself, stating his interests in Python programming and weekend hiking.\",\n      \"tier2\": \"Jordan shared that his name is Jordan, he enjoys programming using Python, and he likes to go hiking on weekends.  This provides some background information about his interests.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-26T16:18:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, that's great! Python is a fantastic language, and hiking is a wonderful way to spend weekends.\",\n      \"tier2\": \"It's nice to meet you, Jordan.  I'm glad to hear you enjoy programming in Python and hiking. Those are both excellent hobbies.  Is there anything I can help you with today?\",\n      \"tier3\": \"It's a pleasure to meet you, Jordan.  Python is indeed a powerful and versatile programming language, and I understand the appeal of hiking as a relaxing weekend activity.  I'm here to assist you with any tasks or questions you may have.  Please let me know how I can help.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

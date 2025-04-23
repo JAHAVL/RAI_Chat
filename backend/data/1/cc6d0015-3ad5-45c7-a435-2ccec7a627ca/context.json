@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "e235fd90-200d-4261-9959-019bfdd32377",
+            "timestamp": "2025-04-21T17:26:20.895685",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "status": "success",
+                "text": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+            }
+        },
+        {
+            "turn_id": "a013dc74-40b0-4fe2-8766-9408ca573104",
+            "timestamp": "2025-04-21T17:26:20.902915",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                    },
+                    "response": "It's nice to meet you, Jordan!  Is there anything I can help you with today?\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

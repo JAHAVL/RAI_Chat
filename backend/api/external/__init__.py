@@ -1,0 +1,1 @@
+# RAI_Chat/backend/api/external/__init__.py\n\n"""\nExternal service APIs for RAI Chat\n\nThis package is reserved for future integrations with external services.\nIt follows the same pattern as the llm_engine package to provide a clean,\nconsistent interface for external service interactions.\n"""\n\n# Currently empty - reserved for future external integrations\n\n__all__ = []

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "17ed9839-8ab5-4421-9edb-968eb1ae59bc",
+            "timestamp": "2025-04-23T12:47:01.698758",
+            "user_input": "Search the internet for the latest AI developments",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T12:48:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user wants to know about recent advancements in the field of artificial intelligence.  This likely includes new research, technologies, or applications.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T12:48:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Sure, I can help with that. I'll need to search the internet for the most up-to-date information.\",\n      \"tier2\": \"I'm searching the web for recent news and publications on AI developments. This will include breakthroughs in various subfields, like machine learning, natural language processing, and computer vision.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "e15cb203-959c-4692-adc2-f62487c50d48",
+            "timestamp": "2025-04-23T12:47:01.705905",
+            "user_input": "Search the internet for the latest AI developments",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T12:48:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user wants to know about recent advancements in the field of artificial intelligence.  This likely includes new research, technologies, or applications.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T12:48:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Sure, I can help with that. I'll need to search the internet for the most up-to-date information.\",\n      \"tier2\": \"I'm searching the web for recent news and publications on AI developments. This will include breakthroughs in various subfields, like machine learning, natural language processing, and computer vision.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T12:48:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information on the latest AI developments.\",\n      \"tier2\": \"The user wants to know about recent advancements in the field of artificial intelligence.  This likely includes new research, technologies, or applications.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T12:48:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Sure, I can help with that. I'll need to search the internet for the most up-to-date information.\",\n      \"tier2\": \"I'm searching the web for recent news and publications on AI developments. This will include breakthroughs in various subfields, like machine learning, natural language processing, and computer vision.\",\n      \"tier3\": \"[SEARCH: latest AI developments]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

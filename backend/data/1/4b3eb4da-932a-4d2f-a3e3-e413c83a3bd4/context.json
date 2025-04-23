@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "128dc99d-91de-4660-a2bb-0da60654afb6",
+            "timestamp": "2025-04-21T19:24:51.586497",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+            }
+        },
+        {
+            "turn_id": "9fc3bd07-7623-4fb8-b412-6b2545d005af",
+            "timestamp": "2025-04-21T19:24:51.589382",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                    },
+                    "response": "I do not know your name.  I have no access to personal information about you unless you explicitly provide it to me.\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

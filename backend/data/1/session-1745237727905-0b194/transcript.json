@@ -1,0 +1,26 @@
+[
+    {
+        "turn_id": "c1a4c065-3ccc-4a33-942f-3b38c0ca4389",
+        "timestamp": "2025-04-21T08:15:29.834085",
+        "user_input": "What is my name?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-15T08:15:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is asking for their name.",
+                    "tier2": "The user's request is a simple query asking for their name, which is information that should be readily accessible within the system's memory."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-15T08:15:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Your name is Jordan.",
+                    "tier2": "I have access to your information and know that your name is Jordan.  Is there anything else I can help you with today?",
+                    "tier3": "Based on the information I have access to, your name is Jordan.  I'm here to assist you further if you have any other questions or tasks for me."
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "4be102b9-5649-46e9-93e4-093827d61238",
+            "timestamp": "2025-04-23T02:54:05.366674",
+            "user_input": "Tell me about RAI",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about RAI.\",\n      \"tier2\": \"The user is requesting information regarding RAI.  This could refer to many things, so further clarification might be needed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I need some more information to answer your question.  What kind of RAI are you interested in?\",\n      \"tier2\": \"RAI could refer to many things. To give you the best information, could you please clarify what you mean by RAI? For example, are you interested in the RAI (Radiological Assessment Instrument) used in radiation protection, or something else entirely?\",\n      \"tier3\": \"[SEARCH: RAI meaning]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "b85a50c3-eb5f-4f2d-aec3-ce4e14520276",
+            "timestamp": "2025-04-23T02:54:05.375640",
+            "user_input": "Tell me about RAI",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about RAI.\",\n      \"tier2\": \"The user is requesting information regarding RAI.  This could refer to many things, so further clarification might be needed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I need some more information to answer your question.  What kind of RAI are you interested in?\",\n      \"tier2\": \"RAI could refer to many things. To give you the best information, could you please clarify what you mean by RAI? For example, are you interested in the RAI (Radiological Assessment Instrument) used in radiation protection, or something else entirely?\",\n      \"tier3\": \"[SEARCH: RAI meaning]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about RAI.\",\n      \"tier2\": \"The user is requesting information regarding RAI.  This could refer to many things, so further clarification might be needed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I need some more information to answer your question.  What kind of RAI are you interested in?\",\n      \"tier2\": \"RAI could refer to many things. To give you the best information, could you please clarify what you mean by RAI? For example, are you interested in the RAI (Radiological Assessment Instrument) used in radiation protection, or something else entirely?\",\n      \"tier3\": \"[SEARCH: RAI meaning]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

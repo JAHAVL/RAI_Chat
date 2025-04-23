@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "35231b9f-f8c7-4c87-8d99-fbcb8d434842",
+            "timestamp": "2025-04-23T12:42:43.129426",
+            "user_input": "Hi, this is a test of the system messages",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T12:44:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the system.\",\n      \"tier2\": \"This is a test message to check if the system is working correctly and to see how it responds to basic input.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T12:44:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  The test message was received.\",\n      \"tier2\": \"It appears the system is functioning correctly.  I've received and processed your test message. Let me know if you have any other requests.\",\n      \"tier3\": \"The system successfully registered your test message.  This confirms basic functionality.  I'm ready for further instructions.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "c2e5648b-abad-48ab-b880-627af692ae95",
+            "timestamp": "2025-04-23T12:42:43.135401",
+            "user_input": "Hi, this is a test of the system messages",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T12:44:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the system.\",\n      \"tier2\": \"This is a test message to check if the system is working correctly and to see how it responds to basic input.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T12:44:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  The test message was received.\",\n      \"tier2\": \"It appears the system is functioning correctly.  I've received and processed your test message. Let me know if you have any other requests.\",\n      \"tier3\": \"The system successfully registered your test message.  This confirms basic functionality.  I'm ready for further instructions.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-08T12:44:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is testing the system.\",\n      \"tier2\": \"This is a test message to check if the system is working correctly and to see how it responds to basic input.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-08T12:44:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  The test message was received.\",\n      \"tier2\": \"It appears the system is functioning correctly.  I've received and processed your test message. Let me know if you have any other requests.\",\n      \"tier3\": \"The system successfully registered your test message.  This confirms basic functionality.  I'm ready for further instructions.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

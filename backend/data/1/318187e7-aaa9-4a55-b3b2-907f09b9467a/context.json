@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "76d7680d-3d16-4b5c-9621-d6f753d8ad70",
+            "timestamp": "2025-04-21T21:52:34.948245",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's prompt is a simple question requesting that I recall and state their name, which was previously provided in the instructions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  I'm keeping track of that information for you.\",\n      \"tier3\": \"Based on the information you provided earlier, your name is Jordan. I'm designed to remember details like this to help make our conversations smoother and more efficient.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "4141866a-b656-41b4-9565-33b246f1ba0b",
+            "timestamp": "2025-04-21T21:52:34.950548",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's prompt is a simple question requesting that I recall and state their name, which was previously provided in the instructions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  I'm keeping track of that information for you.\",\n      \"tier3\": \"Based on the information you provided earlier, your name is Jordan. I'm designed to remember details like this to help make our conversations smoother and more efficient.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's prompt is a simple question requesting that I recall and state their name, which was previously provided in the instructions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-07-27T21:52:00Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember that your name is Jordan.  I'm keeping track of that information for you.\",\n      \"tier3\": \"Based on the information you provided earlier, your name is Jordan. I'm designed to remember details like this to help make our conversations smoother and more efficient.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

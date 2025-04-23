@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "0ff907d4-90b6-493b-b58f-a37750a775bf",
+            "timestamp": "2025-04-21T08:15:07.476588",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-22T08:15:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-22T08:15:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello!  How can I help you today?",
+                        "tier3": "Hi! It's nice to meet you.  I'm ready to assist you with whatever you need.  Please let me know how I can be of service."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "e790f227-5f4a-4377-aa01-b87bea45321f",
+            "timestamp": "2025-04-21T08:15:17.412559",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T08:16:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for their name.",
+                        "tier2": "The user's prompt is a simple request to retrieve their name from the conversational memory.  This requires accessing and returning the name previously provided by the user, if any."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T08:16:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I don't have your name yet.",
+                        "tier2": "I'm still getting to know you! I haven't been told your name yet.  Please tell me your name so I can address you properly.",
+                        "tier3": "As of this moment, I haven't been provided with your name.  To personalize our conversation, please let me know what you'd like me to call you."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "3b49b393-7293-495d-b5b1-842c8623d9c5",
+            "timestamp": "2025-04-21T08:15:22.560148",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-15T08:16:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is stating their name is Jordan.",
+                        "tier2": "The user is providing their name, Jordan, so the assistant can address them properly and personalize the conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-15T08:16:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "It's nice to meet you, Jordan!",
+                        "tier2": "I'm glad to finally know your name.  How can I help you today, Jordan?",
+                        "tier3": "I've updated my records to reflect your name as Jordan.  I'm looking forward to assisting you further. Please let me know what you need."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I'm glad to finally know your name.  How can I help you today, Jordan?"
+}

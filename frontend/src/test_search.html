@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAI Chat Web Search Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            min-height: 200px;
+        }
+        .status {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .loading {
+            text-align: center;
+            color: #31708f;
+        }
+    </style>
+</head>
+<body>
+    <h1>RAI Chat Web Search Test</h1>
+    <p>This tool tests the web search functionality for the RAI Chat application.</p>
+    
+    <div class="form-group">
+        <label for="query">Search Query:</label>
+        <input type="text" id="query" name="query" placeholder="Enter your search query" value="Who is Dan Martell?">
+    </div>
+    
+    <button id="searchBtn">Perform Search</button>
+    
+    <div id="status"></div>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('searchBtn');
+            const queryInput = document.getElementById('query');
+            const resultDiv = document.getElementById('result');
+            const statusDiv = document.getElementById('status');
+            
+            searchBtn.addEventListener('click', async function() {
+                const query = queryInput.value.trim();
+                
+                if (!query) {
+                    setStatus('Please enter a search query', 'error');
+                    return;
+                }
+                
+                try {
+                    // Clear previous results
+                    resultDiv.textContent = '';
+                    setStatus('Searching...', 'loading');
+                    
+                    // First make a request to get the search status
+                    const searchResponse = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImRldl91c2VyIiwiZXhwIjoxNzQ1MjAzNjI5fQ==.bW9ja19zaWduYXR1cmU='
+                        },
+                        body: JSON.stringify({
+                            message: query,
+                            session_id: 'test-session-' + Date.now()
+                        })
+                    });
+                    
+                    if (!searchResponse.ok) {
+                        throw new Error(`API error: ${searchResponse.status} ${searchResponse.statusText}`);
+                    }
+                    
+                    const searchData = await searchResponse.json();
+                    console.log('Search response:', searchData);
+                    
+                    if (searchData.status === 'searching') {
+                        setStatus('Search initiated successfully. Now performing the direct Tavily search...', 'success');
+                        
+                        // If the search was initiated, now make a direct test request to the Tavily API
+                        // via our test endpoint to complete the search
+                        const directSearchResponse = await fetch('/api/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImRldl91c2VyIiwiZXhwIjoxNzQ1MjAzNjI5fQ==.bW9ja19zaWduYXR1cmU='
+                            },
+                            body: JSON.stringify({
+                                message: query,
+                                session_id: 'test-direct-' + Date.now()
+                            })
+                        });
+                        
+                        if (!directSearchResponse.ok) {
+                            throw new Error(`API error: ${directSearchResponse.status} ${directSearchResponse.statusText}`);
+                        }
+                        
+                        const directData = await directSearchResponse.json();
+                        console.log('Direct search response:', directData);
+                        
+                        const response = directData.response || directData.llm_response?.response_tiers?.tier3 || JSON.stringify(directData, null, 2);
+                        resultDiv.textContent = response;
+                        setStatus('Search completed successfully!', 'success');
+                    } else if (searchData.llm_response && searchData.llm_response.response_tiers) {
+                        // If we got a direct response with search results
+                        resultDiv.textContent = searchData.llm_response.response_tiers.tier3;
+                        setStatus('Search completed successfully on the first try!', 'success');
+                    } else {
+                        // Fallback for other responses
+                        resultDiv.textContent = JSON.stringify(searchData, null, 2);
+                        setStatus('Received response, but not in expected format', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    setStatus(`Error: ${error.message}`, 'error');
+                    resultDiv.textContent = `Failed to perform search: ${error.message}`;
+                }
+            });
+            
+            function setStatus(message, type) {
+                statusDiv.textContent = message;
+                statusDiv.className = 'status ' + type;
+            }
+        });
+    </script>
+</body>
+</html>

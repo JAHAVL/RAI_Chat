@@ -1,0 +1,74 @@
+[
+    {
+        "turn_id": "6842f1ba-3012-4a8a-907e-bdcdf9d15433",
+        "timestamp": "2025-04-21T07:50:49.953509",
+        "user_input": "Hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-24T07:50:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user greeted me with 'Hi'.",
+                    "tier2": "The user's message is a simple greeting, requiring a friendly acknowledgement."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-24T07:50:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hi there!",
+                    "tier2": "It's nice to hear from you! How can I help you this morning?",
+                    "tier3": "Hello!  I'm ready to assist you.  Please let me know what you need."
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "36bdf564-8d94-466f-b3da-6565d5289279",
+        "timestamp": "2025-04-21T07:51:06.960032",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-07-26T07:51:32Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martell is.",
+                    "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his career."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-07-26T07:51:36Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "I don't have access to a current, comprehensive biography of Dan Martell. I can search the web for you to find the information you are looking for.",
+                    "tier2": "To provide you with the most accurate and up-to-date information about Dan Martell, I'll need to perform a web search.  This will give me access to a wider range of sources than my current knowledge base.",
+                    "tier3": "[SEARCH: Dan Martell biography]"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "925c1f5e-1ee7-4a99-a753-44f8ccdb5d7a",
+        "timestamp": "2025-04-21T07:51:12.313673",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-07-26T07:53:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is asking for information about Dan Martell.",
+                    "tier2": "The user wants to know who Dan Martell is, likely requesting biographical information or details about his career and accomplishments."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-07-26T07:53:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Dan Martell is a Canadian entrepreneur, investor, and author known for his work in SaaS and time management.",
+                    "tier2": "He's founded several successful companies and is recognized for his expertise in building and scaling software-as-a-service businesses.  He's also a popular speaker and author, notably known for his book \"Buy Back Your Time.\"",
+                    "tier3": "Dan Martell is a Canadian entrepreneur, investor, and author. He's best known for his expertise in software-as-a-service (SaaS) businesses and his focus on efficient time management. He's founded multiple successful companies, including Spheric Technologies and Clarity.fm.  He's also a popular speaker and the author of the book \"Buy Back Your Time.\"  His net worth is estimated to be in the tens of millions of dollars.  He's often cited as a successful example of perseverance and building a business from the ground up."
+                }
+            }
+        }
+    }
+]

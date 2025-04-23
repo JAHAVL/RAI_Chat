@@ -1,0 +1,53 @@
+{
+    "messages": [
+        {
+            "turn_id": "e1e47fcd-dadf-44b0-8cb3-98b053cc7335",
+            "timestamp": "2025-04-08T08:21:52.965015",
+            "user_input": "My name is Jordan",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T08:21:32Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is stating their name is Jordan.",
+                        "tier2": "The user's prompt is a simple statement providing their name, Jordan.  There is no question or request for action."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T08:21:37Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi Jordan, it's nice to meet you!",
+                        "tier2": "It's a pleasure to meet you, Jordan.  How can I help you today?",
+                        "tier3": "Hello Jordan!  I'm ready to assist you.  Please let me know how I can be of service."
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "ffbebdf8-ecfe-46a7-8d12-d2fc077112a9",
+            "timestamp": "2025-04-08T08:21:58.182461",
+            "user_input": "What is my name?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-08T08:22:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for their name.",
+                        "tier2": "The user's request is a simple query to retrieve their name, which was previously provided in the conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-08T08:22:01Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Your name is Jordan.",
+                        "tier2": "I remember that your name is Jordan.  Is there anything else I can help you with today?",
+                        "tier3": "Based on our previous interaction, your name is Jordan. I have stored this information and can access it for future reference during our conversation."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "I remember that your name is Jordan.  Is there anything else I can help you with today?"
+}

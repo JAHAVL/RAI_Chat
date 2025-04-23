@@ -1,0 +1,22 @@
+[
+    {
+        "turn_id": "106e3484-9433-4c75-a456-7a621eb2acb6",
+        "timestamp": "2025-04-08T11:56:38.821138",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "prompt_tiers": {
+                    "tier1": "Analysis N/A",
+                    "tier2": "Analysis N/A"
+                }
+            },
+            "llm_response": {
+                "response_tiers": {
+                    "tier1": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x113ed65a0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+                    "tier2": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x113ed65a0>: Failed to establish a new connection: [Errno 61] Connection refused'))",
+                    "tier3": "Error generating response: HTTPConnectionPool(host='localhost', port=6301): Max retries exceeded with url: /api/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x113ed65a0>: Failed to establish a new connection: [Errno 61] Connection refused'))"
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "0813de93-4c14-4756-ba78-feef26252246",
+            "timestamp": "2025-04-23T02:59:46.018643",
+            "user_input": "What is RAI?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:59:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a precise definition requires further context.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:59:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things;  I need more information to give you a precise answer.\",\n      \"tier2\": \"The acronym 'RAI' is ambiguous and has multiple meanings depending on the context. To help me understand what you're looking for, could you provide more information or context about where you encountered this acronym?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "6b4f5471-fcc8-47b3-b130-300669f8beab",
+            "timestamp": "2025-04-23T02:59:46.024564",
+            "user_input": "What is RAI?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:59:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a precise definition requires further context.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:59:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things;  I need more information to give you a precise answer.\",\n      \"tier2\": \"The acronym 'RAI' is ambiguous and has multiple meanings depending on the context. To help me understand what you're looking for, could you provide more information or context about where you encountered this acronym?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T02:59:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for the meaning of the acronym 'RAI'.\",\n      \"tier2\": \"The user wants a definition or explanation of what 'RAI' stands for.  This could refer to many things, so a precise definition requires further context.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T02:59:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"RAI could mean many things;  I need more information to give you a precise answer.\",\n      \"tier2\": \"The acronym 'RAI' is ambiguous and has multiple meanings depending on the context. To help me understand what you're looking for, could you provide more information or context about where you encountered this acronym?\",\n      \"tier3\": \"[SEARCH: meaning of the acronym RAI]\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

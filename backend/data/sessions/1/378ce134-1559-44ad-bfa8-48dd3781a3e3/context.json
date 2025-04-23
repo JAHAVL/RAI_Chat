@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "9e9defc7-66a5-4f28-9df5-58286d85305d",
+            "timestamp": "2025-04-23T10:32:59.725095",
+            "user_input": "Hello, this is a new test message",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message.\",\n      \"tier2\": \"This is a simple test message to check functionality.  No specific action or information is requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  How can I help you today?\",\n      \"tier2\": \"Thanks for the test message. It appears to be working correctly. Is there anything specific you would like me to do or any questions you have?\",\n      \"tier3\": \"The test message was received and processed successfully.  I'm ready for further instructions or questions.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "3d6ec877-6407-48bd-90d3-75d454e41923",
+            "timestamp": "2025-04-23T10:32:59.727152",
+            "user_input": "Hello, this is a new test message",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message.\",\n      \"tier2\": \"This is a simple test message to check functionality.  No specific action or information is requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  How can I help you today?\",\n      \"tier2\": \"Thanks for the test message. It appears to be working correctly. Is there anything specific you would like me to do or any questions you have?\",\n      \"tier3\": \"The test message was received and processed successfully.  I'm ready for further instructions or questions.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-08-23T10:35:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message.\",\n      \"tier2\": \"This is a simple test message to check functionality.  No specific action or information is requested.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-08-23T10:35:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello!  How can I help you today?\",\n      \"tier2\": \"Thanks for the test message. It appears to be working correctly. Is there anything specific you would like me to do or any questions you have?\",\n      \"tier3\": \"The test message was received and processed successfully.  I'm ready for further instructions or questions.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

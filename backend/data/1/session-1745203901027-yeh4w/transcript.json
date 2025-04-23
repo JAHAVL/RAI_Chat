@@ -1,0 +1,50 @@
+[
+    {
+        "turn_id": "57452369-6083-423b-93a3-1ac9f0652e57",
+        "timestamp": "2025-04-20T22:51:42.763873",
+        "user_input": "hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-02T22:51:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is greeting me.",
+                    "tier2": "The user has initiated a conversation with a simple greeting.  There is no specific request or question."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-02T22:51:00Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hi there!",
+                    "tier2": "Hello!  It's late, but I'm here if you need anything.",
+                    "tier3": "Hi! How can I help you tonight?"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "8f6be068-5b40-4261-b475-de63edabca0a",
+        "timestamp": "2025-04-20T22:52:03.507490",
+        "user_input": "I am trying to figure out how to get web search working.",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-04T22:52:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is seeking assistance with implementing web search functionality.",
+                    "tier2": "The user needs help to understand and implement a web search feature, likely within a larger application or system. They are asking for guidance on how to make this work."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-04T22:52:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "To help you with web search functionality, I need more context.  What system or application are you working with?",
+                    "tier2": "Implementing web search depends heavily on the context. Are you building a website, a mobile app, or something else?  Knowing your environment (programming language, frameworks, etc.) will help me guide you effectively.  Also, what kind of search are we talking about?  A simple Google search integration, or a more complex, custom search engine?",
+                    "tier3": "To assist you effectively, I need more details about your project. Please provide information on the following:\n\n1. **Environment:** What programming language(s) are you using? What frameworks or libraries are you working with?\n2. **Application Type:** Are you building a website, a mobile app (iOS, Android, etc.), a desktop application, or something else?\n3. **Search Type:** Do you need a simple integration with an existing search engine (like Google Custom Search), or are you building a custom search engine from scratch?\n4. **Data Source:** Where will the search index come from?  A database, an API, or something else?\n\nOnce I have this information, I can provide much more specific and helpful guidance.  For example, if you're building a website and want to use Google Custom Search, I can walk you through the steps to integrate it.  If you are building a custom search engine, I can offer advice on indexing, searching algorithms, and other relevant aspects."
+                }
+            }
+        }
+    }
+]

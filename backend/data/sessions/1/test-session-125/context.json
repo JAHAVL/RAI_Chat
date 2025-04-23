@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "8b1ee235-c738-4473-b40d-a9cf49547d6b",
+            "timestamp": "2025-04-23T14:29:26.726096",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:32:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:32:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything! It's a play on words, highlighting the dual meaning of \\\"make up.\\\" \",\n      \"tier3\": \"Here's a short joke for you:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\\n\\nThis is a simple pun, playing on the double meaning of \\\"make up.\\\"  It implies that atoms are the fundamental building blocks of matter, but also that they are prone to fabrication or deception.  The humor lies in the unexpected twist on a common phrase.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "05d857e7-98e3-44a1-bf9a-f1079806b35f",
+            "timestamp": "2025-04-23T14:29:26.751191",
+            "user_input": "Tell me a short joke",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:32:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:32:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything! It's a play on words, highlighting the dual meaning of \\\"make up.\\\" \",\n      \"tier3\": \"Here's a short joke for you:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\\n\\nThis is a simple pun, playing on the double meaning of \\\"make up.\\\"  It implies that atoms are the fundamental building blocks of matter, but also that they are prone to fabrication or deception.  The humor lies in the unexpected twist on a common phrase.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T14:32:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests a short joke.\",\n      \"tier2\": \"The user's prompt is a simple request for a short joke.  No specific type or topic is mentioned.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T14:32:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Why don't scientists trust atoms? Because they make up everything!\",\n      \"tier2\": \"Here's a short joke for you: Why don't scientists trust atoms? Because they make up everything! It's a play on words, highlighting the dual meaning of \\\"make up.\\\" \",\n      \"tier3\": \"Here's a short joke for you:\\n\\nWhy don't scientists trust atoms?\\n\\nBecause they make up everything!\\n\\nThis is a simple pun, playing on the double meaning of \\\"make up.\\\"  It implies that atoms are the fundamental building blocks of matter, but also that they are prone to fabrication or deception.  The humor lies in the unexpected twist on a common phrase.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

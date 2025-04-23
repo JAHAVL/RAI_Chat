@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "f4217eac-8e2f-46ad-8e2b-91a1555f9b1b",
+            "timestamp": "2025-04-23T03:19:26.546623",
+            "user_input": "This is a test message to create a new session",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:21:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message to initiate a new session.\",\n      \"tier2\": \"This message serves as a test to establish a new conversation session.  No specific information or requests are included.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:21:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, new session started!\",\n      \"tier2\": \"I've received your test message and a new session has been successfully initiated.  I'm ready for your next request.\",\n      \"tier3\": \"The test message was successfully received, and a new conversational session has been established. I am now ready to assist you with any questions or tasks you may have.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "30bb6c79-ca86-4390-98b5-090fbcb36e5b",
+            "timestamp": "2025-04-23T03:19:26.549065",
+            "user_input": "This is a test message to create a new session",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:21:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message to initiate a new session.\",\n      \"tier2\": \"This message serves as a test to establish a new conversation session.  No specific information or requests are included.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:21:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, new session started!\",\n      \"tier2\": \"I've received your test message and a new session has been successfully initiated.  I'm ready for your next request.\",\n      \"tier3\": \"The test message was successfully received, and a new conversational session has been established. I am now ready to assist you with any questions or tasks you may have.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:21:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is sending a test message to initiate a new session.\",\n      \"tier2\": \"This message serves as a test to establish a new conversation session.  No specific information or requests are included.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:21:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, new session started!\",\n      \"tier2\": \"I've received your test message and a new session has been successfully initiated.  I'm ready for your next request.\",\n      \"tier3\": \"The test message was successfully received, and a new conversational session has been established. I am now ready to assist you with any questions or tasks you may have.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

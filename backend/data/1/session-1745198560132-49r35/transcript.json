@@ -1,0 +1,74 @@
+[
+    {
+        "turn_id": "a62e6f44-52a8-4a2a-8459-12dfbd917c62",
+        "timestamp": "2025-04-20T21:22:42.607917",
+        "user_input": "Hi",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-08-02T21:22:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user is initiating a conversation with a greeting.",
+                    "tier2": "The user has sent a simple 'Hi' as a greeting, indicating they would like to start a conversation."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-08-02T21:22:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Hello! How can I help you tonight?",
+                    "tier2": "Hi there! It's late, but I'm here if you need anything.  Let me know what's on your mind.",
+                    "tier3": "Hello!  It's 9:22 PM where I am.  How can I assist you this evening?"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "78bf6c04-d5ff-4895-906f-4698c8f5af0a",
+        "timestamp": "2025-04-20T21:22:51.440868",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-10-27T21:23:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martell is.",
+                    "tier2": "The user is asking for information about Dan Martell, likely seeking biographical details or information about his work."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-10-27T21:23:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "I'll need to do a quick web search to get you the most up-to-date information on Dan Martell.",
+                    "tier2": "To answer your question accurately, I'll perform a web search for relevant information about Dan Martell.  This will give you the most current details about his background and accomplishments.",
+                    "tier3": "[SEARCH: Dan Martell biography]"
+                }
+            }
+        }
+    },
+    {
+        "turn_id": "251df4d9-771b-41a1-b53b-1d6c8c75602f",
+        "timestamp": "2025-04-20T21:22:57.178666",
+        "user_input": "Who is Dan Martell?",
+        "llm_output": {
+            "user_message_analysis": {
+                "timestamp": "2024-10-27T21:24:00Z",
+                "speaker": "User",
+                "prompt_tiers": {
+                    "tier1": "The user wants to know who Dan Martell is.",
+                    "tier2": "The user is requesting information about Dan Martell, likely seeking biographical details, career information, or other relevant facts."
+                }
+            },
+            "llm_response": {
+                "timestamp": "2024-10-27T21:24:05Z",
+                "speaker": "LLM",
+                "response_tiers": {
+                    "tier1": "Dan Martell is a Canadian entrepreneur, investor, and author known for his work in SaaS and time management.",
+                    "tier2": "He's founded several successful companies, written the book \"Buy Back Your Time,\" and is a prominent figure in the entrepreneurial world.  His background includes overcoming challenges to achieve significant success.",
+                    "tier3": "Dan Martell is a Canadian entrepreneur, investor, and author. He's known for his expertise in software-as-a-service (SaaS) and for his focus on efficient time management.  He's founded multiple successful companies, including Spheric Technologies and Clarity.fm.  His book, \"Buy Back Your Time,\" is widely regarded as a valuable resource for entrepreneurs.  Martell's story is one of overcoming challenges; he's openly shared his past struggles and how he turned his life around to achieve significant success. His estimated net worth is substantial, reflecting his entrepreneurial achievements."
+                }
+            }
+        }
+    }
+]

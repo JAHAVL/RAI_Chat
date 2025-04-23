@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "turn_id": "4a30126d-529d-440f-9fb1-77976781710a",
+            "timestamp": "2025-04-14T02:35:45.835902",
+            "user_input": "test",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T02:35:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user sent a test message.",
+                        "tier2": "The user's message 'test' appears to be a simple test to check functionality.  No specific request or question was provided."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T02:35:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hello!  It looks like your test worked.",
+                        "tier2": "Your test message was received and processed successfully. I'm ready for your instructions or questions.  Let me know how I can help!",
+                        "tier3": "The test message was received and processed successfully.  All systems are operational.  I am ready to assist you with any tasks or questions you may have.  Please let me know how I can help."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Your test message was received and processed successfully. I'm ready for your instructions or questions.  Let me know how I can help!"
+}

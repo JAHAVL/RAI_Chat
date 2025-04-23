@@ -1,0 +1,77 @@
+{
+    "messages": [
+        {
+            "turn_id": "cd457878-503d-4481-8550-d895824d6f0e",
+            "timestamp": "2025-04-20T22:46:43.100875",
+            "user_input": "hi",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-08-02T22:46:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user greeted me with 'hi'.",
+                        "tier2": "The user's message is a simple greeting, indicating the start of a conversation."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-08-02T22:46:00Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Hi there!",
+                        "tier2": "Hello!  How can I help you tonight?",
+                        "tier3": "Hi! It's late, but I'm here and ready to assist you.  What's on your mind?"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "c9db18d6-3819-40f1-90e7-ba967459d9c1",
+            "timestamp": "2025-04-20T22:46:48.679699",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-10-27T22:46:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user is asking for information about Dan Martell.",
+                        "tier2": "The user wants to know who Dan Martell is, likely seeking biographical information or details about his career."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-10-27T22:46:05Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "I don't have access to a current, comprehensive database of biographical information. To answer your question accurately, I'll need to perform a web search.",
+                        "tier2": "I'll search online for information about Dan Martell to provide you with a concise biography and details about his notable achievements and career.  Please wait just a moment.",
+                        "tier3": "[SEARCH: Dan Martell biography]"
+                    }
+                }
+            }
+        },
+        {
+            "turn_id": "be60d2e9-432b-46c1-80f0-2eaa53da7e2f",
+            "timestamp": "2025-04-20T22:46:52.900472",
+            "user_input": "Who is Dan Martell?",
+            "llm_output": {
+                "user_message_analysis": {
+                    "timestamp": "2024-07-27T22:46:00Z",
+                    "speaker": "User",
+                    "prompt_tiers": {
+                        "tier1": "The user wants to know who Dan Martell is.",
+                        "tier2": "The user is requesting information about Dan Martell, seeking details about his life, career, and accomplishments."
+                    }
+                },
+                "llm_response": {
+                    "timestamp": "2024-07-27T22:46:30Z",
+                    "speaker": "LLM",
+                    "response_tiers": {
+                        "tier1": "Dan Martell is a Canadian entrepreneur, author, and investor.",
+                        "tier2": "Dan Martell is a successful Canadian entrepreneur, author, and investor known for founding SaaS Academy and Martell Ventures. He's also written the book \"Buy Back Your Time.\"  He's amassed a considerable net worth through his various ventures.",
+                        "tier3": "Dan Martell is a Canadian entrepreneur, author, and investor with a reported net worth of $80 million. He's known for his successful career building and investing in technology companies.  He founded SaaS Academy, an online educational platform for SaaS entrepreneurs, and Martell Ventures, a venture capital firm.  He's also the author of the popular book, \"Buy Back Your Time,\" which focuses on productivity and time management.  His story often includes overcoming challenges early in life to achieve his significant success."
+                    }
+                }
+            }
+        }
+    ],
+    "current_context_summary": "Dan Martell is a successful Canadian entrepreneur, author, and investor known for founding SaaS Academy and Martell Ventures. He's also written the book \"Buy Back Your Time.\"  He's amassed a considerable net worth through his various ventures."
+}

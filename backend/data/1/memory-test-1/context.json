@@ -1,0 +1,49 @@
+{
+    "messages": [
+        {
+            "turn_id": "537c9f07-e6c3-44b8-8753-de925ba398c6",
+            "timestamp": "2025-04-21T16:20:11.852451",
+            "user_input": "My dog is named Buddy.",
+            "llm_output": {
+                "status": "success",
+                "text": "That's a nice name for a dog!  Is Buddy a good boy?\n"
+            }
+        },
+        {
+            "turn_id": "267ff475-6b95-42e5-92c0-215ba6ad6fc4",
+            "timestamp": "2025-04-21T16:20:11.855920",
+            "user_input": "My dog is named Buddy.",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "That's a nice name for a dog!  Is Buddy a good boy?\n"
+                    },
+                    "response": "That's a nice name for a dog!  Is Buddy a good boy?\n"
+                }
+            }
+        },
+        {
+            "turn_id": "741d8f28-90de-4acd-81b7-8ffd704d6625",
+            "timestamp": "2025-04-21T16:20:19.500774",
+            "user_input": "What is my dog called?",
+            "llm_output": {
+                "status": "success",
+                "text": "I do not have access to personal information about you, including the name of your dog.\n"
+            }
+        },
+        {
+            "turn_id": "e816927b-f2fc-43b1-94bf-870929d7cac8",
+            "timestamp": "2025-04-21T16:20:19.503440",
+            "user_input": "What is my dog called?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "I do not have access to personal information about you, including the name of your dog.\n"
+                    },
+                    "response": "I do not have access to personal information about you, including the name of your dog.\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

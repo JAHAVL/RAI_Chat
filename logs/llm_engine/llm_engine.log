@@ -1,0 +1,27 @@
+INFO:__main__:Starting to load engine classes...
+INFO:__main__:Importing mock_engine module
+INFO:__main__:Importing model_discovery module
+INFO:__main__:Importing gemini_engine module
+INFO:__main__:Successfully imported Gemini engine module
+INFO:__main__:Importing ollama_engine module
+INFO:__main__:Successfully imported Ollama engine module
+INFO:__main__:Engine classes loaded successfully: ['mock', 'gemini', 'ollama']
+INFO:__main__:Instantiating configured LLM engines...
+INFO:__main__:Attempting to instantiate default engine: type=gemini, model=gemini-1.5-flash-latest
+INFO:__main__:Loaded .env from LLM Engine directory: /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/llm_Engine/.env
+INFO:__main__:Loaded .env from project root: /Users/jordanhardison/Documents/Code Projects/RAI/BACKUPS/RAI_Chat_V1.3.1_20250408_1319PM/.env
+INFO:llm_Engine.engines.gemini_engine:GeminiEngine: API Key found: Yes
+INFO:llm_Engine.engines.gemini_engine:GeminiEngine: API Key found. Configuring genai...
+INFO:llm_Engine.engines.gemini_engine:GeminiEngine: genai configured. Verifying server connection...
+INFO:llm_Engine.engines.gemini_engine:Attempting to verify Gemini API connection by listing models...
+INFO:llm_Engine.engines.gemini_engine:Successfully connected to Gemini API. Available models: ['models/chat-bison-001', 'models/text-bison-001', 'models/embedding-gecko-001', 'models/gemini-1.0-pro-vision-latest', 'models/gemini-pro-vision', 'models/gemini-1.5-pro-latest', 'models/gemini-1.5-pro-001', 'models/gemini-1.5-pro-002', 'models/gemini-1.5-pro', 'models/gemini-1.5-flash-latest', 'models/gemini-1.5-flash-001', 'models/gemini-1.5-flash-001-tuning', 'models/gemini-1.5-flash', 'models/gemini-1.5-flash-002', 'models/gemini-1.5-flash-8b', 'models/gemini-1.5-flash-8b-001', 'models/gemini-1.5-flash-8b-latest', 'models/gemini-1.5-flash-8b-exp-0827', 'models/gemini-1.5-flash-8b-exp-0924', 'models/gemini-2.5-pro-exp-03-25', 'models/gemini-2.5-pro-preview-03-25', 'models/gemini-2.5-flash-preview-04-17', 'models/gemini-2.0-flash-exp', 'models/gemini-2.0-flash', 'models/gemini-2.0-flash-001', 'models/gemini-2.0-flash-exp-image-generation', 'models/gemini-2.0-flash-lite-001', 'models/gemini-2.0-flash-lite', 'models/gemini-2.0-flash-lite-preview-02-05', 'models/gemini-2.0-flash-lite-preview', 'models/gemini-2.0-pro-exp', 'models/gemini-2.0-pro-exp-02-05', 'models/gemini-exp-1206', 'models/gemini-2.0-flash-thinking-exp-01-21', 'models/gemini-2.0-flash-thinking-exp', 'models/gemini-2.0-flash-thinking-exp-1219', 'models/learnlm-1.5-pro-experimental', 'models/learnlm-2.0-flash-experimental', 'models/gemma-3-1b-it', 'models/gemma-3-4b-it', 'models/gemma-3-12b-it', 'models/gemma-3-27b-it', 'models/embedding-001', 'models/text-embedding-004', 'models/gemini-embedding-exp-03-07', 'models/gemini-embedding-exp', 'models/aqa', 'models/imagen-3.0-generate-002', 'models/veo-2.0-generate-001', 'models/gemini-2.0-flash-live-001']
+INFO:llm_Engine.engines.gemini_engine:GeminiEngine: Server verification result: True
+INFO:llm_Engine.engines.gemini_engine:Initializing Gemini engine with model: gemini-1.5-flash-latest
+INFO:llm_Engine.engines.mock_engine:Initializing Mock engine with model: gemini-1.5-flash-latest
+INFO:__main__:Successfully instantiated and stored default engine 'gemini_default': <llm_Engine.engines.gemini_engine.GeminiEngine object at 0x103863ef0>
+INFO:__main__:Pre-instantiating Mock engine...
+INFO:llm_Engine.engines.mock_engine:Initializing Mock engine with model: mock_default
+INFO:__main__:Successfully pre-instantiated Mock engine: <llm_Engine.engines.mock_engine.MockEngine object at 0x119c48d40>
+INFO:__main__:Engine instantiation complete. Loaded engines: ['gemini_default', 'mock_default']
+INFO:__main__:Starting LLM API server on port 6101
+INFO:waitress:Serving on http://0.0.0.0:6101
