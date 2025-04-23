@@ -109,6 +109,13 @@ def register_blueprints(app):
         app.register_blueprint(api.endpoints.system_messages.system_messages_bp, url_prefix='/api/system-messages')
         app.logger.info("System Messages blueprint registered successfully")
         
+        # Import our test search blueprint
+        from api.endpoints.test_search import test_search_bp
+        
+        # Register the test search blueprint
+        app.register_blueprint(test_search_bp)
+        app.logger.info("Test Search blueprint registered successfully")
+        
         # Add a basic health check endpoint
         @app.route('/api/health', methods=['GET'])
         def health_check():

@@ -44,3 +44,19 @@ class Session(Base):
     
     def __repr__(self):
         return f"<Session(session_id='{self.session_id}', user_id={self.user_id})>"
+
+class SystemMessage(Base):
+    """SQLAlchemy model for system messages (notifications, status updates, etc.)"""
+    __tablename__ = 'system_messages'
+    
+    id = Column(String(100), primary_key=True, default=lambda: f"sys_{str(uuid.uuid4())}")
+    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+    session_id = Column(String(36), ForeignKey('sessions.session_id'), nullable=False, index=True)
+    message_type = Column(String(50), nullable=False, index=True)  # e.g., 'status_update', 'web_search', etc.
+    content = Column(JSON, nullable=False)  # Stores the JSON content of the system message
+    
+    # Define relationships if needed
+    session = relationship("Session")
+    
+    def __repr__(self):
+        return f"<SystemMessage(id='{self.id}', type='{self.message_type}', session_id='{self.session_id}')>"

@@ -282,6 +282,52 @@ class ConversationManager:
             'timestamp': datetime.utcnow().isoformat()
         }
         
+        # ENHANCEMENT: Check for direct web search request in user input
+        if '[SEARCH:' in user_input:
+            import re
+            direct_search_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", user_input)
+            if direct_search_match:
+                query = direct_search_match.group(1).strip()
+                self.logger.info(f"Direct web search requested for: {query}")
+                
+                # Create a system message indicating search is happening
+                yield {
+                    'type': 'system',
+                    'action': 'web_search',
+                    'status': 'active',
+                    'content': f"Searching the web for: {query}",
+                    'timestamp': datetime.now().isoformat(),
+                    'session_id': self.current_session_id
+                }
+                
+                # Attempt to perform the search
+                try:
+                    from components.action_handler import perform_search
+                    search_results = perform_search(query=query)
+                    
+                    # Send the results directly
+                    yield {
+                        'type': 'system',
+                        'action': 'web_search',
+                        'status': 'complete',
+                        'content': search_results,
+                        'timestamp': datetime.now().isoformat(),
+                        'session_id': self.current_session_id
+                    }
+                    
+                    # Continue with normal processing
+                    self.logger.info("Web search completed, continuing with LLM processing")
+                except Exception as e:
+                    self.logger.error(f"Error performing direct web search: {e}")
+                    yield {
+                        'type': 'system',
+                        'action': 'web_search',
+                        'status': 'error',
+                        'content': f"Error performing web search: {str(e)}",
+                        'timestamp': datetime.now().isoformat(),
+                        'session_id': self.current_session_id
+                    }
+        
         # Build the system prompt
         system_prompt = self.prompt_builder.construct_prompt(
             session_id=self.current_session_id,
@@ -331,11 +377,9 @@ class ConversationManager:
             # Format the response in the structure expected by ActionHandler
             formatted_response = {
                 'llm_response': {
-                    'response_tiers': {
-                        'tier3': response_text  # ActionHandler uses tier3 for content processing
-                    },
-                    'response': response_text  # Keep the original response too
-                }
+                    'content': response_text,  # Add content directly
+                },
+                'tier3_response': response_text  # Add tier3_response at the top level as expected by ActionHandler
             }
             
             # Store the assistant response in contextual memory with session_id
@@ -363,7 +407,7 @@ class ConversationManager:
                 self.logger.error(f"Error processing action handler response: {e}", exc_info=True)
                 # On error, extract the tier3 content directly from the LLM response and use it
                 try:
-                    tier3_response = formatted_response.get('llm_response', {}).get('response_tiers', {}).get('tier3', '')
+                    tier3_response = formatted_response.get('tier3_response', '')
                     if tier3_response:
                         self.logger.info(f"Using tier3 response directly due to action handler error")
                         action_signal = 'break'
@@ -371,7 +415,7 @@ class ConversationManager:
                         action_type = 'answer'
                     else:
                         # Fallback to the original LLM response
-                        original_response = formatted_response.get('llm_response', {}).get('response', '')
+                        original_response = formatted_response.get('llm_response', {}).get('content', '')
                         self.logger.info(f"Using original response due to action handler error")
                         action_signal = 'break'
                         action_result = original_response or f"Error processing chat response: {str(e)}"

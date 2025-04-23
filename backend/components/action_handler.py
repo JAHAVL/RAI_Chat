@@ -352,8 +352,37 @@ class ActionHandler:
             # --- Signal Detection ---
             fetch_match = re.search(r"\[FETCH_EPISODE:\s*([\w\-]+)\s*\]", tier3_response)
             search_deeper_match = "[SEARCH_DEEPER_EPISODIC]" in tier3_response
-            web_search_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", tier3_response) # Non-greedy match
-
+            
+            # More flexible web search detection patterns
+            web_search_patterns = [
+                r"\[SEARCH:\s*(.+?)\s*\]",                  # Standard [SEARCH: query] format
+                r"\bsearch\s+for\s+['\"](.+?)['\"]\b",   # search for 'query'
+                r"\bweb\s+search\s*:\s*['\"]?(.+?)['\"]?\b", # web search: query
+                r"\bplease\s+search\s+for\s+['\"](.+?)['\"]"  # please search for 'query'
+            ]
+            
+            # Try all patterns to detect web search
+            web_search_match = None
+            web_query = None
+            
+            for pattern in web_search_patterns:
+                match = re.search(pattern, tier3_response, re.IGNORECASE)
+                if match:
+                    web_search_match = match
+                    web_query = match.group(1).strip()
+                    self.logger.info(f"Web search detected with pattern: {pattern}")
+                    self.logger.info(f"Extracted query: '{web_query}'")
+                    break
+                    
+            # Also check the user input for direct search requests
+            if not web_search_match and "[SEARCH:" in user_input:
+                direct_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", user_input)
+                if direct_match:
+                    web_search_match = direct_match
+                    web_query = direct_match.group(1).strip()
+                    self.logger.info(f"Web search detected directly in user input")
+                    self.logger.info(f"Extracted query: '{web_query}'")
+            
             # --- Action Execution ---
             if fetch_match:
                 chunk_id_to_fetch = fetch_match.group(1)
@@ -370,7 +399,7 @@ class ActionHandler:
                      self.contextual_memory.process_assistant_message(response_data, user_input)
                      return ACTION_BREAK, "Web search is currently unavailable.", ACTION_ANSWER # Treat as answer
 
-                web_query = web_search_match.group(1).strip()
+                web_query = web_query
                 self.logger.info(f"WEB SEARCH signal detected for query: '{web_query}' (Session: {session_id})")
                 # Store the turn *before* performing the search
                 self.contextual_memory.process_assistant_message(response_data, user_input)
@@ -503,9 +532,26 @@ class ActionHandler:
                             # Store the search status for this session
                             self.store_search_status(session_id, system_message)
                     
-                    # Continue the conversation with the search results
-                    # Continue the conversation with the search results
-                    return ACTION_CONTINUE, search_results, ACTION_SEARCH
+                    # Store the search response and yield it to the client directly
+                    search_response = {
+                        'type': 'system',
+                        'action': 'web_search',
+                        'status': 'complete',
+                        'content': search_results,
+                        'timestamp': datetime.now().isoformat(),
+                        'search_id': search_id,
+                        'session_id': session_id
+                    }
+                    
+                    # Yield the search results directly to the streaming response
+                    yield search_response
+                    
+                    # Now signal that we need to break and include the search results in a follow-up message
+                    return ACTION_BREAK, {
+                        'search_results': search_results,
+                        'search_query': web_query,
+                        'search_id': search_id
+                    }, ACTION_SEARCH
                 except Exception as search_ex:
                     self.logger.error(f"Error during web search processing: {search_ex}", exc_info=True)
                     error_message = f"Error performing web search: {str(search_ex)}"

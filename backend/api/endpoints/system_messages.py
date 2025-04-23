@@ -120,7 +120,9 @@ def system_message():
         return jsonify({
             'status': 'success',
             'message': 'System message received',
-            'system_message': system_message
+            'id': message_id,  # Add the ID directly to the top level for easier access
+            'timestamp': system_message['timestamp'],
+            'system_message': system_message  # Keep the full message for backward compatibility
         })
     
     except Exception as e:
@@ -128,6 +130,102 @@ def system_message():
         return jsonify({
             'status': 'error',
             'message': f'Error processing system message: {str(e)}'
+        }), 500
+
+@system_messages_bp.route('/<message_id>', methods=['PUT'])
+@token_required
+def update_system_message_by_id(message_id):
+    """Update a system message by its ID directly via PUT request"""
+    try:
+        # Check if message exists
+        if message_id not in _system_messages:
+            # Try to load from database
+            try:
+                with get_db() as db:
+                    result = db.execute(
+                        text("""SELECT id, timestamp, session_id, message_type, content 
+                              FROM system_messages 
+                              WHERE id = :id""")
+                        .bindparams(id=message_id)
+                    ).fetchone()
+                    
+                    if result:
+                        # Reconstruct the system message
+                        _system_messages[message_id] = {
+                            'id': result.id,
+                            'timestamp': result.timestamp,
+                            'session_id': result.session_id,
+                            'message_type': result.message_type,
+                            'content': json.loads(result.content)
+                        }
+                    else:
+                        return jsonify({
+                            'status': 'error',
+                            'message': f'System message {message_id} not found'
+                        }), 404
+            except SQLAlchemyError as e:
+                logger.error(f"Database error retrieving system message: {str(e)}")
+                return jsonify({
+                    'status': 'error',
+                    'message': f'System message {message_id} not found'
+                }), 404
+        
+        # Get the request data
+        data = request.get_json()
+        
+        # Extract content
+        if 'content' not in data:
+            return jsonify({
+                'status': 'error',
+                'message': 'Missing required field: content'
+            }), 400
+        
+        content = data.get('content')
+        
+        # Update the message content and timestamp in memory
+        _system_messages[message_id]['content'] = content
+        _system_messages[message_id]['timestamp'] = datetime.utcnow().isoformat()
+        
+        # Update in database for persistence
+        try:
+            with get_db() as db:
+                # Convert content to JSON string if not already a string
+                if not isinstance(content, str):
+                    content_json = json.dumps(content)
+                else:
+                    content_json = content
+                
+                # Update in database
+                db.execute(
+                    text("""UPDATE system_messages 
+                          SET content = :content, timestamp = :timestamp 
+                          WHERE id = :id""")
+                    .bindparams(
+                        id=message_id,
+                        timestamp=_system_messages[message_id]['timestamp'],
+                        content=content_json
+                    )
+                )
+                db.commit()
+                logger.info(f"Updated system message {message_id} in database")
+        except SQLAlchemyError as e:
+            logger.error(f"Database error updating system message: {str(e)}")
+            # Continue even if database update fails - we still have in-memory
+        
+        # Return the updated system message
+        return jsonify({
+            'status': 'success',
+            'message': 'System message updated',
+            'id': message_id,
+            'timestamp': _system_messages[message_id]['timestamp'],
+            'system_message': _system_messages[message_id]
+        })
+        
+    except Exception as e:
+        logger.error(f"Error updating system message: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error updating system message: {str(e)}'
         }), 500
 
 @system_messages_bp.route('/update/<message_id>', methods=['PUT', 'POST'])
@@ -210,7 +308,9 @@ def update_system_message(message_id):
         return jsonify({
             'status': 'success',
             'message': 'System message updated',
-            'system_message': _system_messages[message_id]
+            'id': message_id,  # Add the ID directly to the top level for easier access
+            'timestamp': _system_messages[message_id]['timestamp'],
+            'system_message': _system_messages[message_id]  # Keep the full message for backward compatibility
         })
         
     except Exception as e:
@@ -234,7 +334,9 @@ def get_system_message(message_id):
         if message_id in _system_messages:
             return jsonify({
                 'status': 'success',
-                'system_message': _system_messages[message_id]
+                'id': message_id,  # Add the ID directly to the top level for easier access
+                'timestamp': _system_messages[message_id]['timestamp'],
+                'system_message': _system_messages[message_id]  # Keep the full message for backward compatibility
             })
             
         # If not in memory, try to get from database
@@ -262,7 +364,9 @@ def get_system_message(message_id):
                     
                     return jsonify({
                         'status': 'success',
-                        'system_message': system_message
+                        'id': message_id,  # Add the ID directly to the top level for easier access
+                        'timestamp': system_message['timestamp'],
+                        'system_message': system_message  # Keep the full message for backward compatibility
                     })
                 else:
                     return jsonify({
@@ -306,27 +410,40 @@ def get_session_system_messages(session_id):
             
             # Convert to list of system messages
             system_messages = []
+            
+            # Log the number of results
+            logger.info(f"Found {len(results) if results else 0} system messages for session {session_id}")
+            
             for result in results:
                 try:
+                    # Parse the content from JSON string
+                    try:
+                        content_obj = json.loads(result.content)
+                    except json.JSONDecodeError:
+                        # If not valid JSON, use as is
+                        content_obj = result.content
+                    
+                    # Create a properly formatted system message object
                     system_message = {
                         'id': result.id,
                         'timestamp': result.timestamp,
                         'session_id': result.session_id,
                         'message_type': result.message_type,
-                        'content': json.loads(result.content)
+                        'content': content_obj
                     }
                     
                     # Update memory cache
                     _system_messages[result.id] = system_message
                     
+                    # Add it to the return list with all fields at the top level
                     system_messages.append(system_message)
                 except Exception as e:
-                    logger.error(f"Error processing system message record: {str(e)}")
+                    logger.error(f"Error processing system message record {result.id if hasattr(result, 'id') else 'unknown'}: {str(e)}")
             
             return jsonify({
                 'status': 'success',
                 'session_id': session_id,
-                'system_messages': system_messages
+                'messages': system_messages  # Changed from 'system_messages' to 'messages' to match client expectations
             })
         
     except Exception as e:

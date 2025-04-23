@@ -22,12 +22,14 @@ by correctly unpacking session_id and conversation_manager objects.
 """
 import json
 import logging
+import re
 from datetime import datetime
 from flask import Blueprint, request, jsonify, g, Response
 
 # Use absolute imports consistently for Docker environment
 from core.auth.utils import token_required
 from managers.session import get_user_session_manager
+from components.action_handler import perform_search
 
 chat_bp = Blueprint('chat', __name__)
 logger = logging.getLogger(__name__)
@@ -48,25 +50,83 @@ def chat():
         A streaming response with chunks of the AI's response
     """
     try:
-        # Get the request data
+        # Get user and request data
+        user_id = g.user['user_id']
+        username = g.user['username']
         data = request.get_json()
         
-        # Validate required fields
-        if 'message' not in data:
-            return jsonify({
-                'status': 'error', 
-                'message': 'Missing required field: message'
-            }), 400
+        # Extract message and session info
+        if not data or 'message' not in data:
+            return jsonify({'status': 'error', 'message': 'No message provided'}), 400
         
-        # Extract data
-        user_input = data.get('message')
-        session_id = data.get('session_id')  # This might be None
+        user_input = data['message']
+        session_id = data.get('session_id')
         
-        # Get the user ID from the authenticated user
-        user_id = g.user.get('user_id') if hasattr(g, 'user') and g.user else 1
-        
-        # Log the incoming message
-        logger.info(f"Received chat message from user {user_id}: {user_input[:50]}...")
+        # --- DIRECT WEB SEARCH HANDLING ---
+        # If the message contains a [SEARCH:] directive, handle it directly here
+        search_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", user_input)
+        if search_match:
+            query = search_match.group(1).strip()
+            logger.info(f"Direct web search requested via chat endpoint: {query}")
+            
+            # Start with an empty chunk to establish the connection
+            def generate_search_response():
+                # First send connection established
+                yield '{"type":"connection_established"}\n'
+                
+                # Send system message that search is starting
+                search_starting = {
+                    'type': 'system',
+                    'action': 'web_search',
+                    'status': 'active',
+                    'content': f"Searching the web for: {query}",
+                    'timestamp': datetime.now().isoformat(),
+                    'session_id': session_id
+                }
+                yield json.dumps(search_starting) + '\n'
+                
+                # Perform the search
+                try:
+                    # Directly use the perform_search function
+                    search_results = perform_search(query=query)
+                    
+                    # Send the results
+                    search_complete = {
+                        'type': 'system',
+                        'action': 'web_search',
+                        'status': 'complete',
+                        'content': search_results,
+                        'timestamp': datetime.now().isoformat(),
+                        'session_id': session_id
+                    }
+                    yield json.dumps(search_complete) + '\n'
+                    
+                    # Send a final content chunk with the search results
+                    final_chunk = {
+                        'type': 'content',
+                        'content': search_results,
+                        'timestamp': datetime.now().isoformat(),
+                        'session_id': session_id
+                    }
+                    yield json.dumps(final_chunk) + '\n'
+                    
+                except Exception as e:
+                    logger.error(f"Error performing direct web search: {e}")
+                    error_chunk = {
+                        'type': 'system',
+                        'action': 'web_search',
+                        'status': 'error',
+                        'content': f"Error performing web search: {str(e)}",
+                        'timestamp': datetime.now().isoformat(),
+                        'session_id': session_id
+                    }
+                    yield json.dumps(error_chunk) + '\n'
+            
+            # Return the streaming response
+            return Response(
+                generate_search_response(),
+                mimetype='application/x-ndjson'
+            )
         
         # Get the user session manager and conversation manager
         session_id, conversation_manager = get_user_session_manager(user_id, session_id)
@@ -81,7 +141,6 @@ def chat():
         # Import requests to send system messages
         import requests
         import os
-        from datetime import datetime
         
         # Function to send system messages via the dedicated API
         def send_system_message(session_id, message_type, content):
