@@ -644,10 +644,13 @@ class ActionHandler:
 
                 # Yield a final response chunk with simplified format
                 yield {
-                    "type": "final",
+                    "type": "content",  # Changed from "final" to "content" for consistency
                     "content": clean_content,
                     "timestamp": datetime.now().isoformat()
                 }
+                
+                # For transparency, add a debug log showing what's being returned
+                self.logger.info(f"Final chat response sent (first 100 chars): {clean_content[:100] if clean_content else 'Empty'}...")
                 
                 # Signal ConversationManager to break, passing the final tier3 text
                 return ACTION_BREAK, tier3_response, ACTION_ANSWER
