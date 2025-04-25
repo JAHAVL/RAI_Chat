@@ -4,9 +4,9 @@ import { theme } from '../shared/theme'; // Corrected path to shared theme file
 import { GlobalStyle } from './AppLayout'; // Import GlobalStyle
 import ChatLibrary from './modules/chat_library/ChatLibrary';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import type { Message } from './pages/Main_Chat_UI/chat';
+import type { Message } from './api/backend_api_interface';
 import AuthPage from './pages/Login_Page/AuthPage';
-import raiAPIClient from './api/rai_api';
+import backend_api_interface from './api/backend_api_interface';
 import { FaCode, FaVideo } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import ChatPage from './pages/Main_Chat_UI/ChatPage';
@@ -35,7 +35,7 @@ type AppAction =
   | { type: 'ADD_USER_MESSAGE'; payload: { sessionId: SessionId; message: Message } }
   | { type: 'ADD_LOADING_MESSAGE'; payload: { sessionId: SessionId; loadingId: string } }
   | { type: 'INITIALIZE_SESSION'; payload: { temporarySessionId: SessionId; finalSessionId: SessionId } } 
-  | { type: 'PROCESS_ASSISTANT_RESPONSE'; payload: { sessionId: SessionId; loadingId: string; assistantMessage: Message } } 
+  | { type: 'PROCESS_ASSISTANT_RESPONSE'; payload: { sessionId: SessionId; loadingId: string; assistantMessage: Message; originalContent?: string } } 
   | { type: 'SET_MESSAGES'; payload: { sessionId: SessionId; messages: Message[] } }
   | { type: 'REMOVE_MESSAGE'; payload: { sessionId: SessionId; messageId: string } }
   | { type: 'REMOVE_LOADING_INDICATOR'; payload: { sessionId: SessionId } }
@@ -132,73 +132,95 @@ function appReducer(state: AppState, action: AppAction): AppState {
         return newState;
     }
     case 'INITIALIZE_SESSION': {
-        const { temporarySessionId, finalSessionId } = action.payload;
-        if (temporarySessionId === finalSessionId) {
-             log(`Reducer INITIALIZE_SESSION: temporary and final IDs are the same (${finalSessionId}), no action needed.`);
-             return state;
-        }
-        let nextMessagesBySession = { ...state.messagesBySession };
-        const messagesToMove = nextMessagesBySession[temporarySessionId];
-
-        if (!messagesToMove) {
-            log(`Reducer INITIALIZE_SESSION: No messages found for temporary ID ${temporarySessionId}. Cannot initialize ${finalSessionId}.`);
-            return state; // Or potentially initialize finalSessionId as empty?
-        }
-
-        log(`Reducer INITIALIZE_SESSION: Moving messages from ${temporarySessionId} to ${finalSessionId}.`);
-        nextMessagesBySession[finalSessionId] = messagesToMove;
-        delete nextMessagesBySession[temporarySessionId];
-
-        const newState: AppState = { ...state, messagesBySession: nextMessagesBySession };
-        log(`Reducer State After INITIALIZE_SESSION: Session keys = ${Object.keys(newState.messagesBySession)}`);
-        return newState;
+      const { temporarySessionId, finalSessionId } = action.payload;
+      console.log(`Initializing session: ${temporarySessionId} → ${finalSessionId}`);
+      
+      // Get existing messages and system messages
+      const messagesFromTempSession = state.messagesBySession[temporarySessionId] || [];
+      const systemMessagesFromTempSession = state.systemMessagesBySession[temporarySessionId] || [];
+      
+      console.log(`Messages to transfer: ${messagesFromTempSession.length}`);
+      
+      // Create a copy of the state structures with both temporaryId messages and finalId references
+      // This is critical - we need to have both the old and new references for a consistent state
+      const newMessagesBySession = {
+        ...state.messagesBySession,
+        [finalSessionId]: [...messagesFromTempSession] // Ensure we clone the array
+      };
+      
+      const newSystemMessagesBySession = {
+        ...state.systemMessagesBySession,
+        [finalSessionId]: [...systemMessagesFromTempSession] // Ensure we clone the array
+      };
+      
+      console.log(`INITIALIZE_SESSION: Created message list for ${finalSessionId} with ${newMessagesBySession[finalSessionId]?.length || 0} messages`);
+      
+      return {
+        ...state,
+        messagesBySession: newMessagesBySession,
+        systemMessagesBySession: newSystemMessagesBySession,
+        currentSessionId: finalSessionId // Update current session ID to the real one
+      };
     }
     case 'PROCESS_ASSISTANT_RESPONSE': {
-        // Simplified: Assumes session is already initialized by INITIALIZE_SESSION if it was new.
         const { sessionId, loadingId, assistantMessage } = action.payload;
-        console.log('PROCESS_ASSISTANT_RESPONSE received with payload:', action.payload);
         
-        let nextMessagesBySession = { ...state.messagesBySession };
-        console.log('Current messagesBySession:', state.messagesBySession);
+        // STAGE 3: App reducer processing the message for state update
+        console.log(`STAGE 3 - Reducer processing assistant message:`);
+        console.log(`STAGE 3 - Session ID: ${sessionId}`);
+        console.log(`STAGE 3 - Assistant Message:`, JSON.stringify(assistantMessage));
+        console.log(`STAGE 3 - Message content:`, assistantMessage.content);
         
-        const currentMessages = nextMessagesBySession[sessionId];
-        console.log(`Current messages for session ${sessionId}:`, currentMessages);
-
-        if (!currentMessages) {
-            console.error(`ERROR: PROCESS_ASSISTANT_RESPONSE: No messages found for session ${sessionId}. Cannot add assistant message.`);
-            log(`ERROR: PROCESS_ASSISTANT_RESPONSE: No messages found for session ${sessionId}. Cannot add assistant message.`);
+        // Make sure we have a valid sessionId
+        if (!sessionId) {
+            console.error('PROCESS_ASSISTANT_RESPONSE: Missing sessionId');
             return state;
         }
-
-        log(`Reducer PROCESS_ASSISTANT_RESPONSE: Updating session ${sessionId}`);
-        console.log(`Reducer PROCESS_ASSISTANT_RESPONSE: Updating session ${sessionId}`);
         
-        // Create a completely new array to ensure React detects the state change
-        const updatedMessages = [...currentMessages
-            .filter(msg => msg.id !== loadingId), // Remove specific loading ID
-            assistantMessage]; // Append the new assistant message
+        // Get current messages (or empty array if none)
+        const currentMessagesBySession = { ...state.messagesBySession };
+        const currentMessages = currentMessagesBySession[sessionId] || [];
         
-        console.log('Updated messages after filtering and adding assistant message:', updatedMessages);
-
-        // Create a new object for the session's messages to ensure state immutability
-        nextMessagesBySession = {
-            ...nextMessagesBySession,
-            [sessionId]: updatedMessages
+        console.log(`PROCESS_ASSISTANT_RESPONSE for session ${sessionId}:`, 
+                    `Current message count=${currentMessages.length}, ` +
+                    `Message content: ${assistantMessage.content.substring(0, 50)}...`);
+        
+        // Handle loading messages vs. real messages
+        const updatedMessages = [...currentMessages];
+        
+        // If this is a loading message, just add it
+        if (assistantMessage.isLoading) {
+            console.log(`Adding loading message to session ${sessionId}`);
+            updatedMessages.push(assistantMessage);
+        } else {
+            // This is a real assistant message - find and replace loading message
+            const loadingMsgIndex = updatedMessages.findIndex(msg => 
+                msg.id === loadingId || (msg.role === 'assistant' && msg.isLoading));
+            
+            if (loadingMsgIndex >= 0) {
+                // Replace loading message with real content
+                console.log(`Replacing loading message at index ${loadingMsgIndex}`);
+                updatedMessages[loadingMsgIndex] = assistantMessage;
+            } else {
+                // No loading message found, just add this one
+                console.log(`No loading message found, adding new message`);
+                updatedMessages.push(assistantMessage);
+            }
+        }
+        
+        // Update the state with our modified messages
+        const newState = {
+            ...state,
+            messagesBySession: {
+                ...currentMessagesBySession,
+                [sessionId]: updatedMessages
+            }
         };
         
-        console.log('New messagesBySession:', nextMessagesBySession);
+        // Log what happened
+        console.log(`Updated message count for ${sessionId}: ${updatedMessages.length}`);
         
-        // Create a completely new state object to ensure React triggers a re-render
-        const finalState: AppState = { 
-            ...state, 
-            messagesBySession: nextMessagesBySession 
-        };
-        
-        log(`Reducer State After PROCESS_ASSISTANT_RESPONSE for ${sessionId}: Messages count = ${updatedMessages?.length}`);
-        console.log(`Reducer State After PROCESS_ASSISTANT_RESPONSE for ${sessionId}: Messages count = ${updatedMessages?.length}`);
-        console.log('Final state:', finalState);
-        
-        return finalState;
+        return newState;
     }
     case 'SET_MESSAGES': {
       const { sessionId, messages } = action.payload;
@@ -344,54 +366,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
         return newState;
     }
     
-    case 'PROCESS_ASSISTANT_RESPONSE': {
-        const { sessionId, loadingId, assistantMessage } = action.payload;
-        const currentMessages = state.messagesBySession?.[sessionId] || [];
-        
-        // If this is a loading message (isLoading=true), simply add it
-        if (assistantMessage.isLoading) {
-            const newState: AppState = {
-                ...state,
-                messagesBySession: {
-                    ...state.messagesBySession,
-                    [sessionId]: [...currentMessages, assistantMessage]
-                }
-            };
-            log(`Reducer State After PROCESS_ASSISTANT_RESPONSE (loading) for ${sessionId}: Added loading message, Messages count = ${newState.messagesBySession[sessionId]?.length}`);
-            return newState;
-        }
-        
-        // If this is a response message, replace the loading message with this one
-        // First find if there's a loading message to replace
-        const loadingMsgIndex = currentMessages.findIndex(msg => msg.isLoading);
-        
-        if (loadingMsgIndex >= 0) {
-            // Replace the loading message with the actual response
-            const updatedMessages = [...currentMessages];
-            updatedMessages[loadingMsgIndex] = assistantMessage;
-            
-            const newState: AppState = {
-                ...state,
-                messagesBySession: {
-                    ...state.messagesBySession,
-                    [sessionId]: updatedMessages
-                }
-            };
-            log(`Reducer State After PROCESS_ASSISTANT_RESPONSE (replace) for ${sessionId}: Replaced loading message, Messages count = ${newState.messagesBySession[sessionId]?.length}`);
-            return newState;
-        } else {
-            // No loading message found, just add the new message
-            const newState: AppState = {
-                ...state,
-                messagesBySession: {
-                    ...state.messagesBySession,
-                    [sessionId]: [...currentMessages, assistantMessage]
-                }
-            };
-            log(`Reducer State After PROCESS_ASSISTANT_RESPONSE (direct) for ${sessionId}: Added assistant message, Messages count = ${newState.messagesBySession[sessionId]?.length}`);
-            return newState;
-        }
-    }
     case 'SET_ACTIVE_MODULE':
       return { ...state, activeModule: action.payload };
     default:

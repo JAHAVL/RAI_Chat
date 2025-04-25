@@ -9,6 +9,7 @@ import SystemMessageComponent from './components/SystemMessageComponent';
 
 // Import services
 import { messageService, sessionService, chatLibraryService, NEW_CHAT_SESSION_ID } from '../../services/chat';
+import backendApiInterface from '../../api/backend_api_interface';
 
 // --- Type Definitions ---
 type SessionId = string;
@@ -90,13 +91,19 @@ const ChatPage: React.FC<AppContentProps> = ({
 }) => {
   const { state, dispatch } = useApp();
   const [input, setInput] = useState<string>('');
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const chatLibraryRef = useRef<any>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const currentMessages: Message[] = (state?.messagesBySession?.[currentSessionId])
-                           ? state.messagesBySession[currentSessionId]!
-                           : [];
+  // Get messages from global state
+  const stateMessages: Message[] = (state?.messagesBySession?.[currentSessionId])
+                         ? state.messagesBySession[currentSessionId]!
+                         : [];
+                         
+  // Combine local and state messages, prioritizing local ones
+  // This gives us a direct path for messages while still respecting the global state
+  const currentMessages = localMessages.length > 0 ? localMessages : stateMessages;
 
   // Set initial height on mount
   useEffect(() => {
@@ -124,7 +131,23 @@ const ChatPage: React.FC<AppContentProps> = ({
   }, [input]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to bottom whenever messages change
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // STAGE 4: Log what messages are being rendered in the UI
+    console.log(`STAGE 4 - ChatPage rendering messages for session: ${currentSessionId}`);
+    console.log(`STAGE 4 - Message count: ${currentMessages.length}`);
+    if (currentMessages.length > 0) {
+      // Log the last message which should be the assistant's response
+      const lastMessage = currentMessages[currentMessages.length - 1];
+      console.log(`STAGE 4 - Last message role: ${lastMessage.role}`);
+      console.log(`STAGE 4 - Last message content: ${lastMessage.content.substring(0, 100)}...`);
+    }
+    
+    // Load session messages if needed (e.g., on first load)
+    sessionService.loadSessionMessages(currentSessionId, currentMessages, dispatch);
   }, [currentMessages]);
 
   // Effect to handle session changes and load messages
@@ -145,38 +168,116 @@ const ChatPage: React.FC<AppContentProps> = ({
     try {
       // Clear input field immediately for better UX
       setInput('');
-
-      // Note: We don't need to add the user message to state here
-      // because messageService.createAndSendMessage will do it for us
       
-      // Send message to backend
-      const response = await messageService.createAndSendMessage(
-        message,
-        currentSessionId,
-        dispatch,
-        {
-          setCurrentSessionId,
-          onNewChatPlaceholder,
-          onConfirmNewChat,
-          onFailedNewChat
+      // Create a user message to show immediately
+      const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        role: 'user',
+        content: message,
+        timestamp: new Date()
+      };
+      
+      // Create a loading message to show while waiting for response
+      const loadingMessage: Message = {
+        id: `loading-${Date.now()}`,
+        role: 'assistant',
+        content: 'Thinking...',
+        timestamp: new Date(),
+        isLoading: true
+      };
+      
+      // Update local messages immediately to show user message and loading indicator
+      setLocalMessages(prev => [...prev, userMessage, loadingMessage]);
+      
+      // Make the API request directly
+      const backendApi = backendApiInterface;
+      const response = await backendApi.sendMessage(currentSessionId, message);
+      
+      console.log('Direct API response:', response);
+      
+      // Extract content directly from the response
+      let responseContent = '';
+      if (response.content) {
+        responseContent = response.content;
+        console.log('Found content field:', responseContent);
+      } else if (response.tier3) {
+        responseContent = response.tier3;
+        console.log('Found tier3 field:', responseContent);
+      } else {
+        responseContent = 'No response received (direct path)';
+        console.error('No content found in response:', response);
+      }
+      
+      // Create the assistant message
+      const assistantMessage: Message = {
+        id: `asst-${Date.now()}`,
+        role: 'assistant',
+        content: responseContent,
+        timestamp: new Date()
+      };
+      
+      // If we're in a new chat, handle session ID update
+      if (currentSessionId === NEW_CHAT_SESSION_ID && response.sessionId) {
+        // Update session ID
+        setCurrentSessionId(response.sessionId);
+        
+        // Handle chat placeholder
+        const title = response.title || message.substring(0, 30);
+        onConfirmNewChat(`temp-${Date.now()}`, {
+          id: response.sessionId,
+          title
+        });
+      }
+      
+      // Update local messages, replacing loading indicator with real response
+      setLocalMessages(prev => {
+        // Find and remove the loading message
+        const withoutLoading = prev.filter(msg => !msg.isLoading);
+        
+        // Add the assistant message
+        return [...withoutLoading, assistantMessage];
+      });
+      
+      // Still dispatch to global state as a backup - use supported action types
+      // First add the user message
+      dispatch({ 
+        type: 'ADD_USER_MESSAGE', 
+        payload: { 
+          sessionId: response.sessionId || currentSessionId, 
+          message: userMessage
+        } 
+      });
+      
+      // Then add the assistant response
+      dispatch({
+        type: 'PROCESS_ASSISTANT_RESPONSE',
+        payload: {
+          sessionId: response.sessionId || currentSessionId,
+          loadingId: loadingMessage.id,
+          assistantMessage: assistantMessage
         }
-      );
-      
-      // Process system messages and assistant response handled by messageService
+      });
       
     } catch (error) {
       console.error('Error sending message:', error);
       
-      // Create error system message
+      // Create error message
       const errorMessage: Message = {
         id: Math.random().toString(36).substr(2, 9),
+        role: 'system',
         content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        sender: 'system',
         timestamp: new Date(),
-        sessionId: currentSessionId,
-        type: 'error'
+        messageType: 'error'
       };
       
+      // Update local messages with error
+      setLocalMessages(prev => {
+        // Remove any loading message
+        const withoutLoading = prev.filter(msg => !msg.isLoading);
+        return [...withoutLoading, errorMessage];
+      });
+      
+      // Also update global state
       dispatch({ 
         type: 'ADD_SYSTEM_MESSAGE', 
         payload: { 

@@ -4,7 +4,7 @@
  * This service separates business logic from UI components.
  */
 
-import raiAPIClient from '../../api/rai_api';
+import backendApi from '../../api/backend_api_interface';
 import type { Message } from '../../pages/Main_Chat_UI/chat';
 
 // Constants
@@ -14,6 +14,7 @@ export const NEW_CHAT_SESSION_ID = 'new_chat';
 export interface MessageResponse {
   message: Message;
   sessionId: string;
+  session_id?: string; // Sometimes backend uses this format instead
   success: boolean;
   error?: string;
   thinking?: boolean;
@@ -22,6 +23,7 @@ export interface MessageResponse {
   systemMessageId?: string;
   systemMessageAction?: string;
   systemMessageStatus?: string;
+  title?: string; // For new session title
   system_messages?: {
     content: string;
     type: string;
@@ -51,6 +53,7 @@ export interface MessageResponse {
   content?: string;
   id?: string;
   messageType?: string;
+  timestamp?: string;
 }
 
 export interface MessageHistoryResponse {
@@ -84,10 +87,10 @@ class MessageService {
         (sessionId || `session-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`);
       
       // Send the message to the backend
-      const response = await raiAPIClient.sendMessage({
-        message,
-        sessionId: session_id
-      });
+      const response = await backendApi.sendMessage(
+        session_id,
+        message
+      );
       
       console.log("MessageService: Raw backend response:", JSON.stringify(response));
       
@@ -206,6 +209,16 @@ class MessageService {
         isLoading: false
       };
       
+      // If we got a well-formed message from the API, use its properties
+      if (response.message && typeof response.message === 'object') {
+        assistantMessage.id = response.message.id || assistantMessage.id;
+        // Convert string timestamp to Date if needed
+        assistantMessage.timestamp = typeof response.message.timestamp === 'string' ? 
+          new Date(response.message.timestamp) : 
+          (response.message.timestamp instanceof Date ? 
+            response.message.timestamp : new Date());
+      }
+      
       return {
         message: assistantMessage,
         sessionId: response.session_id || sessionId || '',
@@ -276,7 +289,7 @@ class MessageService {
       }
       
       // Fetch messages from the backend
-      const response = await raiAPIClient.getChatHistory(sessionId);
+      const response = await backendApi.getChatHistory(sessionId);
       
       if (response && response.messages) {
         // Process the messages to ensure they have the correct format
@@ -356,14 +369,15 @@ class MessageService {
       console.log(`MessageService: Checking system message status for ${action} in session ${sessionId}`);
       
       // Call the dedicated system message endpoint using our API client
-      const response = await raiAPIClient.getSystemMessage(action, sessionId);
+      const response = await backendApi.getSystemMessage(action, sessionId);
       
       console.log('MessageService: System message status response:', response);
       
       // Process system messages if we received any
       if (response && response.messages && response.messages.length > 0) {
-        // Convert each system message to our Message format and dispatch to the store
         response.messages.forEach((sysMsg: any) => {
+          console.log(`MessageService: Processing system message: ${sysMsg.type} - ${sysMsg.content.substring(0, 30)}...`);
+          
           const systemMessage: Message = {
             id: sysMsg.id || this.generateMessageId(),
             role: 'system',
@@ -478,249 +492,194 @@ class MessageService {
       onFailedNewChat: (tempId: string) => void;
     }
   ): Promise<void> {
-    if (!messageContent.trim()) {
+    // Don't process empty messages
+    if (!messageContent || !messageContent.trim()) {
+      console.log('MessageService: Empty message, not sending');
       return;
     }
+    
+    console.log('MessageService: Starting createAndSendMessage', { 
+      sessionId, 
+      messageContent: messageContent.substring(0, 30) + '...' 
+    });
     
     // Create user message
     const userMessage = this.createUserMessage(messageContent);
     
-    // Add user message to state
-    dispatch({ 
-      type: 'ADD_USER_MESSAGE', 
-      payload: { 
-        sessionId: sessionId, 
-        message: userMessage 
-      } 
+    // Add user message to UI
+    dispatch({
+      type: 'ADD_USER_MESSAGE',
+      payload: {
+        sessionId: sessionId,
+        message: userMessage
+      }
     });
     
-    // Generate tempId for new chats
-    const tempId = sessionId === NEW_CHAT_SESSION_ID ? `temp-${Date.now()}` : '';
+    // Create a loading message for immediate feedback
+    const loadingMessage = this.createLoadingMessage();
     
-    // Handle new chat placeholder
+    // Add loading message to UI
+    dispatch({
+      type: 'PROCESS_ASSISTANT_RESPONSE',
+      payload: {
+        sessionId: sessionId,
+        loadingId: loadingMessage.id,
+        assistantMessage: loadingMessage
+      }
+    });
+    
+    // Generate a temporary ID for new chats
+    let tempId = '';
+    
     if (sessionId === NEW_CHAT_SESSION_ID) {
+      // Create a temporary chat placeholder for immediate UX
+      tempId = `temp-${Date.now()}`;
       const initialTitle = this.generateTitle(messageContent);
+      
+      // Callback to show chat in UI
       callbacks.onNewChatPlaceholder(tempId, initialTitle);
     }
     
     try {
-      // Add the loading message first to show feedback to the user
-      const loadingMessage = this.createLoadingMessage();
-      dispatch({
-        type: 'PROCESS_ASSISTANT_RESPONSE',
-        payload: {
-          sessionId: sessionId,
-          loadingId: loadingMessage.id,
-          assistantMessage: loadingMessage
-        }
-      });
-      
       // Send message to backend and handle immediate responses
-      console.log(`MessageService: Sending message to backend: ${messageContent.substring(0, 50)}...`);
+      console.log(`MessageService: Sending message to backend, sessionId=${sessionId}`);
       let response = await this.sendMessage(messageContent, sessionId);
-      console.log('MessageService: Response from backend:', 
-                 JSON.stringify(response).substring(0, 200), '...');
-                 
-      // Handle the case where the backend indicates we should continue waiting
-      // for a follow-up response (typically after a web search completes)
-      if (response.continueWaitingForResponse) {
-        console.log('MessageService: Received continueWaitingForResponse flag, waiting for final LLM response');
-        
-        // We received a system message (like "search complete"), but we expect a follow-up
-        // message with the actual LLM response. Let's fetch that now.
-        try {
-          // For now, just show the system message in the UI
-          if (response.message) {
-            dispatch({
-              type: 'ADD_SYSTEM_MESSAGE',
-              payload: {
-                sessionId: sessionId,
-                message: response.message
-              }
-            });
-          }
-          
-          // But we also wait for another response with the actual results
-          // The backend should send the final LLM response after the search_complete message
-          console.log('MessageService: Awaiting final LLM response after search completion...');
-          
-          // First, let's check the system message status from our dedicated endpoint
-          await this.checkSystemMessageStatus('get_search_status', sessionId, dispatch);
-          
-          // Then we send an empty message but with a flag to indicate we're just waiting for results
-          response = await this.sendMessage('', sessionId);
-          console.log('MessageService: Received final LLM response:', 
-                     JSON.stringify(response).substring(0, 200), '...');
-        } catch (error) {
-          console.error('MessageService: Error waiting for final response:', error);
-        }
-      }
       
-      // Handle system messages and continue processing for assistant response
-      if (response.success && response.systemMessageAction && response.systemMessageStatus) {
-        console.log(`MessageService: Handling system message: ${response.systemMessageAction}, status: ${response.systemMessageStatus}`);
-        
-        // When we get a system message, don't also process it as an assistant response
-        // Only add it as a system message, not as part of the conversation
-        if (response.systemMessageId) {
-          const getMessagesPayload = { sessionId: response.sessionId || sessionId };
-          
-          try {
-            // Get system messages safely with proper fallbacks
-            const systemMessages = (dispatch({ 
-              type: 'GET_SYSTEM_MESSAGES', 
-              payload: getMessagesPayload 
-            }) as unknown as Record<string, Message[]>) || {};
-            
-            const sessId = response.sessionId || sessionId;
-            const currentSystemMessages = systemMessages && systemMessages[sessId] ? systemMessages[sessId] : [];
-            const existingMessage = currentSystemMessages.find(msg => msg.id === response.systemMessageId);
-            
-            if (existingMessage) {
-              // Update the existing system message instead of adding a new one
-              console.log(`MessageService: Updating existing system message with ID: ${response.systemMessageId}`);
-              dispatch({
-                type: 'UPDATE_SYSTEM_MESSAGE',
-                payload: {
-                  sessionId: response.sessionId || sessionId,
-                  systemMessageId: response.systemMessageId,
-                  message: response.message
-                }
-              });
-              
-              // Early return to avoid processing system message as an assistant message
-              return;
-            } else {
-              // Add the system message to the UI if it doesn't exist already
-              dispatch({
-                type: 'ADD_SYSTEM_MESSAGE',
-                payload: {
-                  sessionId: response.sessionId || sessionId,
-                  message: response.message
-                }
-              });
-              
-              // For web search 'active' status we want to return, but for 'complete'
-              // we want to continue and show the final answer
-              if (response.systemMessageAction === 'web_search') {
-                if (response.systemMessageStatus === 'active') {
-                  // Only return for active status (searching), but let the complete status go through
-                  console.log('MessageService: Web search active, returning early');
-                  return;
-                } else if (response.systemMessageStatus === 'complete') {
-                  // When search is complete, don't return - continue to process the assistant response
-                  console.log('MessageService: Web search complete, will continue to show final answer');
-                  // Don't return here so we continue to process the final answer from the LLM
-                } else if (response.systemMessageStatus === 'error') {
-                  // For error status, show the error but don't show final answer (since there isn't one)
-                  console.log('MessageService: Web search error, returning early');
-                  return;
-                }
-              }
-            }
-          } catch (error) {
-            console.error('Error handling system message:', error);
-            // Continue with normal message processing if system message handling fails
-          }
-        }
-      }
+      // STAGE 2: MessageService receives the response from the API
+      console.log(`STAGE 2 - MessageService received response:`, JSON.stringify(response));
+      console.log(`STAGE 2 - Response keys:`, Object.keys(response));
+      if (response.content) console.log(`STAGE 2 - Content field:`, response.content);
+      if (response.message?.content) console.log(`STAGE 2 - Message.content field:`, response.message.content);
       
-      if (response.success) {
-        // First remove any loading indicators
+      // If we got a session ID from a new chat, update the frontend
+      if (sessionId === NEW_CHAT_SESSION_ID && response.sessionId) {
+        // Confirm the new chat and replace the placeholder
+        console.log(`MessageService: Confirming new chat placeholder ${tempId} with real session ${response.sessionId}`);
+        
+        // Initialize session explicitly to ensure state is prepared for the new session ID
         dispatch({
-          type: 'REMOVE_LOADING_INDICATOR',
+          type: 'INITIALIZE_SESSION',
           payload: {
-            sessionId: response.sessionId || sessionId
+            temporarySessionId: NEW_CHAT_SESSION_ID,
+            finalSessionId: response.sessionId
           }
         });
         
-        // Handle new chat session creation
-        if (sessionId === NEW_CHAT_SESSION_ID && response.sessionId && response.sessionId !== NEW_CHAT_SESSION_ID) {
-          // Update session state
-          dispatch({
-            type: 'INITIALIZE_SESSION',
-            payload: {
-              temporarySessionId: NEW_CHAT_SESSION_ID,
-              finalSessionId: response.sessionId
-            }
-          });
-          
-          // Update current session ID
-          callbacks.setCurrentSessionId(response.sessionId);
-          
-          // Confirm new chat in UI
-          callbacks.onConfirmNewChat(tempId, { 
-            id: response.sessionId, 
-            title: this.generateTitle(messageContent)
-          });
-        }
-
-        // Always try to show the final answer
-        // Check all possible sources for content to avoid truncation
-        // Order of preference: response.message.content > tier1 > response string
-        let finalContent = '';
-        let source = 'none';
-
-        console.log('MessageService: Response analysis:', {
-          hasMessageContent: Boolean(response.message?.content),
-          messageContentLength: response.message?.content?.length || 0,
-          hasTier1: Boolean(response.llm_response?.response_tiers?.tier1),
-          tier1Length: response.llm_response?.response_tiers?.tier1?.length || 0,
-          hasTier3: Boolean(response.llm_response?.response_tiers?.tier3),
-          tier3Length: response.llm_response?.response_tiers?.tier3?.length || 0,
-          hasResponseString: Boolean(response.response),
-          responseStringLength: response.response?.length || 0
+        // Change current session ID to the real one
+        callbacks.setCurrentSessionId(response.sessionId);
+        
+        // Confirm the placeholder in UI
+        callbacks.onConfirmNewChat(tempId, {
+          id: response.sessionId,
+          // Use a fallback for title if not provided
+          title: response.title || this.generateTitle(messageContent)
         });
-
-        // Try to extract content from various sources in order of preference
-        // Always prioritize tier3 if available
-        if (response.llm_response?.response_tiers?.tier3) {
-          finalContent = response.llm_response.response_tiers.tier3;
-          source = 'llm_response.response_tiers.tier3';
-        } else if (response.message?.content) {
-          finalContent = response.message.content;
-          source = 'message.content';
-        } else if (response.llm_response?.response_tiers?.tier1) {
-          finalContent = response.llm_response.response_tiers.tier1;
-          source = 'llm_response.response_tiers.tier1';
-        } else if (response.response) {
-          finalContent = response.response;
-          source = 'response';
-        }
-
-        // Log what we found and which source we're using
-        console.log(`MessageService: Using content from '${source}' source, length: ${finalContent.length}`);
-        if (finalContent.length > 0) {
-          const last100 = finalContent.length > 100 ? finalContent.slice(-100) : finalContent;
-          console.log(`MessageService: Final content last 100 chars: ...${last100}`);
-        }
-
-        if (finalContent) {
-          // Create a proper message object
-          const assistantMessage: Message = {
-            id: `asst-${Date.now()}`,
-            role: 'assistant',
-            content: finalContent,
-            timestamp: new Date(),
-            isLoading: false
-          };
-          
-          // Add the assistant message to the UI
-          dispatch({
-            type: 'PROCESS_ASSISTANT_RESPONSE',
-            payload: {
-              sessionId: response.sessionId || sessionId,
-              loadingId: loadingMessage.id,
-              assistantMessage: assistantMessage
-            }
-          });
-        } else {
-          console.log('MessageService: No content found to display as assistant message');
-        }  
-      } else {
-        // Handle error
-        this.handleMessageError(dispatch, sessionId, tempId, callbacks.onFailedNewChat);
+        
+        // Update local sessionId for the rest of processing
+        sessionId = response.sessionId;
       }
+      
+      // Directly log all properties on the response object
+      console.log('Debug - Response keys:', Object.keys(response));
+      
+      // Use type assertion to allow string indexing
+      const responseObj = response as Record<string, any>;
+      for (const key of Object.keys(responseObj)) {
+        console.log(`Debug - Response[${key}]:`, typeof responseObj[key] === 'object' ? 
+          JSON.stringify(responseObj[key]) : responseObj[key]);
+      }
+      
+      // Directly use the content field which we know is sent from the backend
+      if (response.content && typeof response.content === 'string') {
+        const finalContent = response.content;
+        console.log('Using content field directly:', finalContent);
+        
+        // Create a proper message object
+        const assistantMessage: Message = {
+          id: `asst-${Date.now()}`,
+          role: 'assistant',
+          content: finalContent,
+          timestamp: new Date(),
+          isLoading: false
+        };
+        
+        // Directly add the assistant message to the UI
+        dispatch({
+          type: 'PROCESS_ASSISTANT_RESPONSE',
+          payload: {
+            sessionId: response.sessionId || response.session_id || sessionId,
+            loadingId: loadingMessage.id,
+            assistantMessage: assistantMessage
+          }
+        });
+      } else if (response.tier3 && typeof response.tier3 === 'string') {
+        const finalContent = response.tier3;
+        console.log('Using tier3 field directly:', finalContent);
+        
+        // Create a proper message object
+        const assistantMessage: Message = {
+          id: `asst-${Date.now()}`,
+          role: 'assistant',
+          content: finalContent,
+          timestamp: new Date(),
+          isLoading: false
+        };
+        
+        // Directly add the assistant message to the UI
+        dispatch({
+          type: 'PROCESS_ASSISTANT_RESPONSE',
+          payload: {
+            sessionId: response.sessionId || response.session_id || sessionId,
+            loadingId: loadingMessage.id,
+            assistantMessage: assistantMessage
+          }
+        });
+      } else if (response.message?.content && typeof response.message.content === 'string') {
+        const finalContent = response.message.content;
+        console.log('Using message.content field:', finalContent);
+        
+        // Create a proper message object
+        const assistantMessage: Message = {
+          id: `asst-${Date.now()}`,
+          role: 'assistant',
+          content: finalContent,
+          timestamp: new Date(),
+          isLoading: false
+        };
+        
+        // Directly add the assistant message to the UI
+        dispatch({
+          type: 'PROCESS_ASSISTANT_RESPONSE',
+          payload: {
+            sessionId: response.sessionId || response.session_id || sessionId,
+            loadingId: loadingMessage.id,
+            assistantMessage: assistantMessage
+          }
+        });
+      } else {
+        const finalContent = 'No response received - Unable to extract content from backend response';
+        console.error('Failed to extract content from response:', response);
+        
+        // Create a proper message object
+        const assistantMessage: Message = {
+          id: `asst-${Date.now()}`,
+          role: 'assistant',
+          content: finalContent,
+          timestamp: new Date(),
+          isLoading: false
+        };
+        
+        // Directly add the assistant message to the UI
+        dispatch({
+          type: 'PROCESS_ASSISTANT_RESPONSE',
+          payload: {
+            sessionId: response.sessionId || response.session_id || sessionId,
+            loadingId: loadingMessage.id,
+            assistantMessage: assistantMessage
+          }
+        });
+      }
+      
     } catch (error) {
       console.error('Error in createAndSendMessage:', error);
       // Handle error
