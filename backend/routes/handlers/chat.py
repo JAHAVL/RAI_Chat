@@ -59,6 +59,21 @@ def handle_chat():
             # Return the last (final) chunk as a regular JSON response
             if chunks:
                 final_chunk = chunks[-1]
+                
+                # IMPORTANT: Ensure message content preserves newlines for proper frontend display
+                if isinstance(final_chunk, dict) and 'content' in final_chunk:
+                    # Log the original content for debugging
+                    original_content = final_chunk['content']
+                    content_length = len(original_content) if isinstance(original_content, str) else 0
+                    logger.info(f"Original content length: {content_length}, type: {type(original_content)}")
+                    
+                    # Ensure content is properly formatted with newlines
+                    if isinstance(original_content, str):
+                        # Replace any literal \n with actual newlines
+                        if '\\n' in original_content:
+                            final_chunk['content'] = original_content.replace('\\n', '\n')
+                            logger.info("Replaced escaped newlines in final response")
+                
                 logger.info(f"Final response being sent to frontend: {json.dumps(final_chunk)}")
                 return jsonify(final_chunk), 200
             else:

@@ -142,14 +142,34 @@ ACTION_FETCH = "FETCH"
 ACTION_SEARCH = "SEARCH"
 ACTION_SEARCH_DEEPER = "SEARCH_DEEPER"
 ACTION_ERROR = "ERROR"
+ACTION_REMEMBER = "REMEMBER"  # New action type for explicit memory storage
 ACTION_CONTINUE = "CONTINUE" # Signal to continue the main loop (e.g., after search)
 ACTION_BREAK = "BREAK"       # Signal to break the main loop (e.g., answer found, error, fetch needed)
 ACTION_SEARCH_DETECTED = "ACTION_SEARCH_DETECTED"
 ACTION_CALCULATE_DETECTED = "ACTION_CALCULATE_DETECTED"
 ACTION_COMMAND_DETECTED = "ACTION_COMMAND_DETECTED"
 ACTION_EXECUTE_DETECTED = "ACTION_EXECUTE_DETECTED"
+ACTION_REMEMBER_DETECTED = "ACTION_REMEMBER_DETECTED"  # New signal for remember action
+ACTION_FORGET_DETECTED = "ACTION_FORGET_DETECTED"
+ACTION_CORRECT_DETECTED = "ACTION_CORRECT_DETECTED"
 ACTION_UNKNOWN = "ACTION_UNKNOWN"
 ACTION_NONE = "ACTION_NONE"
+
+ACTION_FORGET = "FORGET"
+ACTION_CORRECT = "CORRECT"
+
+# Action signal categories by flow control behavior
+# 
+# INTERRUPTING ACTIONS (Return ACTION_BREAK, replace normal response):
+# - [SEARCH:query] -> ACTION_SEARCH_DETECTED
+# - [WEB_SEARCH:query] -> ACTION_SEARCH_DETECTED
+#
+# NON-INTERRUPTING ACTIONS (Return ACTION_CONTINUE, normal response still shown):
+# - [REMEMBER:fact] -> ACTION_REMEMBER_DETECTED
+# - [CALCULATE:expression] -> ACTION_CALCULATE_DETECTED  
+# - [COMMAND:command] -> ACTION_COMMAND_DETECTED
+# - [EXECUTE:action] -> ACTION_EXECUTE_DETECTED
+# - [SEARCH_EPISODIC:query] -> ACTION_COMMAND_DETECTED
 
 def detect_action_type(text: str) -> Dict[str, Any]:
     """
@@ -166,15 +186,58 @@ def detect_action_type(text: str) -> Dict[str, Any]:
         "action_params": {}
     }
     
-    # Check for tier request or episodic search commands first
-    # These are handled separately and take precedence
-    tier_request_pattern = r"\[REQUEST_TIER:\s*upgrade\s+message\s+\w+\s+to\s+tier\s+\d+\]"
-    episodic_search_pattern = r"\[SEARCH_EPISODIC:.*?\]"
+    # Check for specific action markers
+    web_search_match = re.search(r"\[WEB_SEARCH:([^\]]+)\]", text)
+    # Also check for the [SEARCH:query] pattern that the LLM is using
+    search_match = re.search(r"\[SEARCH:([^\]]+)\]", text)
+    calculation_match = re.search(r"\[CALCULATE:([^\]]+)\]", text)
+    command_match = re.search(r"\[COMMAND:([^\]]+)\]", text)
+    execution_match = re.search(r"\[EXECUTE:([^\]]+)\]", text)
+    remember_match = re.search(r"\[REMEMBER:([^\]]+)\]", text)
+    forget_match = re.search(r"\[FORGET_THIS:([^\]]+)\]", text)
+    correct_match = re.search(r"\[CORRECT:([^\]]+):([^\]]+)\]", text)
     
-    if re.search(tier_request_pattern, text) or re.search(episodic_search_pattern, text):
-        result["action_type"] = ACTION_COMMAND_DETECTED
-        result["action_params"] = {"command_text": text}
-        return result
+    # Check for tier upgrade requests and episodic memory searches using exact test patterns
+    tier_request_pattern = r"\[REQUEST_TIER:(\d+):([^\]]+)\]"
+    episodic_search_pattern = r"\[SEARCH_EPISODIC:([^\]]+)\]"
+    
+    has_tier_requests = re.search(tier_request_pattern, text) is not None
+    has_episodic_search = re.search(episodic_search_pattern, text) is not None
+    
+    # Log if we found any special action commands
+    if has_tier_requests:
+        logger.info(f"Detected tier request in: {text[:100]}...")
+    if has_episodic_search:
+        logger.info(f"Detected episodic search in: {text[:100]}...")
+    
+    if web_search_match:
+        logger.info(f"Detected [WEB_SEARCH:] pattern with query: {web_search_match.group(1)}")
+        return ACTION_SEARCH_DETECTED, web_search_match.group(1), ACTION_SEARCH
+    elif search_match:
+        logger.info(f"Detected [SEARCH:] pattern with query: {search_match.group(1)}")
+        return ACTION_SEARCH_DETECTED, search_match.group(1), ACTION_SEARCH
+    elif calculation_match:
+        return ACTION_CALCULATE_DETECTED, calculation_match.group(1), ACTION_CALCULATE_DETECTED
+    elif command_match:
+        return ACTION_COMMAND_DETECTED, command_match.group(1), ACTION_COMMAND_DETECTED
+    elif execution_match:
+        return ACTION_EXECUTE_DETECTED, execution_match.group(1), ACTION_EXECUTE_DETECTED
+    elif remember_match:
+        logger.info(f"Detected [REMEMBER:] pattern with fact: {remember_match.group(1)}")
+        # Extract fact to be remembered
+        return ACTION_REMEMBER_DETECTED, remember_match.group(1), ACTION_REMEMBER
+    elif forget_match:
+        logger.info(f"Detected [FORGET_THIS:] pattern with fact: {forget_match.group(1)}")
+        # Extract fact to be forgotten
+        return ACTION_FORGET_DETECTED, forget_match.group(1), ACTION_FORGET
+    elif correct_match:
+        logger.info(f"Detected [CORRECT:] pattern with old_fact: {correct_match.group(1)} and new_fact: {correct_match.group(2)}")
+        # Extract old_fact and new_fact to be corrected
+        return ACTION_CORRECT_DETECTED, {"old_fact": correct_match.group(1), "new_fact": correct_match.group(2)}, ACTION_CORRECT
+    elif has_tier_requests or has_episodic_search:
+        return ACTION_COMMAND_DETECTED, text, ACTION_COMMAND_DETECTED
+    else:
+        return ACTION_NONE, "", ACTION_NONE
 
 class ActionHandler:
     """Parses LLM responses, detects signals, and executes corresponding actions."""
@@ -199,23 +262,23 @@ class ActionHandler:
         logger.info(f"ActionHandler initialized for user {self.user_id}")
         
         # Dictionary to store current search status by session ID
-        self._search_status = {}
+        self._system_messages = {}
         self._system_message_ids = {}  # Maps search_id -> system_message_id
         
-    def store_search_status(self, session_id: str, status_message: dict):
-        """Store the current search status for a session and post to the system messages API.
+    def store_system_message(self, session_id: str, message: Dict[str, Any]) -> Optional[str]:
+        """Store the system message for a given session.
         
         Args:
             session_id: The session ID
-            status_message: The system message with search status
+            message: The system message to store
             
         Returns:
-            The system message ID if successful, None otherwise
+            Optional system message ID from the API
         """
-        self.logger.info(f"Storing search status for session {session_id}: {status_message['status']}")
+        self.logger.info(f"Storing system message for session {session_id}: {message['action']}")
         
         # Store in memory for reference
-        self._search_status[session_id] = status_message
+        self._system_messages[session_id] = message
         
         # Post to the dedicated system-messages API endpoint
         try:
@@ -229,12 +292,12 @@ class ActionHandler:
             # Format the payload for the system messages API
             payload = {
                 "session_id": session_id,
-                "message_type": status_message.get('action', 'status_update'),
+                "message_type": message.get('action', 'status_update'),
                 "content": {
-                    "status": status_message.get('status', 'info'),
-                    "message": status_message.get('content', ''),
-                    "search_id": status_message.get('id', ''),
-                    "timestamp": status_message.get('timestamp', '')
+                    "status": message.get('status', 'info'),
+                    "message": message.get('content', ''),
+                    "search_id": message.get('id', ''),
+                    "timestamp": message.get('timestamp', '')
                 }
             }
             
@@ -248,11 +311,11 @@ class ActionHandler:
                 if 'system_message' in response_data and 'id' in response_data['system_message']:
                     system_message_id = response_data['system_message']['id']
                     
-                    # Store the system message ID for this search
-                    if 'id' in status_message:
-                        search_id = status_message['id']
-                        self._system_message_ids[search_id] = system_message_id
-                        self.logger.info(f"Stored system message ID {system_message_id} for search ID {search_id}")
+                    # Store the system message ID for this action
+                    if 'id' in message:
+                        action_id = message['id']
+                        self._system_message_ids[action_id] = system_message_id
+                        self.logger.info(f"Stored system message ID {system_message_id} for action ID {action_id}")
                     
                     self.logger.info(f"Successfully posted system message to dedicated API for session {session_id}")
                     return system_message_id
@@ -267,22 +330,22 @@ class ActionHandler:
             self.logger.error(f"Error posting system message to API: {str(e)}")
             return None
     
-    def update_system_message(self, search_id: str, updated_content: dict):
+    def update_system_message(self, action_id: str, updated_content: Dict[str, Any]) -> bool:
         """Update an existing system message with new content.
         
         Args:
-            search_id: The search ID associated with the system message
+            action_id: The action ID associated with the system message
             updated_content: The updated content for the system message
             
         Returns:
             True if the update was successful, False otherwise
         """
-        if search_id not in self._system_message_ids:
-            self.logger.warning(f"No system message ID found for search ID {search_id}")
+        if action_id not in self._system_message_ids:
+            self.logger.warning(f"No system message ID found for action ID {action_id}")
             return False
             
-        system_message_id = self._system_message_ids[search_id]
-        self.logger.info(f"Updating system message {system_message_id} for search ID {search_id}")
+        system_message_id = self._system_message_ids[action_id]
+        self.logger.info(f"Updating system message {system_message_id} for action ID {action_id}")
         
         try:
             import requests
@@ -311,18 +374,56 @@ class ActionHandler:
             self.logger.error(f"Error updating system message: {str(e)}")
             return False
 
-    def get_search_status(self, session_id: str) -> dict:
-        """Get the current search status for a session.
+    def create_action_system_message(self, 
+                                    session_id: str, 
+                                    action_type: str, 
+                                    content: str, 
+                                    status: str = "active", 
+                                    message_type: str = "info") -> str:
+        """Create a system message for an action and store it.
+        
+        Args:
+            session_id: The session ID
+            action_type: The type of action (e.g., "web_search", "calculate")
+            content: The message content
+            status: The status of the action ("active", "completed", "error")
+            message_type: The message type ("info", "error", "warning")
+            
+        Returns:
+            The action ID for the created system message
+        """
+        # Generate a unique ID for this action
+        action_id = f"{action_type}-{int(time.time())}-{session_id[:8]}"
+        
+        # Create a system message with the provided status
+        system_message = {
+            "type": "system",
+            "action": action_type,
+            "status": status,
+            "id": action_id,
+            "content": content,
+            "timestamp": datetime.now().isoformat(),
+            "messageType": message_type
+        }
+        
+        # Store and send to dedicated system messages API
+        self.store_system_message(session_id, system_message)
+        
+        # Return the action ID so it can be updated later
+        return action_id
+
+    def get_system_message(self, session_id: str) -> Dict[str, Any]:
+        """Get the current system message for a session.
         
         Args:
             session_id: The session ID
             
         Returns:
-            A dictionary with the search status information
+            A dictionary with the system message information
         """
-        return self._search_status.get(session_id, {
+        return self._system_messages.get(session_id, {
             "status": "unknown",
-            "content": "No search status available",
+            "content": "No system message available",
             "messageType": "info"
         })
 
@@ -345,6 +446,9 @@ class ActionHandler:
         calculation_match = re.search(r"\[CALCULATE:([^\]]+)\]", tier3_response)
         command_match = re.search(r"\[COMMAND:([^\]]+)\]", tier3_response)
         execution_match = re.search(r"\[EXECUTE:([^\]]+)\]", tier3_response)
+        remember_match = re.search(r"\[REMEMBER:([^\]]+)\]", tier3_response)
+        forget_match = re.search(r"\[FORGET_THIS:([^\]]+)\]", tier3_response)
+        correct_match = re.search(r"\[CORRECT:([^\]]+):([^\]]+)\]", tier3_response)
         
         # Check for tier upgrade requests and episodic memory searches using exact test patterns
         tier_request_pattern = r"\[REQUEST_TIER:(\d+):([^\]]+)\]"
@@ -371,6 +475,18 @@ class ActionHandler:
             return ACTION_COMMAND_DETECTED, command_match.group(1), ACTION_COMMAND_DETECTED
         elif execution_match:
             return ACTION_EXECUTE_DETECTED, execution_match.group(1), ACTION_EXECUTE_DETECTED
+        elif remember_match:
+            self.logger.info(f"Detected [REMEMBER:] pattern with fact: {remember_match.group(1)}")
+            # Extract fact to be remembered
+            return ACTION_REMEMBER_DETECTED, remember_match.group(1), ACTION_REMEMBER
+        elif forget_match:
+            self.logger.info(f"Detected [FORGET_THIS:] pattern with fact: {forget_match.group(1)}")
+            # Extract fact to be forgotten
+            return ACTION_FORGET_DETECTED, forget_match.group(1), ACTION_FORGET
+        elif correct_match:
+            self.logger.info(f"Detected [CORRECT:] pattern with old_fact: {correct_match.group(1)} and new_fact: {correct_match.group(2)}")
+            # Extract old_fact and new_fact to be corrected
+            return ACTION_CORRECT_DETECTED, {"old_fact": correct_match.group(1), "new_fact": correct_match.group(2)}, ACTION_CORRECT
         elif has_tier_requests or has_episodic_search:
             return ACTION_COMMAND_DETECTED, tier3_response, ACTION_COMMAND_DETECTED
         else:
@@ -418,8 +534,19 @@ class ActionHandler:
             # Get content for the response
             content = ""
             
-            # Handle different possible response formats
-            if response_data is None:
+            # Check for direct action signals first (new format for interrupting actions)
+            if isinstance(response_data, str) and response_data.strip().startswith('[') and (':' in response_data):
+                # This might be a direct action signal like [SEARCH:query]
+                self.logger.info(f"Detected potential direct action signal: {response_data}")
+                
+                # Just use the string directly as content - our existing regex patterns will handle it
+                content = response_data
+                
+                # Skip the JSON extraction attempts since this is a direct action signal
+                self.logger.info("Using direct action signal format")
+            
+            # Otherwise handle different possible response formats
+            elif response_data is None:
                 content = "I'm sorry, but I couldn't generate a response at this time."
             elif isinstance(response_data, str):
                 # The response is directly a string
@@ -456,6 +583,15 @@ class ActionHandler:
                                 # Extract tier3 content from the parsed JSON
                                 if "llm_response" in parsed_json and "response_tiers" in parsed_json["llm_response"]:
                                     tier3 = parsed_json["llm_response"]["response_tiers"].get("tier3", "")
+                                    if tier3:
+                                        self.logger.info(f"Successfully extracted tier3 content: {tier3[:100]}...")
+                                        content = tier3
+                                    else:
+                                        self.logger.warning("tier3 content was empty in parsed JSON")
+                                        content = text_content
+                                elif "response_tiers" in parsed_json:
+                                    # Structure: {"response_tiers": {"tier3": "..."}}
+                                    tier3 = parsed_json['response_tiers'].get('tier3', '')
                                     if tier3:
                                         self.logger.info(f"Successfully extracted tier3 content: {tier3[:100]}...")
                                         content = tier3
@@ -520,6 +656,9 @@ class ActionHandler:
                 
         except Exception as e:
             self.logger.error(f"Error in process_llm_response: {str(e)}", exc_info=True)
+            # Attempt to store turn data even if processing failed
+            if response_data:
+                 self.contextual_memory.process_user_message(session_id, str(response_data))
             return ACTION_BREAK, "I encountered an error processing the response.", ACTION_ERROR
 
     def process_llm_response_original(self,
@@ -605,6 +744,16 @@ class ActionHandler:
                      self.logger.error("Web search signal detected, but Tavily client is not available.")
                      # Store turn, return error message as answer
                      self.contextual_memory.process_user_message(session_id, str(response_data))
+                     
+                     # Create system message for failed search
+                     search_id = self.create_action_system_message(
+                         session_id=session_id,
+                         action_type="web_search",
+                         content="Web search is currently unavailable",
+                         status="error",
+                         message_type="error"
+                     )
+                     
                      return ACTION_BREAK, "Web search is currently unavailable.", ACTION_ANSWER # Treat as answer
 
                 web_query = action_result
@@ -612,25 +761,14 @@ class ActionHandler:
                 # Store the turn *before* performing the search
                 self.contextual_memory.process_user_message(session_id, str(response_data))
 
-                # Generate a unique ID for this search action
-                search_id = f"search-{int(time.time())}-{session_id[:8]}"
+                # Generate a unique ID for this search action and create system message
+                search_id = self.create_action_system_message(
+                    session_id=session_id,
+                    action_type="web_search",
+                    content=f"Searching the web for: {web_query}"
+                )
                 self.logger.info(f"*** SENDING SEARCH STATUS TO FRONTEND (ID: {search_id}) ***")
                 
-                # Create a system message with 'active' status
-                system_message = {
-                    "type": "system",
-                    "action": "web_search",
-                    "status": "active",
-                    "id": search_id,
-                    "content": f"Searching the web for: {web_query}",
-                    "timestamp": datetime.now().isoformat(),
-                    "messageType": "info"
-                }
-                
-                # Store and send to dedicated system messages API
-                # This returns the system message ID which we'll use to update it later
-                system_message_id = self.store_search_status(session_id, system_message)
-
                 # Perform Web Search
                 search_error = None
                 try:
@@ -665,80 +803,28 @@ class ActionHandler:
                     # Check if search results indicate an error
                     if not search_results:
                         self.logger.warning("Search returned empty results")
-                        # Check if we have a system message ID for this search_id
-                        if search_id in self._system_message_ids:
-                            # Update the existing system message with 'error' status
-                            updated_content = {
-                                "status": "error",
-                                "message": "Web search returned no results",
-                                "timestamp": datetime.now().isoformat()
-                            }
-                            self.update_system_message(search_id, updated_content)
-                        else:
-                            # Create a new system message with 'error' status
-                            system_message = {
-                                "type": "system",
-                                "action": "web_search",
-                                "status": "error",
-                                "id": search_id,
-                                "content": "Web search returned no results",
-                                "timestamp": datetime.now().isoformat(),
-                                "messageType": "error"
-                            }
-                            
-                            # Store the search status for this session
-                            self.store_search_status(session_id, system_message)
+                        # Update the existing system message with 'error' status
+                        self.update_system_message(search_id, {
+                            "status": "error",
+                            "message": "Web search returned no results",
+                            "timestamp": datetime.now().isoformat()
+                        })
                     elif "error" in search_results.lower() or "unavailable" in search_results.lower():
                         self.logger.warning(f"Search returned an error message: {search_results[:100]}...")
-                        # Create a system message with 'error' status
-                        # Check if we have a system message ID for this search_id
-                        if search_id in self._system_message_ids:
-                            # Update the existing system message with 'error' status
-                            updated_content = {
-                                "status": "error",
-                                "message": search_results,
-                                "timestamp": datetime.now().isoformat()
-                            }
-                            self.update_system_message(search_id, updated_content)
-                        else:
-                            # Create a new system message with 'error' status
-                            system_message = {
-                                "type": "system",
-                                "action": "web_search",
-                                "status": "error",
-                                "id": search_id,
-                                "content": search_results,
-                                "timestamp": datetime.now().isoformat(),
-                                "messageType": "error"
-                            }
-                            
-                            # Store the search status for this session
-                            self.store_search_status(session_id, system_message)
+                        # Update the existing system message with 'error' status
+                        self.update_system_message(search_id, {
+                            "status": "error",
+                            "message": search_results,
+                            "timestamp": datetime.now().isoformat()
+                        })
                     else:
                         self.logger.info(f"Received valid web search results (first 100 chars): {search_results[:100] if search_results else 'None'}...")
-                        # Check if we have a system message ID for this search_id
-                        if search_id in self._system_message_ids:
-                            # Update the existing system message with 'complete' status
-                            updated_content = {
-                                "status": "complete",
-                                "message": f"Searched the web for: {web_query}",
-                                "timestamp": datetime.now().isoformat()
-                            }
-                            self.update_system_message(search_id, updated_content)
-                        else:
-                            # Create a new system message with 'complete' status
-                            system_message = {
-                                "type": "system",
-                                "action": "web_search",
-                                "status": "complete",
-                                "id": search_id,
-                                "content": f"Searched the web for: {web_query}",
-                                "timestamp": datetime.now().isoformat(),
-                                "messageType": "success"
-                            }
-                            
-                            # Store the search status for this session
-                            self.store_search_status(session_id, system_message)
+                        # Update the existing system message with 'complete' status
+                        self.update_system_message(search_id, {
+                            "status": "complete",
+                            "message": f"Searched the web for: {web_query}",
+                            "timestamp": datetime.now().isoformat()
+                        })
                     
                     # Store the search response and yield it to the client directly
                     search_response = {
@@ -764,53 +850,243 @@ class ActionHandler:
                     self.logger.error(f"Error during web search processing: {search_ex}", exc_info=True)
                     error_message = f"Error performing web search: {str(search_ex)}"
                     
-                    # Create a system message with 'error' status
-                    system_message = {
-                        "type": "system",
-                        "action": "web_search",
+                    # Update the existing system message with 'error' status
+                    self.update_system_message(search_id, {
                         "status": "error",
-                        "id": search_id,
-                        "content": error_message,
-                        "timestamp": datetime.now().isoformat(),
-                        "messageType": "error"
-                    }
-                    
-                    # Store the search status for this session
-                    if search_id in self._system_message_ids:
-                        # Update the existing system message with 'error' status
-                        updated_content = {
-                            "status": "error",
-                            "message": error_message,
-                            "timestamp": datetime.now().isoformat()
-                        }
-                        self.update_system_message(search_id, updated_content)
-                    else:
-                        # Store as a new message if no existing one
-                        self.store_search_status(session_id, system_message)
+                        "message": error_message,
+                        "timestamp": datetime.now().isoformat()
+                    })
                     
                     # Continue the conversation with the error message
                     return ACTION_CONTINUE, error_message, ACTION_SEARCH
 
             elif action_signal_type == ACTION_CALCULATE_DETECTED:
+                calculation_id = self.create_action_system_message(
+                    session_id=session_id,
+                    action_type="calculate",
+                    content=f"Calculating: {action_result}"
+                )
+                self.logger.info(f"*** SENDING CALCULATION STATUS TO FRONTEND (ID: {calculation_id}) ***")
                 self.logger.info(f"Calculation signal detected (Session: {session_id})")
                 # Store the turn *before* continuing for calculation
                 self.contextual_memory.process_user_message(session_id, str(response_data))
+                # Update the system message status to 'complete'
+                self.update_system_message(calculation_id, {
+                    "status": "complete",
+                    "message": f"Calculation completed: {action_result}",
+                    "timestamp": datetime.now().isoformat()
+                })
                 # Signal ConversationManager to continue the loop for calculation
                 return ACTION_CONTINUE, action_result, ACTION_CALCULATE_DETECTED
 
             elif action_signal_type == ACTION_COMMAND_DETECTED:
-                self.logger.info(f"Command signal detected (Session: {session_id})")
-                # Store the turn *before* continuing for command
-                self.contextual_memory.process_user_message(session_id, str(response_data))
-                # Signal ConversationManager to continue the loop for command
-                return ACTION_CONTINUE, action_result, ACTION_COMMAND_DETECTED
+                # Check if this is a tier request
+                tier_request_pattern = r"\[REQUEST_TIER:(\d+):([^\]]+)\]"
+                if re.search(tier_request_pattern, action_result):
+                    self.logger.info(f"Tier request detected: {action_result}")
+                    # Signal ConversationManager to break the loop for tier request
+                    return ACTION_BREAK, action_result, ACTION_COMMAND_DETECTED
+                else:
+                    command_id = self.create_action_system_message(
+                        session_id=session_id,
+                        action_type="command",
+                        content=f"Executing command: {action_result}"
+                    )
+                    self.logger.info(f"*** SENDING COMMAND STATUS TO FRONTEND (ID: {command_id}) ***")
+                    self.logger.info(f"Command signal detected (Session: {session_id})")
+                    # Store the turn *before* continuing for command
+                    self.contextual_memory.process_user_message(session_id, str(response_data))
+                    # Update the system message status to 'complete'
+                    self.update_system_message(command_id, {
+                        "status": "complete",
+                        "message": f"Command executed: {action_result}",
+                        "timestamp": datetime.now().isoformat()
+                    })
+                    # Signal ConversationManager to continue the loop for command
+                    return ACTION_CONTINUE, action_result, ACTION_COMMAND_DETECTED
 
             elif action_signal_type == ACTION_EXECUTE_DETECTED:
+                execution_id = self.create_action_system_message(
+                    session_id=session_id,
+                    action_type="execute",
+                    content=f"Executing action: {action_result}"
+                )
+                self.logger.info(f"*** SENDING EXECUTION STATUS TO FRONTEND (ID: {execution_id}) ***")
                 self.logger.info(f"Execution signal detected (Session: {session_id})")
                 # Store the turn *before* continuing for execution
                 self.contextual_memory.process_user_message(session_id, str(response_data))
+                # Update the system message status to 'complete'
+                self.update_system_message(execution_id, {
+                    "status": "complete",
+                    "message": f"Action executed: {action_result}",
+                    "timestamp": datetime.now().isoformat()
+                })
                 # Signal ConversationManager to continue the loop for execution
                 return ACTION_CONTINUE, action_result, ACTION_EXECUTE_DETECTED
+
+            elif action_signal_type == ACTION_REMEMBER_DETECTED:
+                fact_to_remember = action_result
+                self.logger.info(f"Remember signal detected: '{fact_to_remember}' (Session: {session_id})")
+                
+                # Store the turn first
+                self.contextual_memory.process_user_message(session_id, str(response_data))
+                
+                try:
+                    # Store the fact directly to contextual memory with high importance (tier 2)
+                    if self.contextual_memory:
+                        # Check if fact already exists to avoid duplicates
+                        fact_already_exists = False
+                        existing_facts = self.contextual_memory.get_facts_for_session(session_id, limit=100)
+                        if existing_facts:
+                            for fact in existing_facts:
+                                if fact_to_remember.lower() in fact.lower():
+                                    fact_already_exists = True
+                                    self.logger.info(f"Fact already exists, skipping storage: {fact_to_remember}")
+                                    break
+                                    
+                        if not fact_already_exists:
+                            # Custom fact storage
+                            from models.memory import Memory, MemoryType, MemoryTier
+                            
+                            with get_db() as db:
+                                # Create memory entry with high importance tier (Tier 2)
+                                new_memory = Memory(
+                                    user_id=self.user_id,
+                                    session_id=session_id,
+                                    memory_type=MemoryType.FACT,
+                                    content=fact_to_remember,
+                                    source="LLM_EXPLICIT_REMEMBER",
+                                    importance=0.85,  # High importance
+                                    tier=MemoryTier.TIER_2,  # Store in Tier 2 directly
+                                    timestamp=datetime.now()
+                                )
+                                db.add(new_memory)
+                                db.commit()
+                                self.logger.info(f"Successfully stored fact in memory: {fact_to_remember}")
+                    
+                    # Also try to store using the existing API 
+                    try:
+                        if hasattr(self.contextual_memory, 'store_fact'):
+                            self.contextual_memory.store_fact(
+                                session_id=session_id,
+                                fact=fact_to_remember,
+                                source="LLM_EXPLICIT_REMEMBER",
+                                importance=0.85  # High importance
+                            )
+                            self.logger.info(f"Stored fact using store_fact API: {fact_to_remember}")
+                    except Exception as fact_ex:
+                        self.logger.error(f"Error storing fact using API: {fact_ex}")
+                
+                except Exception as e:
+                    self.logger.error(f"Error storing remembered fact: {e}", exc_info=True)
+                
+                # Unlike search actions, REMEMBER actions should NOT break the normal response flow
+                # We return CONTINUE to allow the normal message to still be sent to the frontend
+                # The action just added something to memory without interrupting the flow
+                return ACTION_CONTINUE, fact_to_remember, ACTION_REMEMBER
+
+            elif action_signal_type == ACTION_FORGET_DETECTED:
+                fact_to_forget = action_result
+                self.logger.info(f"Forget signal detected: '{fact_to_forget}' (Session: {session_id})")
+                
+                # Store the turn first
+                self.contextual_memory.process_user_message(session_id, str(response_data))
+                
+                try:
+                    # Remove the fact from contextual memory
+                    if self.contextual_memory:
+                        # Check if fact exists
+                        existing_facts = self.contextual_memory.get_facts_for_session(session_id, limit=100)
+                        if existing_facts:
+                            for fact in existing_facts:
+                                if fact_to_forget.lower() in fact.lower():
+                                    self.logger.info(f"Fact found, attempting to remove: {fact_to_forget}")
+                                    # Custom fact removal
+                                    from models.memory import Memory, MemoryType
+                                    
+                                    with get_db() as db:
+                                        # Remove memory entry
+                                        db.query(Memory).filter(
+                                            Memory.user_id == self.user_id,
+                                            Memory.session_id == session_id,
+                                            Memory.memory_type == MemoryType.FACT,
+                                            Memory.content == fact_to_forget
+                                        ).delete()
+                                        db.commit()
+                                        self.logger.info(f"Successfully removed fact from memory: {fact_to_forget}")
+                    
+                    # Also try to remove using the existing API 
+                    try:
+                        if hasattr(self.contextual_memory, 'remove_fact'):
+                            self.contextual_memory.remove_fact(
+                                session_id=session_id,
+                                fact=fact_to_forget
+                            )
+                            self.logger.info(f"Removed fact using remove_fact API: {fact_to_forget}")
+                    except Exception as fact_ex:
+                        self.logger.error(f"Error removing fact using API: {fact_ex}")
+                
+                except Exception as e:
+                    self.logger.error(f"Error removing forgotten fact: {e}", exc_info=True)
+                
+                # Unlike search actions, FORGET actions should NOT break the normal response flow
+                # We return CONTINUE to allow the normal message to still be sent to the frontend
+                # The action just removed something from memory without interrupting the flow
+                return ACTION_CONTINUE, fact_to_forget, ACTION_FORGET
+
+            elif action_signal_type == ACTION_CORRECT_DETECTED:
+                correct_data = action_result
+                old_fact = correct_data["old_fact"]
+                new_fact = correct_data["new_fact"]
+                self.logger.info(f"Correct signal detected: old_fact='{old_fact}', new_fact='{new_fact}' (Session: {session_id})")
+                
+                # Store the turn first
+                self.contextual_memory.process_user_message(session_id, str(response_data))
+                
+                try:
+                    # Correct the fact in contextual memory
+                    if self.contextual_memory:
+                        # Check if fact exists
+                        existing_facts = self.contextual_memory.get_facts_for_session(session_id, limit=100)
+                        if existing_facts:
+                            for fact in existing_facts:
+                                if old_fact.lower() in fact.lower():
+                                    self.logger.info(f"Fact found, attempting to correct: {old_fact}")
+                                    # Custom fact correction
+                                    from models.memory import Memory, MemoryType
+                                    
+                                    with get_db() as db:
+                                        # Update memory entry
+                                        db.query(Memory).filter(
+                                            Memory.user_id == self.user_id,
+                                            Memory.session_id == session_id,
+                                            Memory.memory_type == MemoryType.FACT,
+                                            Memory.content == old_fact
+                                        ).update({
+                                            Memory.content: new_fact
+                                        })
+                                        db.commit()
+                                        self.logger.info(f"Successfully corrected fact in memory: {old_fact} -> {new_fact}")
+                    
+                    # Also try to correct using the existing API 
+                    try:
+                        if hasattr(self.contextual_memory, 'correct_fact'):
+                            self.contextual_memory.correct_fact(
+                                session_id=session_id,
+                                old_fact=old_fact,
+                                new_fact=new_fact
+                            )
+                            self.logger.info(f"Corrected fact using correct_fact API: {old_fact} -> {new_fact}")
+                    except Exception as fact_ex:
+                        self.logger.error(f"Error correcting fact using API: {fact_ex}")
+                
+                except Exception as e:
+                    self.logger.error(f"Error correcting fact: {e}", exc_info=True)
+                
+                # Unlike search actions, CORRECT actions should NOT break the normal response flow
+                # We return CONTINUE to allow the normal message to still be sent to the frontend
+                # The action just corrected something in memory without interrupting the flow
+                return ACTION_CONTINUE, {"old_fact": old_fact, "new_fact": new_fact}, ACTION_CORRECT
 
             else: # Normal response
                 self.logger.info(f"No signals detected. Processing as normal answer (Session: {session_id}).") 

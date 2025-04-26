@@ -50,10 +50,37 @@ def get_llm_api():
     logger.warning("Using fallback LLM API client")
     
     class FallbackLLMAPI:
+        """Fallback implementation when no LLM is available."""
+        
+        def __init__(self, logger):
+            self.logger = logger
+            self.logger.warning("USING FALLBACK LLM API - No LLM engine is available. Responses will be placeholders only.")
+        
         def generate_response(self, prompt, system_prompt=None):
-            return {"response": "LLM API not available. This is a fallback response."}
+            """Generate a fallback response when no LLM is available."""
+            self.logger.warning(f"⚠️ FALLBACK MODE: No LLM engine available. Using placeholder response for prompt: {prompt[:50]}...")
+            
+            # Create a more informative fallback response
+            return {
+                "response": (
+                    "⚠️ LLM ENGINE NOT AVAILABLE ⚠️\n\n"
+                    "The LLM engine service is not running or not accessible. "
+                    "Please check the LLM Engine configuration and ensure it's properly running.\n\n"
+                    "This is a placeholder response only. To fix this issue:\n"
+                    "1. Make sure the LLM Engine service is running\n"
+                    "2. Check that network configuration is correct\n"
+                    "3. Verify environment variables for LLM_API_URL"
+                ),
+                "error": True,
+                "is_fallback": True,
+                "_fallback_error_message": True
+            }
+        
+        def generate(self, prompt, system_prompt=None, temperature=0.7, max_tokens=1000):
+            """Alias for generate_response with additional parameters for compatibility."""
+            return self.generate_response(prompt, system_prompt)
     
-    return FallbackLLMAPI()
+    return FallbackLLMAPI(logger)
 
 def get_llm_engine():
     """Fallback function that returns a simple LLM Engine."""
@@ -69,9 +96,63 @@ def get_llm_engine():
 try:
     # In Docker, we use a simple HTTP client to communicate with the LLM Engine
     class DockerLLMAPI:
-        def __init__(self):
-            self.llm_api_url = os.environ.get('LLM_API_URL', 'http://rai-llm-engine:6101')
-            logger.info(f"Initializing Docker LLM API client with URL: {self.llm_api_url}")
+        """Docker-based LLM API implementation."""
+        
+        def __init__(self, logger):
+            """Initialize the Docker LLM API client."""
+            self.logger = logger
+            
+            # Check multiple environment variables for the LLM Engine URL
+            self.llm_api_url = os.environ.get('LLM_API_URL', None)
+            if not self.llm_api_url:
+                # Try the alternative environment variable name
+                self.llm_api_url = os.environ.get('LLM_ENGINE_URL', None)
+                if self.llm_api_url:
+                    self.logger.info(f"Using LLM_ENGINE_URL environment variable: {self.llm_api_url}")
+                else:
+                    # Use default if neither is set
+                    self.llm_api_url = 'http://rai-llm-engine:6101'
+                    self.logger.warning(f"No LLM URL environment variables found. Using default: {self.llm_api_url}")
+            
+            # Also try localhost and other variants if the container name doesn't work
+            self.alternative_urls = [
+                'http://localhost:6101',
+                'http://127.0.0.1:6101',
+                'http://rai-llm-engine:6101'
+            ]
+            
+            # Don't include the current URL in alternatives
+            self.alternative_urls = [url for url in self.alternative_urls if url != self.llm_api_url]
+            
+            self.logger.info(f"Initializing Docker LLM API with URL: {self.llm_api_url}")
+            self.test_connection()
+            
+        def test_connection(self):
+            """Test the connection to the LLM Engine."""
+            try:
+                # Try primary URL
+                response = requests.get(f"{self.llm_api_url}/api/health", timeout=2)
+                if response.status_code == 200:
+                    self.logger.info(f"✅ Successfully connected to LLM Engine at {self.llm_api_url}")
+                    return True
+                    
+                # If primary URL fails, try alternatives
+                for alt_url in self.alternative_urls:
+                    try:
+                        self.logger.info(f"Trying alternative LLM Engine URL: {alt_url}")
+                        response = requests.get(f"{alt_url}/api/health", timeout=2)
+                        if response.status_code == 200:
+                            self.logger.info(f"✅ Successfully connected to LLM Engine at {alt_url}")
+                            self.llm_api_url = alt_url  # Use this working URL
+                            return True
+                    except Exception as alt_err:
+                        self.logger.warning(f"Alternative URL {alt_url} failed: {str(alt_err)}")
+                
+                self.logger.error(f"❌ Failed to connect to any LLM Engine URL. Primary response: {response.status_code}")
+                return False
+            except Exception as e:
+                self.logger.error(f"❌ Error testing connection to LLM Engine: {str(e)}")
+                return False
         
         def generate_response(self, prompt, system_prompt=None):
             """Generate a response from the LLM Engine."""
@@ -82,28 +163,105 @@ try:
                     "system_prompt": system_prompt or ""
                 }
                 
+                # Log request details for debugging
+                self.logger.info(f"Sending request to LLM Engine at {self.llm_api_url}")
+                self.logger.info(f"Prompt: {prompt[:100]}...")
+                self.logger.info(f"System prompt: {system_prompt[:100] if system_prompt else 'None'}...")
+                
                 # Send the request to the LLM Engine
-                response = requests.post(f"{self.llm_api_url}/api/generate", json=data)
+                response = requests.post(f"{self.llm_api_url}/api/generate", json=data, timeout=30)
                 
                 # Check if the request was successful
                 if response.status_code == 200:
                     response_data = response.json()
                     # Add debug logging
-                    logger.info(f"LLM API raw response: {str(response_data)[:200]}...")
-                    logger.info(f"LLM API response type: {type(response_data)}")
-                    if isinstance(response_data, dict):
-                        logger.info(f"LLM API response keys: {list(response_data.keys())}")
+                    self.logger.info(f"LLM API raw response: {str(response_data)[:200]}...")
+                    
+                    # Handle JSON responses from Gemini
+                    if isinstance(response_data, dict) and "text" in response_data:
+                        raw_text = response_data["text"]
+                        self.logger.info(f"Raw text from LLM: {raw_text[:200]}...")
+                        
+                        # Create a cleaned response object
+                        clean_response = {
+                            "cleaned": True,
+                            "original_text": raw_text,
+                            "text": raw_text  # Default to original text
+                        }
+                        
+                        # If this looks like JSON, try to extract content
+                        if raw_text.strip().startswith("```json") or raw_text.strip().startswith("{"):
+                            self.logger.info("Detected JSON format in response - attempting to extract poem content")
+                            
+                            # Clean up markdown code blocks
+                            json_text = raw_text
+                            if "```json" in json_text:
+                                json_text = json_text.replace("```json", "").replace("```", "").strip()
+                            
+                            try:
+                                import json
+                                import re
+                                
+                                # Try to parse the JSON
+                                json_obj = json.loads(json_text)
+                                
+                                # Check for tiered response format
+                                if "llm_response" in json_obj and "response_tiers" in json_obj["llm_response"]:
+                                    tiers = json_obj["llm_response"]["response_tiers"]
+                                    if "tier3" in tiers and tiers["tier3"]:
+                                        self.logger.info("Successfully extracted tier3 content")
+                                        clean_response["text"] = tiers["tier3"]
+                                        return clean_response
+                            except:
+                                # If JSON parsing fails, try regex extraction
+                                self.logger.warning("JSON parsing failed, trying regex extraction")
+                                
+                                # Look for content between quotes in tier3 field
+                                tier3_match = re.search(r'"tier3"\s*:\s*"([^"]+)"', raw_text)
+                                if tier3_match:
+                                    clean_response["text"] = tier3_match.group(1)
+                                    self.logger.info(f"Extracted tier3 content using regex: {clean_response['text'][:100]}...")
+                                    return clean_response
+                                
+                                # Look for poem-like content by filtering out JSON lines
+                                lines = raw_text.split('\n')
+                                content_lines = []
+                                for line in lines:
+                                    line = line.strip()
+                                    # Skip lines that look like JSON syntax
+                                    if (not line or 
+                                        line in ['{', '}', '[', ']'] or 
+                                        '"tier' in line or 
+                                        line.startswith('"') and ':' in line):
+                                        continue
+                                    # Keep lines that look like content
+                                    content_lines.append(line)
+                                
+                                if content_lines:
+                                    content = '\n'.join(content_lines)
+                                    clean_response["text"] = content
+                                    self.logger.info(f"Extracted poem content by filtering JSON lines: {content[:100]}...")
+                        
+                        return clean_response
+                    
                     return response_data
                 else:
-                    logger.error(f"LLM API request failed with status code: {response.status_code}")
-                    return {"response": f"Error: LLM API request failed with status code {response.status_code}"}
+                    self.logger.error(f"LLM API request failed with status code: {response.status_code}")
+                    return {
+                        "response": f"Error: LLM API request failed with status code {response.status_code}",
+                        "error": True
+                    }
             
             except Exception as e:
-                logger.error(f"Error generating response from LLM API: {str(e)}")
-                return {"response": f"Error: {str(e)}"}
+                self.logger.error(f"Error generating response from LLM API: {str(e)}")
+                return {
+                    "response": f"Error: {str(e)}",
+                    "error": True
+                }
         
         def generate(self, prompt, system_prompt=None, temperature=0.7, max_tokens=1000):
             """Alias for generate_response with additional parameters for compatibility."""
+            # This method ignores temperature and max_tokens as they may not be supported by all LLM engines
             return self.generate_response(prompt, system_prompt)
         
         def generate_text(self, prompt, temperature=0.7, max_tokens=1000):
@@ -272,7 +430,7 @@ try:
     
     # Override the get_llm_api function
     def get_llm_api():
-        return DockerLLMAPI()
+        return DockerLLMAPI(logger)
     
     # For compatibility, also provide a get_llm_engine function
     def get_llm_engine():
@@ -462,20 +620,43 @@ class ConversationManager:
         )
         
         # Generate and process the response
-        yield from self.response_processor.generate_response(
+        for chunk in self.response_processor.generate_response(
             user_input=user_input,
             system_prompt=system_prompt,
             context=context,
             session_id=self.current_session_id,
             user_id=self.user_id
-        )
+        ):
+            # Ensure chunk content has proper formatting before yielding to frontend
+            if isinstance(chunk, dict) and 'content' in chunk and isinstance(chunk['content'], str):
+                # 1. Replace escaped newlines with actual newlines
+                chunk['content'] = chunk['content'].replace('\\n', '\n')
+                
+                # 2. Handle multiple newlines (often used in poetry)
+                # This preserves paragraph breaks and line breaks in poems
+                chunk['content'] = chunk['content'].replace('\n\n', '{{DOUBLENEWLINE}}')
+                chunk['content'] = chunk['content'].replace('\n', '{{NEWLINE}}')
+                chunk['content'] = chunk['content'].replace('{{DOUBLENEWLINE}}', '\n\n')
+                chunk['content'] = chunk['content'].replace('{{NEWLINE}}', '\n')
+                
+                # 3. Make sure any trailing JSON fragments are removed
+                if chunk['content'].endswith('"}') or chunk['content'].endswith('} }'):
+                    import re
+                    chunk['content'] = re.sub(r'\s*[\}\]\)]+\s*[\}\]\),]*\s*$', '', chunk['content'])
+            
+            # Log the chunk being yielded for debugging
+            if isinstance(chunk, dict) and 'content' in chunk:
+                content_preview = chunk['content'][:100] if isinstance(chunk['content'], str) else str(chunk['content'])[:100]
+                self.logger.info(f"Yielding chunk with content: {content_preview}...")
+            
+            yield chunk
         
         # After conversation, check if any messages should be elevated in importance
         try:
             if self.contextual_memory:
                 self.auto_upgrade_important_messages(self.current_session_id)
         except Exception as e:
-            self.logger.error(f"Error in auto-upgrading messages: {str(e)}")
+            self.logger.error(f"Error in auto_upgrade_important_messages: {str(e)}")
     
     def process_message(self, user_input: str, session_id: Optional[str] = None):
         """

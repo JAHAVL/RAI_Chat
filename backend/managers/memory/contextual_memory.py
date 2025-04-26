@@ -291,6 +291,20 @@ class ContextualMemoryManager:
     def save_user_remembered_facts(self, db: SQLAlchemySession) -> None:
         """Saves the current 'remember this' facts to the user's record in the database."""
         try:
+            # Clean up the facts before saving
+            cleaned_facts = []
+            for fact in self.user_remembered_facts:
+                # Only keep meaningful facts (at least 3 characters)
+                if len(fact) >= 3:
+                    # Remove any noise or potential action signals
+                    cleaned_fact = re.sub(r'\[(REQUEST_TIER|SEARCH|WEB_SEARCH|REMEMBER|FORGET_THIS|CORRECT|CALCULATE|COMMAND|EXECUTE|SEARCH_EPISODIC)[^\]]*\]', '', fact)
+                    cleaned_fact = cleaned_fact.strip()
+                    if cleaned_fact and cleaned_fact not in cleaned_facts:
+                        cleaned_facts.append(cleaned_fact)
+            
+            # Update the facts list with the cleaned list
+            self.user_remembered_facts = cleaned_facts
+            
             # Find the user record
             user = db.query(User).filter(User.user_id == self.user_id).first()
             if user:
@@ -351,15 +365,28 @@ class ContextualMemoryManager:
             from models.connection import get_db
             with get_db() as db:
                 self.load_user_remembered_facts(db)
+            
+            # Debug: Log the exact facts being retrieved
+            self.logger.info(f"Retrieved {len(self.user_remembered_facts)} user facts: {self.user_remembered_facts}")
                 
             # Format the remembered facts into a list
             if not self.user_remembered_facts:
                 return "No specific things about this user to remember."
                 
-            facts_str = "Things to remember about this user:\n"
+            facts_str = "IMPORTANT USER FACTS (MUST BE USED INSTEAD OF MAKING TIER REQUESTS):\n"
             for fact in self.user_remembered_facts:
-                facts_str += f"- {fact}\n"
+                # Filter out any nonsensical facts or single words that might have been accidentally stored
+                if len(fact.split()) > 2 and not fact.isdigit():
+                    facts_str += f"- {fact}\n"
+                elif "name" in fact.lower() and len(fact.split()) <= 2:
+                    # Special handling for names that might be short
+                    facts_str += f"- {fact}\n"
+                    self.logger.info(f"Including short name fact: {fact}")
+                else:
+                    self.logger.info(f"Filtering out potential noise fact: {fact}")
                 
+            # Debug: Log the formatted facts string being returned
+            self.logger.info(f"Formatted remember_this content: {facts_str[:100]}...")
             return facts_str
         except Exception as e:
             self.logger.error(f"Error getting remember_this content: {e}", exc_info=True)
