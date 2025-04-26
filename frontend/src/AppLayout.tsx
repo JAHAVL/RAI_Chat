@@ -5,13 +5,22 @@ import HeaderComponent from './pages/Main_Chat_UI/components/HeaderComponent';
 import SidebarComponent from './pages/Main_Chat_UI/components/Sidebar';
 
 import { useAuth } from './contexts/AuthContext';
-import { useApp, NEW_CHAT_SESSION_ID, initialSystemMessage } from './App';
-import type { SessionId, ChatLibraryRefMethods } from './App';
+import { useApp } from './contexts/AppContext';
+// Import the ChatContext hooks and constants
+import { useChat, NEW_CHAT_SESSION_ID, SessionId, initialSystemMessage } from './contexts/ChatContext';
 import ChatPage from './pages/Main_Chat_UI/ChatPage';
 import { sessionService, chatLibraryService } from './services/chat';
 import { moduleService } from './services/app';
 
 import { theme } from '../shared/theme'; // Import the shared theme
+
+// ChatLibraryRefMethods interface definition
+export interface ChatLibraryRefMethods {
+  addPlaceholder: (tempId: string, initialTitle: string) => void;
+  confirmPlaceholder: (tempId: string, realSessionData: { id: string; title: string }) => void;
+  removePlaceholder: (tempId: string) => void;
+  fetchSessions: () => void;
+}
 
 // --- Global Styles ---
 export const GlobalStyle = createGlobalStyle`
@@ -82,7 +91,11 @@ const Content = styled.div`
 
 // --- App Layout Component ---
 const AppLayout: React.FC = () => {
-  const { state, dispatch } = useApp();
+  // Use App context for app-level state like activeModule
+  const { state: appState, dispatch: appDispatch } = useApp();
+  // Use Chat context for chat-related state
+  const { state: chatState, dispatch: chatDispatch, createNewChat, setCurrentSession } = useChat();
+  
   const { logout } = useAuth(); 
   const { token } = useAuth(); 
   const [currentSessionId, setCurrentSessionId] = useState<SessionId>(NEW_CHAT_SESSION_ID); 
@@ -99,36 +112,34 @@ const AppLayout: React.FC = () => {
   }, [token]); 
 
   const handleSelectChat = async (sessionId: string) => { 
-    // Use the sessionService to handle session selection
+    // Call sessionService.selectSession with the sessionId and UI update function
     await sessionService.selectSession(
       sessionId,
-      state.messagesBySession,
-      dispatch,
-      initialSystemMessage,
       setCurrentSessionId
     );
+    
+    // Also update the ChatContext if needed
+    setCurrentSession(sessionId);
   };
 
   const handleNewChat = () => {
-    // Use sessionService to select the NEW_CHAT_SESSION_ID
-    sessionService.selectSession(
-      NEW_CHAT_SESSION_ID,
-      state.messagesBySession,
-      dispatch,
-      initialSystemMessage,
-      setCurrentSessionId
-    );
+    // Create a new chat
+    createNewChat();
+    setCurrentSessionId(NEW_CHAT_SESSION_ID);
   };
 
   const handleChatDeleted = (deletedSessionId: string) => {
-    // Use sessionService to handle session deletion
+    // Handle chat deletion with the sessionService
     sessionService.handleSessionDeletion(
       deletedSessionId,
       currentSessionId,
-      dispatch,
-      initialSystemMessage,
       setCurrentSessionId
     );
+    
+    // Also update the ChatContext if needed
+    if (deletedSessionId === currentSessionId) {
+      createNewChat();
+    }
   };
 
   const handleNewChatPlaceholder = (tempId: string, initialTitle: string) => { 
@@ -166,8 +177,8 @@ const AppLayout: React.FC = () => {
             />
           </Content>
           <SidebarComponent
-            activeModule={state.activeModule}
-            onModuleChange={(module: string | null) => moduleService.changeActiveModule(module, dispatch)} 
+            activeModule={appState.activeModule}
+            onModuleChange={(module: string | null) => moduleService.changeActiveModule(module, appDispatch)} 
             moduleButtons={moduleService.getAvailableModules().map(module => {
               const icons = {
                 'code': <FaCode />,
