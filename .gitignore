@@ -1,0 +1,24 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Database files
+*.db-shm
+*.db-wal
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Development/editor files
+.vscode/
+.idea/
