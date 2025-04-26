@@ -14,9 +14,9 @@ from .episodic import EpisodicMemoryManager
 from llm_Engine.llm_api_bridge import get_llm_api # Or pass LLM API instance
 
 # Import path utilities
-from ...utils.path import LOGS_DIR, ensure_directory_exists, get_user_session_context_filepath, get_user_base_dir
+from ...utils.pathconfig import LOGS_DIR, ensure_directory_exists, get_user_session_context_filepath, get_user_base_dir
 # Import DB models and session type
-from ...core.database.models import User
+from models.user import User
 from sqlalchemy.orm import Session as SQLAlchemySession
 logger_cmm = logging.getLogger(__name__) # Module-level logger
 

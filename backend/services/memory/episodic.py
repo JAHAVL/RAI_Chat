@@ -15,7 +15,7 @@ from pathlib import Path
 from llm_Engine.llm_api_bridge import get_llm_api
 
 # Import path utilities
-from ...utils.path import ensure_directory_exists, LOGS_DIR, DATA_DIR
+from ...utils.pathconfig import ensure_directory_exists, LOGS_DIR, DATA_DIR
 
 logger_emm = logging.getLogger(__name__) # Module-level logger
 

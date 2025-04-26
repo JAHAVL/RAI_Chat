@@ -1,0 +1,85 @@
+{
+    "messages": [
+        {
+            "turn_id": "f25c898f-7e4a-4f4b-9fb8-212511853b43",
+            "timestamp": "2025-04-25T04:08:36.936001",
+            "user_input": "I want you to remember that my favorite animal is The capybara.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite animal is a capybara.\",\n      \"tier2\": \"The user is informing me that their favorite animal is the capybara.  This is information I should remember for future interactions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that your favorite animal is a capybara.\",\n      \"tier2\": \"Got it! I've added to my memory that your favorite animal is the capybara. I will keep this in mind for future conversations. Is there anything else I can help you with today?\",\n      \"tier3\": \"Capybara added to user preferences.  Further contextual information may be needed to fully understand preferences in future requests.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "ed06bc5e-11f5-48ff-a1b1-d75fa027756a",
+            "timestamp": "2025-04-25T04:08:36.939578",
+            "user_input": "I want you to remember that my favorite animal is The capybara.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite animal is a capybara.\",\n      \"tier2\": \"The user is informing me that their favorite animal is the capybara.  This is information I should remember for future interactions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that your favorite animal is a capybara.\",\n      \"tier2\": \"Got it! I've added to my memory that your favorite animal is the capybara. I will keep this in mind for future conversations. Is there anything else I can help you with today?\",\n      \"tier3\": \"Capybara added to user preferences.  Further contextual information may be needed to fully understand preferences in future requests.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite animal is a capybara.\",\n      \"tier2\": \"The user is informing me that their favorite animal is the capybara.  This is information I should remember for future interactions.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that your favorite animal is a capybara.\",\n      \"tier2\": \"Got it! I've added to my memory that your favorite animal is the capybara. I will keep this in mind for future conversations. Is there anything else I can help you with today?\",\n      \"tier3\": \"Capybara added to user preferences.  Further contextual information may be needed to fully understand preferences in future requests.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "86d8422e-2f8e-46ad-9012-2e8c5e73d0e1",
+            "timestamp": "2025-04-25T04:08:40.113868",
+            "user_input": "I want you to remember that my childhood pet is A calico cat named Whiskers.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their childhood pet was a calico cat named Whiskers.\",\n      \"tier2\": \"The user is providing information about their past; specifically, they had a calico cat named Whiskers as a childhood pet.  They want this information stored in my memory for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that Whiskers the calico cat was your childhood pet.\",\n      \"tier2\": \"I've added Whiskers, the calico cat, to my memory as your childhood pet. I can access this information in future conversations if you need me to.  Let me know if there's anything else I can help you remember.\",\n      \"tier3\": \"Information added to memory: Childhood pet - Calico cat named Whiskers.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "ca17443f-1921-40ac-bd64-fdbcfbd274c7",
+            "timestamp": "2025-04-25T04:08:40.117007",
+            "user_input": "I want you to remember that my childhood pet is A calico cat named Whiskers.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their childhood pet was a calico cat named Whiskers.\",\n      \"tier2\": \"The user is providing information about their past; specifically, they had a calico cat named Whiskers as a childhood pet.  They want this information stored in my memory for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that Whiskers the calico cat was your childhood pet.\",\n      \"tier2\": \"I've added Whiskers, the calico cat, to my memory as your childhood pet. I can access this information in future conversations if you need me to.  Let me know if there's anything else I can help you remember.\",\n      \"tier3\": \"Information added to memory: Childhood pet - Calico cat named Whiskers.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their childhood pet was a calico cat named Whiskers.\",\n      \"tier2\": \"The user is providing information about their past; specifically, they had a calico cat named Whiskers as a childhood pet.  They want this information stored in my memory for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I'll remember that Whiskers the calico cat was your childhood pet.\",\n      \"tier2\": \"I've added Whiskers, the calico cat, to my memory as your childhood pet. I can access this information in future conversations if you need me to.  Let me know if there's anything else I can help you remember.\",\n      \"tier3\": \"Information added to memory: Childhood pet - Calico cat named Whiskers.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "cddb2a6a-b212-4aa0-b180-c2f46d4ac775",
+            "timestamp": "2025-04-25T04:08:43.568132",
+            "user_input": "I want you to remember that my first job is A barista at a local coffee shop.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their first job was as a barista at a local coffee shop.\",\n      \"tier2\": \"The user is providing information about their employment history.  Specifically, they state their first job was working as a barista at a local coffee shop.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Is there anything else?\",\n      \"tier2\": \"I've noted that your first job was as a barista at a local coffee shop. This information will be stored and accessible for future reference in our conversation.  Do you have any other details you'd like to share or any other tasks for me?\",\n      \"tier3\": \"User's first job: Barista at a local coffee shop.  This information has been added to the user's profile.  No further action is needed at this time.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "54c8e013-f9bf-4883-a06e-5af7c4b63ccc",
+            "timestamp": "2025-04-25T04:08:43.571806",
+            "user_input": "I want you to remember that my first job is A barista at a local coffee shop.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their first job was as a barista at a local coffee shop.\",\n      \"tier2\": \"The user is providing information about their employment history.  Specifically, they state their first job was working as a barista at a local coffee shop.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Is there anything else?\",\n      \"tier2\": \"I've noted that your first job was as a barista at a local coffee shop. This information will be stored and accessible for future reference in our conversation.  Do you have any other details you'd like to share or any other tasks for me?\",\n      \"tier3\": \"User's first job: Barista at a local coffee shop.  This information has been added to the user's profile.  No further action is needed at this time.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:09:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their first job was as a barista at a local coffee shop.\",\n      \"tier2\": \"The user is providing information about their employment history.  Specifically, they state their first job was working as a barista at a local coffee shop.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:09:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Is there anything else?\",\n      \"tier2\": \"I've noted that your first job was as a barista at a local coffee shop. This information will be stored and accessible for future reference in our conversation.  Do you have any other details you'd like to share or any other tasks for me?\",\n      \"tier3\": \"User's first job: Barista at a local coffee shop.  This information has been added to the user's profile.  No further action is needed at this time.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "b78afa54-0c65-4f8d-adcf-425dd93d4eb0",
+            "timestamp": "2025-04-25T04:08:46.759738",
+            "user_input": "I want you to remember that my favorite instrument is The cello.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their favorite instrument is the cello.\",\n      \"tier2\": \"The user is providing a new piece of information for me to store in my memory: their favorite instrument is the cello.  This should be added to my existing knowledge about the user.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Your favorite instrument is now the cello.\",\n      \"tier2\": \"I've noted that your favorite instrument is the cello.  This information will be stored and used to personalize future interactions with you.  Is there anything else I can remember for you?\",\n      \"tier3\": \"User preference updated: Favorite instrument = Cello.  This information has been successfully stored and will be accessible for future reference in our conversation.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "c4aceebf-cf39-4f88-bc8d-f8050289a076",
+            "timestamp": "2025-04-25T04:08:46.765065",
+            "user_input": "I want you to remember that my favorite instrument is The cello.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their favorite instrument is the cello.\",\n      \"tier2\": \"The user is providing a new piece of information for me to store in my memory: their favorite instrument is the cello.  This should be added to my existing knowledge about the user.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Your favorite instrument is now the cello.\",\n      \"tier2\": \"I've noted that your favorite instrument is the cello.  This information will be stored and used to personalize future interactions with you.  Is there anything else I can remember for you?\",\n      \"tier3\": \"User preference updated: Favorite instrument = Cello.  This information has been successfully stored and will be accessible for future reference in our conversation.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:10:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants me to remember their favorite instrument is the cello.\",\n      \"tier2\": \"The user is providing a new piece of information for me to store in my memory: their favorite instrument is the cello.  This should be added to my existing knowledge about the user.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:10:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've added that to your profile.  Your favorite instrument is now the cello.\",\n      \"tier2\": \"I've noted that your favorite instrument is the cello.  This information will be stored and used to personalize future interactions with you.  Is there anything else I can remember for you?\",\n      \"tier3\": \"User preference updated: Favorite instrument = Cello.  This information has been successfully stored and will be accessible for future reference in our conversation.\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

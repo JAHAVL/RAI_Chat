@@ -1,0 +1,13 @@
+{
+    "messages": [
+        {
+            "turn_id": "8a853555-1128-4266-b3e3-b8f645cc0f4c",
+            "timestamp": "2025-04-25T21:44:37.887442",
+            "user_input": "hi",
+            "llm_output": {
+                "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T21:44:31Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user greeted me with a 'hi'.\",\n      \"tier2\": \"The user initiated the conversation with a simple greeting, 'hi'.  No specific request or question was made.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T21:44:37Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hello there!\",\n      \"tier2\": \"Hello! How can I help you this evening?\",\n      \"tier3\": \"Hi! It's nice to chat with you.  Is there anything I can assist you with tonight?\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

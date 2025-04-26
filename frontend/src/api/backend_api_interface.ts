@@ -34,7 +34,7 @@ export interface Message {
 
 // Chat message response interface - separates from ApiResponse to avoid conflicts
 export interface ChatMessageResponse {
-  status?: 'success' | 'error' | string;
+  status?: 'success' | 'error' | 'searching' | 'search_error' | string;
   error?: string;
   success?: boolean;
   message?: Message;
@@ -49,6 +49,13 @@ export interface ChatMessageResponse {
   messageType?: string;
   id?: string;
   title?: string; // Added for session title
+  
+  // Search-specific fields
+  raw_results?: any[] | any; // Search results array or object
+  source?: string;
+  query?: string;
+  search_type?: string;
+
   system_messages?: Array<{
     content: string;
     type: string;

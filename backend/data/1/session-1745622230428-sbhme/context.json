@@ -1,0 +1,21 @@
+{
+    "messages": [
+        {
+            "turn_id": "54c25fa9-438a-4a4e-904c-ff58471923c6",
+            "timestamp": "2025-04-25T23:03:52.280907",
+            "user_input": "hi",
+            "llm_output": {
+                "content": "Hello! It's late, but I'm here if you need anything.  Let me know how I can assist you."
+            }
+        },
+        {
+            "turn_id": "410f69e4-9339-4c2c-b9f7-bade6a27d88f",
+            "timestamp": "2025-04-25T23:03:55.609121",
+            "user_input": "hi",
+            "llm_output": {
+                "content": "Hello! It's 11:03 PM.  I'm ready to help you with anything you need.  Please let me know how I can assist you."
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

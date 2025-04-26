@@ -4,8 +4,7 @@
  * This service separates business logic from UI components.
  */
 
-import raiAPIClient, { Session } from '../../api/rai_api';
-import { Message } from '../../api/rai_api';
+import backendApi, { Session, ChatMessageResponse, Message } from '../../api/backend_api_interface';
 import messageService from './messageService';
 
 // Constants
@@ -36,7 +35,7 @@ class SessionService {
     console.log("SessionService: Fetching all sessions");
     
     try {
-      const response = await raiAPIClient.getChatSessions();
+      const response = await backendApi.getChatSessions();
       
       if (response && response.sessions) {
         return {
@@ -70,10 +69,10 @@ class SessionService {
     
     try {
       // Send a message to create a new session
-      const response = await raiAPIClient.sendMessage({
-        message: `Create new chat: ${title}`,
-        sessionId: 'new_chat' // Use a string ID to create a new session
-      });
+      const response = await backendApi.sendMessage(
+        'new_chat', // Use a string ID to create a new session
+        `Create new chat: ${title}`
+      );
       
       if (response && response.session_id) {
         const newSession: Session = {
@@ -114,7 +113,7 @@ class SessionService {
     console.log(`SessionService: Deleting session: ${sessionId}`);
     
     try {
-      const response = await raiAPIClient.deleteChatSession(sessionId);
+      const response = await backendApi.deleteChatSession(sessionId);
       const success = response && typeof response === 'object' && response.status === 'success';
       
       return {
@@ -199,66 +198,96 @@ class SessionService {
 
   /**
    * Select a session and handle loading its messages
+   * 
+   * This now supports both the new ChatContext pattern and the legacy App reducer pattern
+   * 
    * @param sessionId The session ID to select
-   * @param currentMessages Current messages in the state for this session
-   * @param dispatch Function to dispatch state updates
-   * @param initialSystemMessage The initial system message to use for new sessions
-   * @param setCurrentSessionId Function to update the current session ID in the UI
+   * @param currentMessagesOrDispatch Either the current messages map or dispatch function
+   * @param dispatchOrSystemMsg Either the dispatch function or system message
+   * @param initialSystemMessageOrSetId Either the initial system message or set session ID function
+   * @param setCurrentSessionId Optional function to update the current session ID in the UI
    */
   async selectSession(
     sessionId: string,
-    currentMessages: { [key: string]: Message[] | undefined },
-    dispatch: (action: any) => void,
-    initialSystemMessage: Message,
-    setCurrentSessionId: (sessionId: string) => void
+    currentMessagesOrDispatch?: { [key: string]: Message[] | undefined } | ((action: any) => void),
+    dispatchOrSystemMsg?: ((action: any) => void) | Message,
+    initialSystemMessageOrSetId?: Message | ((sessionId: string) => void),
+    setCurrentSessionId?: (sessionId: string) => void
   ): Promise<void> {
     console.log(`SessionService: Selecting session: ${sessionId}`);
 
-    // Handle new chat selection
-    if (sessionId === NEW_CHAT_SESSION_ID) {
-      console.log("SessionService: Selected 'New Chat'");
-      
-      // If 'New Chat' is selected, ensure the state reflects this
-      if (!currentMessages[NEW_CHAT_SESSION_ID] || currentMessages[NEW_CHAT_SESSION_ID].length === 0) {
-        dispatch({ 
-          type: 'SET_MESSAGES', 
-          payload: { 
-            sessionId: NEW_CHAT_SESSION_ID, 
-            messages: [initialSystemMessage] 
-          } 
-        });
-      }
-      
-      setCurrentSessionId(NEW_CHAT_SESSION_ID);
-      return;
-    }
-
-    // Load messages for existing session
-    const messagesForSession = currentMessages[sessionId];
+    // Check which pattern we're using
+    const isLegacyPattern = typeof currentMessagesOrDispatch === 'object' && typeof dispatchOrSystemMsg === 'function';
     
-    if (!messagesForSession || messagesForSession.length === 0) {
-      try {
-        console.log(`SessionService: Fetching history for session ${sessionId}`);
-        const history = await raiAPIClient.getChatHistory(sessionId);
+    if (isLegacyPattern && dispatchOrSystemMsg && typeof initialSystemMessageOrSetId === 'object' && setCurrentSessionId) {
+      // Legacy pattern with App reducer
+      const currentMessages = currentMessagesOrDispatch as { [key: string]: Message[] | undefined };
+      const dispatch = dispatchOrSystemMsg as (action: any) => void;
+      const initialSystemMessage = initialSystemMessageOrSetId as Message;
+      
+      // Handle new chat selection
+      if (sessionId === NEW_CHAT_SESSION_ID) {
+        console.log("SessionService: Selected 'New Chat'");
         
-        if (history && history.messages && Array.isArray(history.messages)) {
-          console.log(`SessionService: History loaded with ${history.messages.length} messages`);
-          
-          // Ensure all messages have proper timestamps as Date objects
-          const processedMessages = history.messages.map(msg => ({
-            ...msg,
-            timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp)
-          }));
-          
+        // If 'New Chat' is selected, ensure the state reflects this
+        if (!currentMessages[NEW_CHAT_SESSION_ID] || currentMessages[NEW_CHAT_SESSION_ID].length === 0) {
           dispatch({ 
             type: 'SET_MESSAGES', 
             payload: { 
-              sessionId, 
-              messages: processedMessages 
+              sessionId: NEW_CHAT_SESSION_ID, 
+              messages: [initialSystemMessage] 
             } 
           });
-        } else {
-          console.log(`SessionService: No messages found for session ${sessionId}`);
+        }
+        
+        setCurrentSessionId(NEW_CHAT_SESSION_ID);
+        return;
+      }
+      
+      // Load messages for existing session
+      const messagesForSession = currentMessages[sessionId];
+      
+      if (!messagesForSession || messagesForSession.length === 0) {
+        try {
+          console.log(`SessionService: Fetching history for session ${sessionId}`);
+          const history = await backendApi.getChatHistory(sessionId);
+          
+          if (history && history.messages && Array.isArray(history.messages)) {
+            console.log(`SessionService: History loaded with ${history.messages.length} messages`);
+            
+            // Ensure all messages have proper timestamps as Date objects
+            const processedMessages = history.messages.map(msg => ({
+              ...msg,
+              timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp)
+            }));
+            
+            dispatch({ 
+              type: 'SET_MESSAGES', 
+              payload: { 
+                sessionId, 
+                messages: processedMessages 
+              } 
+            });
+          } else {
+            console.log(`SessionService: No messages found for session ${sessionId}`);
+            dispatch({ 
+              type: 'SET_MESSAGES', 
+              payload: { 
+                sessionId, 
+                messages: [
+                  initialSystemMessage, 
+                  { 
+                    id: 'err-hist', 
+                    role: 'system', 
+                    content: 'Could not load chat history.', 
+                    timestamp: new Date() 
+                  }
+                ] 
+              } 
+            });
+          }
+        } catch (error) {
+          console.error("SessionService: Error fetching history:", error);
           dispatch({ 
             type: 'SET_MESSAGES', 
             payload: { 
@@ -266,79 +295,83 @@ class SessionService {
               messages: [
                 initialSystemMessage, 
                 { 
-                  id: 'err-hist', 
+                  id: 'err-hist-catch', 
                   role: 'system', 
-                  content: 'Could not load chat history.', 
+                  content: 'Error loading chat history.', 
                   timestamp: new Date() 
                 }
               ] 
             } 
           });
         }
-      } catch (error) {
-        console.error("SessionService: Error fetching history:", error);
-        dispatch({ 
-          type: 'SET_MESSAGES', 
-          payload: { 
-            sessionId, 
-            messages: [
-              initialSystemMessage, 
-              { 
-                id: 'err-hist-catch', 
-                role: 'system', 
-                content: 'Error loading chat history.', 
-                timestamp: new Date() 
-              }
-            ] 
-          } 
-        });
+      } else {
+        console.log(`SessionService: Using cached messages for session ${sessionId}`);
       }
     } else {
-      console.log(`SessionService: Using cached messages for session ${sessionId}`);
+      // New ChatContext pattern - much simpler
+      // Just set the current session ID 
+      if (typeof currentMessagesOrDispatch === 'function') {
+        // Just update UI if needed
+        const setId = currentMessagesOrDispatch as (sessionId: string) => void;
+        setId(sessionId);
+      } else if (setCurrentSessionId) {
+        setCurrentSessionId(sessionId);
+      }
     }
-    
-    // Set the selected session as active
-    setCurrentSessionId(sessionId);
   }
 
   /**
    * Handle the deletion of a session
+   * 
+   * This now supports both the new ChatContext pattern and the legacy App reducer pattern
+   * 
    * @param deletedSessionId The ID of the deleted session
    * @param currentSessionId The current active session ID
-   * @param dispatch Function to dispatch state updates
-   * @param initialSystemMessage The initial system message to use for new sessions
-   * @param setCurrentSessionId Function to update the current session ID in the UI
+   * @param dispatchOrSetId Either the dispatch function or set session ID function
+   * @param initialSystemMessageOrNull Optional initial system message for legacy pattern
+   * @param setCurrentSessionIdOrNull Optional set session ID function for legacy pattern
    */
   handleSessionDeletion(
     deletedSessionId: string,
     currentSessionId: string,
-    dispatch: (action: any) => void,
-    initialSystemMessage: Message,
-    setCurrentSessionId: (sessionId: string) => void
+    dispatchOrSetId: ((action: any) => void) | ((sessionId: string) => void),
+    initialSystemMessageOrNull?: Message | null,
+    setCurrentSessionIdOrNull?: ((sessionId: string) => void) | null
   ): void {
     console.log(`SessionService: Handling deletion of session: ${deletedSessionId}`);
     
+    // Check which pattern we're using
+    const isLegacyPattern = typeof dispatchOrSetId === 'function' && 
+                          initialSystemMessageOrNull !== null && 
+                          setCurrentSessionIdOrNull !== null;
+    
     // If the deleted session was the active one, switch to 'new chat'
     if (currentSessionId === deletedSessionId) {
-      // Ensure the 'new_chat' state exists with the initial message
-      if (!dispatch) {
-        console.error("SessionService: dispatch function is required for handleSessionDeletion");
-        return;
+      if (isLegacyPattern && initialSystemMessageOrNull && setCurrentSessionIdOrNull) {
+        // Legacy pattern
+        const dispatch = dispatchOrSetId as (action: any) => void;
+        const initialSystemMessage = initialSystemMessageOrNull as Message;
+        const setCurrentSessionId = setCurrentSessionIdOrNull as (sessionId: string) => void;
+        
+        // Ensure the 'new_chat' state exists with the initial message
+        dispatch({ 
+          type: 'SET_MESSAGES', 
+          payload: { 
+            sessionId: NEW_CHAT_SESSION_ID, 
+            messages: [initialSystemMessage] 
+          } 
+        });
+        
+        setCurrentSessionId(NEW_CHAT_SESSION_ID);
+        
+        // Remove the deleted session's messages from state
+        dispatch({ type: 'REMOVE_SESSION_MESSAGES', payload: deletedSessionId });
+      } else {
+        // New ChatContext pattern
+        const setCurrentSessionId = dispatchOrSetId as (sessionId: string) => void;
+        setCurrentSessionId(NEW_CHAT_SESSION_ID);
       }
-      
-      dispatch({ 
-        type: 'SET_MESSAGES', 
-        payload: { 
-          sessionId: NEW_CHAT_SESSION_ID, 
-          messages: [initialSystemMessage] 
-        } 
-      });
-      
-      setCurrentSessionId(NEW_CHAT_SESSION_ID);
     }
-    
-    // Remove the deleted session's messages from state
-    dispatch({ type: 'REMOVE_SESSION_MESSAGES', payload: deletedSessionId });
   }
   
   /**
@@ -350,7 +383,7 @@ class SessionService {
     console.log(`SessionService: Getting chat history for session: ${sessionId}`);
     
     try {
-      const response = await raiAPIClient.getChatHistory(sessionId);
+      const response = await backendApi.getChatHistory(sessionId);
       
       // Ensure we always return a messages array
       return {

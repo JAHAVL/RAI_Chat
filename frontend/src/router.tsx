@@ -4,18 +4,29 @@ import { useAuth } from './contexts/AuthContext'; // Path relative to src
 import AuthPage from './pages/Login_Page/AuthPage'; // Path relative to src
 import AppLayout from './AppLayout'; // Path relative to src
 
-// For development: Always render children without checking authentication
+// Check if user is authenticated before allowing access to a route
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Bypass authentication check
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+  
   return <>{children}</>;
 };
 
-// For development: Always redirect to the main app
+// The actual login page component - no auto-redirect
 const LoginPage: React.FC = () => {
-  // Always redirect to the main app
-  return <Navigate to="/" replace />;
+  const { isAuthenticated } = useAuth();
+  
+  // If already logged in, redirect to main app
+  if (isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+  
+  // Otherwise show the auth page
+  return <AuthPage />;
 };
-
 
 const AppRouter: React.FC = () => {
   return (

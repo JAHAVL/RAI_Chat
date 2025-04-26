@@ -55,7 +55,7 @@ class PromptBuilder:
         # This logic will be moved from ConversationManager.get_response
         current_context_summary = self.contextual_memory.get_context_summary()
         episodic_summaries = self.episodic_memory.retrieve_memories(
-            user_input, top_k=5
+            user_input, limit=5
         )
 
         # Combine context logic

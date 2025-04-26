@@ -101,14 +101,14 @@ const ErrorMessage = styled.p`
 // --- Login Component ---
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading, error: authError } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(username, password);
+      await login(email, password);
       console.log('Login attempt submitted...');
     } catch (err: any) {
       console.error('Login component caught error:', err.message);
@@ -120,15 +120,15 @@ const Login: React.FC = () => {
       <Title>Login</Title>
       <StyledForm onSubmit={handleLogin}>
         <FormGroup>
-          <Label htmlFor="login-username">Username</Label>
+          <Label htmlFor="login-email">Email</Label>
           <Input
-            type="text"
-            id="login-username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="login-email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
-            placeholder="Enter your username"
+            placeholder="Enter your email"
           />
         </FormGroup>
         <FormGroup>

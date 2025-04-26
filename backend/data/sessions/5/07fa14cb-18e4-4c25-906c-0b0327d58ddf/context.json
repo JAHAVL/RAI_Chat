@@ -1,0 +1,25 @@
+{
+    "messages": [
+        {
+            "turn_id": "df05823c-10c7-4ba6-961f-06a3e5195bfb",
+            "timestamp": "2025-04-25T04:32:20.931439",
+            "user_input": "Remember that my favorite fruit is a dragon fruit",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:34:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite fruit is dragon fruit.\",\n      \"tier2\": \"The user informed me that their favorite fruit is a dragon fruit.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:34:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've noted that your favorite fruit is a dragon fruit.\",\n      \"tier2\": \"I've added dragon fruit to your preferences. I will remember this for future conversations. Let me know if there is anything else.\",\n      \"tier3\": \"User preference added: Favorite fruit = Dragon fruit\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "aa67d756-2acf-4d80-ac07-b57229c510a5",
+            "timestamp": "2025-04-25T04:32:20.935491",
+            "user_input": "Remember that my favorite fruit is a dragon fruit",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:34:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite fruit is dragon fruit.\",\n      \"tier2\": \"The user informed me that their favorite fruit is a dragon fruit.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:34:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've noted that your favorite fruit is a dragon fruit.\",\n      \"tier2\": \"I've added dragon fruit to your preferences. I will remember this for future conversations. Let me know if there is anything else.\",\n      \"tier3\": \"User preference added: Favorite fruit = Dragon fruit\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2025-04-25T04:34:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"User states their favorite fruit is dragon fruit.\",\n      \"tier2\": \"The user informed me that their favorite fruit is a dragon fruit.  This information should be stored for future reference.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2025-04-25T04:34:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, I've noted that your favorite fruit is a dragon fruit.\",\n      \"tier2\": \"I've added dragon fruit to your preferences. I will remember this for future conversations. Let me know if there is anything else.\",\n      \"tier3\": \"User preference added: Favorite fruit = Dragon fruit\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

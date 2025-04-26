@@ -1,8 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
-import raiAPIClient from '../api/rai_api';
-
-// Import Session type
-import type { Session } from '../api/rai_api';
+import backendApi, { Session } from '../api/backend_api_interface';
 
 interface SessionState {
   sessions: Session[] | null;
@@ -34,7 +31,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
   const fetchSessions = useCallback(async (): Promise<Session[] | null> => {
     setSessionState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      const response = await raiAPIClient.getChatSessions();
+      const response = await backendApi.getChatSessions();
       if (response && response.sessions) {
         setSessionState({
           sessions: response.sessions,
@@ -60,10 +57,10 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
   const createSession = useCallback(async (title: string): Promise<Session | null> => {
     try {
       // Since there's no direct createSession method, we'll send a message to create a session
-      const response = await raiAPIClient.sendMessage({
-        message: `Create new chat: ${title}`,
-        sessionId: 'new_chat' // Use a string ID to create a new session
-      });
+      const response = await backendApi.sendMessage(
+        'new_chat', // Use a string ID to create a new session
+        `Create new chat: ${title}`
+      );
       
       if (response && response.session_id) {
         const newSession: Session = {
@@ -94,7 +91,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) =>
   // Delete a session
   const deleteSession = useCallback(async (sessionId: string): Promise<boolean> => {
     try {
-      const response = await raiAPIClient.deleteChatSession(sessionId);
+      const response = await backendApi.deleteChatSession(sessionId);
       // Check if the response is successful based on its status property
       const success = response && typeof response === 'object' && response.status === 'success';
       

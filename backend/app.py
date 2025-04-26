@@ -31,7 +31,7 @@ def create_app(config_object=None):
     
     # Initialize extensions with proper CORS settings
     CORS(app, 
-         resources={r"/api/*": {
+         resources={r"/api*": {
              "origins": ["http://localhost:8081"],
              "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
              "allow_headers": ["Content-Type", "Authorization"]
@@ -39,8 +39,9 @@ def create_app(config_object=None):
          supports_credentials=True)
     
     # Add OPTIONS method handler for all routes to handle preflight requests
+    @app.route('/api', methods=['OPTIONS'])
     @app.route('/api/<path:path>', methods=['OPTIONS'])
-    def options_handler(path):
+    def options_handler(path=''):
         return '', 200
     
     # Initialize logging
@@ -53,7 +54,7 @@ def create_app(config_object=None):
 
 def configure_logging(app):
     """Configure logging for the application"""
-    from utils.path import BACKEND_LOGS_DIR
+    from utils.pathconfig import BACKEND_LOGS_DIR
     
     # We don't need to create the directory as it's handled in path.py
     # Use iso date format in filename for better sorting
@@ -76,107 +77,20 @@ def configure_logging(app):
 def register_blueprints(app):
     """Register Flask blueprints"""
     try:
-        # Set up proper import paths
-        import sys
-        import os
-        # Add the current directory to sys.path
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        if current_dir not in sys.path:
-            sys.path.insert(0, current_dir)
+        # Import and register the unified frontend API blueprint from the new location
+        from routes.frontend_api import frontend_api
+        app.register_blueprint(frontend_api)
         
-        # Import all blueprints with proper path handling
-        sys.path.insert(0, os.path.join(current_dir, 'api'))
+        app.logger.info("Registered unified frontend API blueprint")
         
-        # Import blueprints from the new endpoints directory
-        import api.endpoints.auth
-        app.register_blueprint(api.endpoints.auth.auth_bp, url_prefix='/api/auth')
-        app.logger.info("Auth blueprint registered successfully")
-        
-        import api.endpoints.chat
-        app.register_blueprint(api.endpoints.chat.chat_bp, url_prefix='/api/chat')
-        app.logger.info("Chat blueprint registered successfully")
-        
-        import api.endpoints.session
-        app.register_blueprint(api.endpoints.session.session_bp, url_prefix='/api/sessions')
-        app.logger.info("Session blueprint registered successfully")
-        
-        import api.endpoints.memory
-        app.register_blueprint(api.endpoints.memory.memory_bp, url_prefix='/api/memory')
-        app.logger.info("Memory blueprint registered successfully")
-        
-        # Register the system_messages blueprint
-        import api.endpoints.system_messages
-        app.register_blueprint(api.endpoints.system_messages.system_messages_bp, url_prefix='/api/system-messages')
-        app.logger.info("System Messages blueprint registered successfully")
-        
-        # Import our test search blueprint
-        from api.endpoints.test_search import test_search_bp
-        
-        # Register the test search blueprint
-        app.register_blueprint(test_search_bp)
-        app.logger.info("Test Search blueprint registered successfully")
-        
-        # Add a basic health check endpoint
-        @app.route('/api/health', methods=['GET'])
-        def health_check():
-            return jsonify({
-                'status': 'success',
-                'message': 'API server is running'
-            })
-        
-        # Define a simple test endpoint for debugging
-        @app.route('/api/test', methods=['GET'])
-        def test_endpoint():
-            """Simple test endpoint for debugging"""
-            return jsonify({
-                'status': 'success',
-                'message': 'Test endpoint is working'
-            })
-        
-        # Define a simple test endpoint to verify connectivity
-        @app.route('/api/test-connectivity', methods=['GET'])
-        def test_connectivity_endpoint():
-            """Simple test endpoint to verify connectivity."""
-            return jsonify({
-                'message': 'Backend connection successful',
-                'status': 'ok',
-                'timestamp': datetime.now().isoformat()
-            })
-        
-        # Add a sessions endpoint to return mock session data
-        @app.route('/api/sessions', methods=['GET'])
-        def sessions_endpoint():
-            """Return mock session data for development."""
-            # In a real implementation, this would query the database
-            mock_sessions = [
-                {
-                    "id": "session1",
-                    "title": "Development Session 1",
-                    "timestamp": datetime.now().isoformat(),
-                    "last_modified": datetime.now().isoformat()
-                },
-                {
-                    "id": "session2",
-                    "title": "Development Session 2",
-                    "timestamp": datetime.now().isoformat(),
-                    "last_modified": datetime.now().isoformat()
-                }
-            ]
-            return jsonify(mock_sessions)
-        
-        # Define a home route
-        @app.route('/', methods=['GET'])
-        def home():
-            """Home route."""
-            return jsonify({
-                'message': 'RAI Chat API is running',
-                'status': 'ok'
-            })
-        
-        app.logger.info("Basic endpoints registered successfully")
+        # Register any non-API blueprints if needed
+        if app.config.get('DEBUG', False):
+            from tests.test_search import test_search_bp
+            app.register_blueprint(test_search_bp)
+            app.logger.info("Registered test search blueprint")
             
     except Exception as e:
-        app.logger.error(f"Error registering blueprints: {e}", exc_info=True)
+        app.logger.error(f"Error registering blueprints: {str(e)}", exc_info=True)
 
 # This is the entry point for the application when run directly
 if __name__ == '__main__':

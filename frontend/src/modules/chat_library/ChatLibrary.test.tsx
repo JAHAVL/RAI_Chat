@@ -3,8 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ChatLibrary from './ChatLibrary';
 import { useAuth } from '../../contexts/AuthContext'; // Adjust path if needed
-import raiAPIClient from '../../api/rai_api'; // Adjust path if needed
-import { Session } from '../../api/rai_api'; // Changed from 'import type'
+import backendApi from '../../api/backend_api_interface'; // Use the new API interface
+import { Session } from '../../api/backend_api_interface'; // Import Session from new API interface
 
 // --- Mocks ---
 
@@ -13,8 +13,8 @@ jest.mock('../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-// Mock the raiAPIClient
-jest.mock('../../api/rai_api', () => ({
+// Mock the backendApi
+jest.mock('../../api/backend_api_interface', () => ({
   deleteChatSession: jest.fn(),
 }));
 
@@ -23,7 +23,7 @@ jest.mock('../../api/rai_api', () => ({
 
 // Helper to provide mock context values
 const mockUseAuth = useAuth as jest.Mock;
-const mockDeleteChatSession = raiAPIClient.deleteChatSession as jest.Mock;
+const mockDeleteChatSession = backendApi.deleteChatSession as jest.Mock;
 const mockFetchUserSessions = jest.fn(); // Mock function provided by context
 
 const mockSessions: Session[] = [

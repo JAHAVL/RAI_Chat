@@ -1,14 +1,17 @@
 # RAI_Chat/backend/components/action_handler.py
 import logging
 import re
-import time
 import json
+import os
+import time
+from typing import Dict, Any, Tuple, Optional, List, Union, Callable, TYPE_CHECKING, Generator
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple, TYPE_CHECKING, Generator
+
+# Use direct import from models instead of core.database
+from models.connection import get_db
 
 # Import web search function - direct approach
 try:
-    import os
     import sys
     from pathlib import Path
     from dotenv import load_dotenv
@@ -141,6 +144,37 @@ ACTION_SEARCH_DEEPER = "SEARCH_DEEPER"
 ACTION_ERROR = "ERROR"
 ACTION_CONTINUE = "CONTINUE" # Signal to continue the main loop (e.g., after search)
 ACTION_BREAK = "BREAK"       # Signal to break the main loop (e.g., answer found, error, fetch needed)
+ACTION_SEARCH_DETECTED = "ACTION_SEARCH_DETECTED"
+ACTION_CALCULATE_DETECTED = "ACTION_CALCULATE_DETECTED"
+ACTION_COMMAND_DETECTED = "ACTION_COMMAND_DETECTED"
+ACTION_EXECUTE_DETECTED = "ACTION_EXECUTE_DETECTED"
+ACTION_UNKNOWN = "ACTION_UNKNOWN"
+ACTION_NONE = "ACTION_NONE"
+
+def detect_action_type(text: str) -> Dict[str, Any]:
+    """
+    Detect what type of action is present in the text.
+    
+    Args:
+        text: The text to analyze
+        
+    Returns:
+        Dictionary with action_type and action_params
+    """
+    result = {
+        "action_type": ACTION_NONE,
+        "action_params": {}
+    }
+    
+    # Check for tier request or episodic search commands first
+    # These are handled separately and take precedence
+    tier_request_pattern = r"\[REQUEST_TIER:\s*upgrade\s+message\s+\w+\s+to\s+tier\s+\d+\]"
+    episodic_search_pattern = r"\[SEARCH_EPISODIC:.*?\]"
+    
+    if re.search(tier_request_pattern, text) or re.search(episodic_search_pattern, text):
+        result["action_type"] = ACTION_COMMAND_DETECTED
+        result["action_params"] = {"command_text": text}
+        return result
 
 class ActionHandler:
     """Parses LLM responses, detects signals, and executes corresponding actions."""
@@ -292,7 +326,202 @@ class ActionHandler:
             "messageType": "info"
         })
 
+    def detect_action(self, tier3_response: str, user_input: str, session_id: str) -> Tuple[str, str, str]:
+        """
+        Detect and process action signals in LLM response.
+        
+        Args:
+            tier3_response: The full LLM response
+            user_input: The user's input
+            session_id: Current session ID
+            
+        Returns:
+            Tuple of (action signal type, action result, action type)
+        """
+        # Check for specific action markers
+        web_search_match = re.search(r"\[WEB_SEARCH:([^\]]+)\]", tier3_response)
+        # Also check for the [SEARCH:query] pattern that the LLM is using
+        search_match = re.search(r"\[SEARCH:([^\]]+)\]", tier3_response)
+        calculation_match = re.search(r"\[CALCULATE:([^\]]+)\]", tier3_response)
+        command_match = re.search(r"\[COMMAND:([^\]]+)\]", tier3_response)
+        execution_match = re.search(r"\[EXECUTE:([^\]]+)\]", tier3_response)
+        
+        # Check for tier upgrade requests and episodic memory searches using exact test patterns
+        tier_request_pattern = r"\[REQUEST_TIER:(\d+):([^\]]+)\]"
+        episodic_search_pattern = r"\[SEARCH_EPISODIC:([^\]]+)\]"
+        
+        has_tier_requests = re.search(tier_request_pattern, tier3_response) is not None
+        has_episodic_search = re.search(episodic_search_pattern, tier3_response) is not None
+        
+        # Log if we found any special action commands
+        if has_tier_requests:
+            self.logger.info(f"Detected tier request in: {tier3_response[:100]}...")
+        if has_episodic_search:
+            self.logger.info(f"Detected episodic search in: {tier3_response[:100]}...")
+        
+        if web_search_match:
+            self.logger.info(f"Detected [WEB_SEARCH:] pattern with query: {web_search_match.group(1)}")
+            return ACTION_SEARCH_DETECTED, web_search_match.group(1), ACTION_SEARCH
+        elif search_match:
+            self.logger.info(f"Detected [SEARCH:] pattern with query: {search_match.group(1)}")
+            return ACTION_SEARCH_DETECTED, search_match.group(1), ACTION_SEARCH
+        elif calculation_match:
+            return ACTION_CALCULATE_DETECTED, calculation_match.group(1), ACTION_CALCULATE_DETECTED
+        elif command_match:
+            return ACTION_COMMAND_DETECTED, command_match.group(1), ACTION_COMMAND_DETECTED
+        elif execution_match:
+            return ACTION_EXECUTE_DETECTED, execution_match.group(1), ACTION_EXECUTE_DETECTED
+        elif has_tier_requests or has_episodic_search:
+            return ACTION_COMMAND_DETECTED, tier3_response, ACTION_COMMAND_DETECTED
+        else:
+            return ACTION_NONE, "", ACTION_NONE
+
     def process_llm_response(self,
+                             session_id: str,
+                             user_input: str, # Needed for storing turn data
+                             response_data: Optional[Dict[str, Any]]
+                             ) -> Generator[Dict[str, Any], None, Tuple[str, Optional[Any], Optional[str]]]:
+        """
+        Processes the LLM response, detects signals, performs actions.
+        Yields status updates (e.g., for searching) and finally returns results.
+
+        Args:
+            session_id: The current session ID.
+            user_input: The original user input for this turn.
+            response_data: The raw dictionary response from the LLM API call.
+
+        Yields:
+            Dict[str, Any]: Status updates like {"status": "searching", "query": "..."}.
+
+        Returns:
+            A tuple containing:
+            - loop_signal (str): ACTION_CONTINUE or ACTION_BREAK.
+            - action_result (Optional[Any]): Data resulting from the action (e.g., search results, final answer text, chunk_id).
+            - action_type (Optional[str]): The type of action detected (ACTION_ANSWER, ACTION_FETCH, etc.).
+        """
+        self.logger.info(f"Processing LLM response for session {session_id}, user {self.user_id}") 
+
+        # Debug the response data
+        if response_data is None:
+            self.logger.error(f"Response data is None for session {session_id}")
+        else:
+            self.logger.info(f"Response data type: {type(response_data)}")
+            if isinstance(response_data, dict):
+                self.logger.info(f"Response data keys: {list(response_data.keys())}")
+            elif isinstance(response_data, str):
+                self.logger.info(f"Response data is string: {response_data[:100]}...")
+            else:
+                self.logger.info(f"Response data is type {type(response_data)}: {str(response_data)[:100]}...")
+
+        # Handle response data regardless of format
+        try:
+            # Get content for the response
+            content = ""
+            
+            # Handle different possible response formats
+            if response_data is None:
+                content = "I'm sorry, but I couldn't generate a response at this time."
+            elif isinstance(response_data, str):
+                # The response is directly a string
+                content = response_data
+            elif isinstance(response_data, dict):
+                # Try various common key patterns for responses
+                if "llm_response" in response_data:
+                    llm_resp = response_data["llm_response"]
+                    if isinstance(llm_resp, dict) and "content" in llm_resp:
+                        content = llm_resp["content"]
+                    elif isinstance(llm_resp, str):
+                        content = llm_resp
+                elif "response" in response_data:
+                    content = response_data["response"]
+                elif "text" in response_data:
+                    # This is the format returned by DockerLLMAPI - text might contain
+                    # markdown code blocks with JSON inside
+                    text_content = response_data["text"]
+                    
+                    # Check if the text contains markdown code blocks with JSON
+                    if text_content and '```json' in text_content:
+                        self.logger.info("Found markdown JSON block in response, attempting to extract tier3 content")
+                        import re
+                        import json
+                        
+                        # Extract the JSON content from markdown code blocks
+                        json_match = re.search(r'```json\s*\n(.*?)\n\s*```', text_content, re.DOTALL)
+                        if json_match:
+                            try:
+                                json_str = json_match.group(1)
+                                parsed_json = json.loads(json_str)
+                                self.logger.info(f"Successfully parsed JSON from markdown block, keys: {list(parsed_json.keys())}")
+                                
+                                # Extract tier3 content from the parsed JSON
+                                if "llm_response" in parsed_json and "response_tiers" in parsed_json["llm_response"]:
+                                    tier3 = parsed_json["llm_response"]["response_tiers"].get("tier3", "")
+                                    if tier3:
+                                        self.logger.info(f"Successfully extracted tier3 content: {tier3[:100]}...")
+                                        content = tier3
+                                    else:
+                                        self.logger.warning("tier3 content was empty in parsed JSON")
+                                        content = text_content
+                                else:
+                                    self.logger.warning("Expected JSON structure not found in parsed JSON")
+                                    content = text_content
+                            except json.JSONDecodeError as e:
+                                self.logger.error(f"Failed to parse JSON from markdown block: {e}")
+                                content = text_content
+                        else:
+                            self.logger.warning("Found ```json marker but couldn't extract valid JSON content")
+                            content = text_content
+                    else:
+                        content = text_content
+                elif "content" in response_data:
+                    content = response_data["content"]
+                elif "message" in response_data:
+                    content = response_data["message"]
+                elif "answer" in response_data:
+                    content = response_data["answer"]
+                elif len(response_data) > 0:
+                    # Just take the first key's value
+                    first_key = list(response_data.keys())[0]
+                    content = str(response_data[first_key])
+                    self.logger.info(f"Using first key {first_key} for content")
+            else:
+                # For any other type, convert to string
+                content = str(response_data)
+            
+            # Make sure we actually have some content
+            if not content:
+                content = "I'm sorry, but I couldn't generate a meaningful response."
+                self.logger.warning(f"No content extracted from response for session {session_id}")
+            
+            # Log what we got
+            self.logger.info(f"Extracted content (first 100 chars): {content[:100]}...")
+            
+            # Process with standard action detection (without complex error handling at this point)
+            action_signal_type, action_result, action_type = self.detect_action(content, user_input, session_id)
+            
+            # Always return a valid tuple with fallback values
+            if not action_signal_type:
+                action_signal_type = ACTION_BREAK
+            if not action_type:
+                action_type = ACTION_ANSWER
+                
+            # Save this turn to memory
+            try:
+                if self.contextual_memory:
+                    # Create a simplified response structure for storage
+                    simplified_response = {"content": content}
+                    self.contextual_memory.process_assistant_message(simplified_response, user_input)
+            except Exception as mem_ex:
+                self.logger.error(f"Error saving to contextual memory: {mem_ex}")
+                
+            # Return valid action signal
+            return action_signal_type, content, action_type
+                
+        except Exception as e:
+            self.logger.error(f"Error in process_llm_response: {str(e)}", exc_info=True)
+            return ACTION_BREAK, "I encountered an error processing the response.", ACTION_ERROR
+
+    def process_llm_response_original(self,
                              session_id: str,
                              user_input: str, # Needed for storing turn data
                              response_data: Optional[Dict[str, Any]]
@@ -317,7 +546,7 @@ class ActionHandler:
         """
         self.logger.info(f"Processing LLM response for session {session_id}, user {self.user_id}") # Correct indentation
 
-        if not response_data or not isinstance(response_data, dict) or "llm_response" not in response_data:
+        if not response_data:
             self.logger.error(f"Invalid or missing response_data received from LLM for session {session_id}.")
             # Store error turn? Maybe handle this upstream in ConversationManager?
             # For now, signal break with error.
@@ -328,78 +557,56 @@ class ActionHandler:
             return ACTION_BREAK, "LLM response was invalid or missing.", ACTION_ERROR
 
         try:
-            llm_resp_obj = response_data["llm_response"]
+            # Handle the response format from DockerLLMAPI, which returns a dict with a "response" key
+            # instead of "llm_response"
+            response_content = ""
+            if isinstance(response_data, dict):
+                if "llm_response" in response_data:
+                    llm_resp_obj = response_data["llm_response"]
+                elif "response" in response_data:
+                    # This is the format returned by DockerLLMAPI.generate_response
+                    response_content = response_data["response"]
+                    llm_resp_obj = response_data  # Store the whole response object
+                else:
+                    self.logger.error(f"Unexpected response_data format: neither 'llm_response' nor 'response' found")
+                    return ACTION_BREAK, "Unexpected response format from LLM.", ACTION_ERROR
+            else:
+                self.logger.error(f"response_data is not a dictionary: {type(response_data)}")
+                return ACTION_BREAK, "Invalid response type from LLM.", ACTION_ERROR
+                
             # Ensure re module is available in this context
             import re
             
             # Extract the tier3_response from the response structure
             tier3_response = response_data.get("tier3_response", "")
             
-            # Fall back to the main LLM response if tier3 is missing
+            # Fall back to the response content if tier3 is missing
             if not tier3_response:
-                self.logger.warning(f"tier3 content missing for session {session_id}, falling back to main response.")
-                # Use the main LLM response content as a fallback
-                if isinstance(llm_resp_obj, dict) and "content" in llm_resp_obj:
+                if response_content:
+                    # Use the content from DockerLLMAPI response
+                    tier3_response = response_content
+                elif isinstance(llm_resp_obj, dict) and "content" in llm_resp_obj:
                     tier3_response = llm_resp_obj["content"]
                 elif isinstance(llm_resp_obj, str):
                     tier3_response = llm_resp_obj
                 else:
                     # If still no usable content, log and return error
                     self.logger.error(f"Could not extract useful content from LLM response for session {session_id}")
-                    self.contextual_memory.process_assistant_message(response_data, user_input, session_id) # Store turn
+                    # Skip storing turn data here as we have no useful content
                     return ACTION_BREAK, "LLM response was missing content.", ACTION_ERROR
 
             # --- Signal Detection ---
-            fetch_match = re.search(r"\[FETCH_EPISODE:\s*([\w\-]+)\s*\]", tier3_response)
-            search_deeper_match = "[SEARCH_DEEPER_EPISODIC]" in tier3_response
-            
-            # More flexible web search detection patterns
-            web_search_patterns = [
-                r"\[SEARCH:\s*(.+?)\s*\]",                  # Standard [SEARCH: query] format
-                r"\bsearch\s+for\s+['\"](.+?)['\"]\b",   # search for 'query'
-                r"\bweb\s+search\s*:\s*['\"]?(.+?)['\"]?\b", # web search: query
-                r"\bplease\s+search\s+for\s+['\"](.+?)['\"]"  # please search for 'query'
-            ]
-            
-            # Try all patterns to detect web search
-            web_search_match = None
-            web_query = None
-            
-            for pattern in web_search_patterns:
-                match = re.search(pattern, tier3_response, re.IGNORECASE)
-                if match:
-                    web_search_match = match
-                    web_query = match.group(1).strip()
-                    self.logger.info(f"Web search detected with pattern: {pattern}")
-                    self.logger.info(f"Extracted query: '{web_query}'")
-                    break
-                    
-            # Also check the user input for direct search requests
-            if not web_search_match and "[SEARCH:" in user_input:
-                direct_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", user_input)
-                if direct_match:
-                    web_search_match = direct_match
-                    web_query = direct_match.group(1).strip()
-                    self.logger.info(f"Web search detected directly in user input")
-                    self.logger.info(f"Extracted query: '{web_query}'")
+            action_signal_type, action_result, action_type = self.detect_action(tier3_response, user_input, session_id)
             
             # --- Action Execution ---
-            if fetch_match:
-                chunk_id_to_fetch = fetch_match.group(1)
-                self.logger.info(f"FETCH signal detected for chunk: {chunk_id_to_fetch} (Session: {session_id})")
-                # Store the turn *before* breaking for fetch handling
-                self.contextual_memory.process_assistant_message(response_data, user_input)
-                # Signal ConversationManager to break and handle the fetch
-                return ACTION_BREAK, chunk_id_to_fetch, ACTION_FETCH
-
-            elif web_search_match:
+            if action_signal_type == ACTION_SEARCH_DETECTED:
                 if not TAVILY_AVAILABLE:
                      self.logger.error("Web search signal detected, but Tavily client is not available.")
                      # Store turn, return error message as answer
                      self.contextual_memory.process_assistant_message(response_data, user_input)
                      return ACTION_BREAK, "Web search is currently unavailable.", ACTION_ANSWER # Treat as answer
 
-                web_query = web_query
+                web_query = action_result
                 self.logger.info(f"WEB SEARCH signal detected for query: '{web_query}' (Session: {session_id})")
                 # Store the turn *before* performing the search
                 self.contextual_memory.process_assistant_message(response_data, user_input)
@@ -583,12 +790,26 @@ class ActionHandler:
                     # Continue the conversation with the error message
                     return ACTION_CONTINUE, error_message, ACTION_SEARCH
 
-            elif search_deeper_match:
-                self.logger.info(f"SEARCH_DEEPER signal detected (Session: {session_id})")
-                # Store the turn *before* continuing for deeper search
+            elif action_signal_type == ACTION_CALCULATE_DETECTED:
+                self.logger.info(f"Calculation signal detected (Session: {session_id})")
+                # Store the turn *before* continuing for calculation
                 self.contextual_memory.process_assistant_message(response_data, user_input)
-                # Signal ConversationManager to continue the loop for deeper search
-                return ACTION_CONTINUE, None, ACTION_SEARCH_DEEPER
+                # Signal ConversationManager to continue the loop for calculation
+                return ACTION_CONTINUE, action_result, ACTION_CALCULATE_DETECTED
+
+            elif action_signal_type == ACTION_COMMAND_DETECTED:
+                self.logger.info(f"Command signal detected (Session: {session_id})")
+                # Store the turn *before* continuing for command
+                self.contextual_memory.process_assistant_message(response_data, user_input)
+                # Signal ConversationManager to continue the loop for command
+                return ACTION_CONTINUE, action_result, ACTION_COMMAND_DETECTED
+
+            elif action_signal_type == ACTION_EXECUTE_DETECTED:
+                self.logger.info(f"Execution signal detected (Session: {session_id})")
+                # Store the turn *before* continuing for execution
+                self.contextual_memory.process_assistant_message(response_data, user_input)
+                # Signal ConversationManager to continue the loop for execution
+                return ACTION_CONTINUE, action_result, ACTION_EXECUTE_DETECTED
 
             else: # Normal response
                 self.logger.info(f"No signals detected. Processing as normal answer (Session: {session_id}).") 
@@ -642,10 +863,21 @@ class ActionHandler:
                     self.logger.warning(f"Error processing tier3 content: {e}")
                     # Keep the original content if parsing fails
 
-                # Yield a final response chunk with simplified format
+                # Yield a final response chunk with a structure that perfectly matches what the frontend expects
                 yield {
-                    "type": "content",  # Changed from "final" to "content" for consistency
+                    "type": "final",
                     "content": clean_content,
+                    "tier3": clean_content,
+                    "response": clean_content,
+                    "message": {
+                        "id": f"asst-{int(time.time() * 1000)}",
+                        "role": "assistant",
+                        "content": clean_content,
+                        "timestamp": datetime.now().isoformat()
+                    },
+                    "success": True,
+                    "sessionId": session_id,
+                    "session_id": session_id,
                     "timestamp": datetime.now().isoformat()
                 }
                 

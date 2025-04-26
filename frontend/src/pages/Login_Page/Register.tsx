@@ -110,6 +110,7 @@ const SuccessMessage = styled(Message)`
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
@@ -127,9 +128,10 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register(username, password);
+      await register(username, email, password);
       setSuccess('Registration successful! You can now switch to the login view.');
       setUsername('');
+      setEmail('');
       setPassword('');
       setConfirmPassword('');
       console.log('Registration attempt successful.');
@@ -157,6 +159,18 @@ const Register: React.FC = () => {
             required
             disabled={isLoading}
             placeholder="Choose a username"
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="register-email">Email</Label>
+          <Input
+            type="email"
+            id="register-email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isLoading}
+            placeholder="Enter your email address"
           />
         </FormGroup>
         <FormGroup>

@@ -17,7 +17,7 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - rai-network
-      - llm-network
+      - llm_engine_llm-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
       interval: 5s
@@ -32,6 +32,7 @@ services:
     build:
       context: ./backend
     container_name: rai-backend
+    command: python wsgi.py
     ports:
       - "6102:6102"
     env_file:
@@ -47,6 +48,7 @@ services:
       - PORT=6102
       - FLASK_ENV=production
       - PYTHONPATH=/app
+      - DEV_AUTO_AUTH=true
     volumes:
       - ./backend:/app
       - ./backend/data:/app/data
@@ -55,7 +57,7 @@ services:
       - ./logs/startup:/app/logs/startup
     networks:
       - rai-network
-      - llm-network
+      - llm_engine_llm-network
     depends_on:
       mysql:
         condition: service_healthy
@@ -65,6 +67,7 @@ services:
     build:
       context: ./frontend
     container_name: rai-frontend
+    command: npm run start -- --host 0.0.0.0
     ports:
       - "8081:8081"
     env_file:
@@ -80,14 +83,14 @@ services:
       - ./logs/frontend:/app/logs/frontend
     networks:
       - rai-network
-      - llm-network
+      - llm_engine_llm-network
     depends_on:
       - backend
 
 networks:
   rai-network:
     driver: bridge
-  llm-network:
+  llm_engine_llm-network:
     external: true
 
 volumes:

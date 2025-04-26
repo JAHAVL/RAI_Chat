@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthContext'; // Import useAuth
-import raiAPIClient from '../../api/rai_api'; // Keep for delete action
+import backendApi from '../../api/backend_api_interface'; // Use the new API interface
 
 // --- Type Definitions ---
 
@@ -336,8 +336,8 @@ const ChatLibrary = forwardRef<ChatLibraryRefMethods, ChatLibraryProps>(
 
     log(`Attempting to delete chat: ${chatId}`);
     try {
-      // Use raiAPIClient directly
-      const apiResponse = await raiAPIClient.deleteChatSession(chatId);
+      // Use backendApi directly
+      const apiResponse = await backendApi.deleteChatSession(chatId);
       log(`Delete response for ${chatId}: ${JSON.stringify(apiResponse)}`);
 
       if (apiResponse && (apiResponse.status === 'success' || apiResponse.status === 'partial_success')) {

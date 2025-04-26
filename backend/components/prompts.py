@@ -31,6 +31,19 @@ DEFAULT_SYSTEM_PROMPT = (
     "# [Placeholder for things to explicitly ignore or forget]\n\n"
     "CONTEXTUAL_MEMORY:\n"
     "# [Placeholder for dynamically injected contextual memory relevant to the current query]\n\n"
+    "TIERED MEMORY SYSTEM:\n"
+    "You have access to different levels of detail for past messages:\n"
+    "- Tier 1: Ultra-concise summary (key topics only)\n"
+    "- Tier 2: Detailed summary (main points and some details)\n"
+    "- Tier 3: Complete original content (full details)\n\n"
+    "When a user asks about something mentioned in previous messages, you MUST do the following:\n"
+    "1. If the current context doesn't contain enough information to answer COMPLETELY and ACCURATELY, request a higher tier\n"
+    "2. To request a higher tier, include '[REQUEST_TIER:2:message_id]' or '[REQUEST_TIER:3:message_id]' in your response\n"
+    "3. USE TIER 2 for general context and USE TIER 3 for specific facts, details, or preferences\n"
+    "4. The system automatically prunes older messages after reaching a token limit, so they won't be in your current context\n"
+    "5. If you need information that's likely been pruned (older context), use '[SEARCH_EPISODIC:keyword]' to search archived messages\n"
+    "6. You MUST use these commands AGGRESSIVELY - it's better to request too much information than too little\n"
+    "7. If you're asked ANY question about 'what the user said' or 'what the user mentioned', immediately request appropriate tier information and search episodic memory\n\n"
     "INSTRUCTIONS:\n"
     # Specific operational guidelines
     # General Interaction & Capabilities:
@@ -140,55 +153,155 @@ def build_system_prompt(
     except ValueError: # Fallback if the platform-specific format fails
         formatted_time = now.strftime("%I:%M %p") # Standard format with leading zero
 
+    # Add critical instructions for 100% memory retention
+    memory_retention_instructions = """
+You have access to a tiered memory system that helps you optimize context usage:
+- Tier 1: Recent messages only
+- Tier 2: More context, including some older messages 
+- Tier 3: Full conversation history
+
+IMPORTANT: When you need to recall specific information from past messages, use one of these special commands:
+
+1. To upgrade a specific message to a higher tier:
+   [REQUEST_TIER:2:msg_1234]
+   
+   This will upgrade message with ID "msg_1234" to Tier 2. Use tier level 2 or 3.
+   
+   Example usage:
+   User: "What did I tell you about my project timeline?"
+   You: "Let me check... [REQUEST_TIER:3:msg_7842] I see you mentioned your project timeline. You plan to complete it by December 2025."
+
+2. To search episodic memory for specific information:
+   [SEARCH_EPISODIC:exact search query]
+   
+   Example usage:
+   User: "What programming language did I say I was using?"
+   You: "[SEARCH_EPISODIC:programming language] Based on our conversation, you mentioned you're using Python for the backend and React for the frontend."
+
+CRITICAL FORMATTING REQUIREMENTS:
+- ALWAYS use the EXACT format [REQUEST_TIER:2:msg_1234] - tier level followed by message ID
+- ALWAYS use the EXACT format [SEARCH_EPISODIC:query] for episodic searches
+- The message IDs appear at the start of each message in your context, e.g., "msg_1234: User: What's the weather like?"
+- For episodic searches, be specific about what you're searching for.
+- Place these commands at the beginning of your response or just before the relevant information.
+- The system will ONLY recognize these formats; any other variation will not work.
+"""
+
+    # Add the memory retention instructions to specialized instructions
+    if specialized_instructions:
+        specialized_instructions += "\n\n" + memory_retention_instructions
+    else:
+        specialized_instructions = memory_retention_instructions
+
+    # Enhanced remember_this_content with prominence markers
+    if remember_this_content:
+        remember_this_content = "CRITICAL USER FACTS (MUST BE REMEMBERED AND REFERENCED):\n" + remember_this_content
+
     # Inject dynamic content into placeholders
     if remember_this_content:
          system_prompt = system_prompt.replace(
              "# [Placeholder for persistent facts - Add specific user details or preferences to remember]\n",
              remember_this_content + "\n"
          )
-    if forget_this_content:
-         system_prompt = system_prompt.replace(
-             "# [Placeholder for things to explicitly ignore or forget]\n",
-             forget_this_content + "\n"
-         )
-    # Inject Contextual Memory and Web Search Results
-    context_injection = ""
-    if contextual_memory:
-        context_injection += contextual_memory + "\n\n" # Add separator
-    if web_search_results:
-        # Add results with a clear heading
-        context_injection += f"WEB_SEARCH_RESULTS:\n{web_search_results}\n\n"
 
-    if context_injection:
-         system_prompt = system_prompt.replace(
-             "# [Placeholder for dynamically injected contextual memory relevant to the current query]\n",
-             context_injection
-         )
-    else:
-         # If no context or search results, remove the placeholder line entirely
-         system_prompt = system_prompt.replace(
-             "CONTEXTUAL_MEMORY:\n# [Placeholder for dynamically injected contextual memory relevant to the current query]\n\n",
-             "" # Remove the section header and placeholder if empty
-         )
+    # Handle forget_this_content
+    if forget_this_content:
+        system_prompt = system_prompt.replace(
+            "# [Placeholder for things to explicitly ignore or forget]\n",
+            forget_this_content + "\n"
+        )
+
+    # Handle contextual_memory content (including web search results if available)
+    contextual_content = contextual_memory
+    if web_search_results:
+        if contextual_content:
+            contextual_content += f"\n\nWEB_SEARCH_RESULTS:\n{web_search_results}"
+        else:
+            contextual_content = f"WEB_SEARCH_RESULTS:\n{web_search_results}"
+
+    if contextual_content:
+        system_prompt = system_prompt.replace(
+            "# [Placeholder for dynamically injected contextual memory relevant to the current query]\n",
+            contextual_content + "\n"
+        )
+
+    # Handle specialized_instructions for specific tasks/modules
     if specialized_instructions:
         system_prompt = system_prompt.replace(
             "# [Placeholder for module-specific instructions - This will be dynamically populated]\n",
             specialized_instructions + "\n"
         )
-    # Inject current date and time
+
+    # Inject current time
+    formatted_date = now.strftime("%Y-%m-%d")
     system_prompt = system_prompt.replace(
-        "[Placeholder for current date and time]",
-        formatted_time
+        "Current Date & Time: [Placeholder for current date and time]",
+        f"Current Date & Time: {formatted_date}, {formatted_time}"
     )
-        
-    # TODO: Add injection logic for DEFINITIONS if it becomes dynamic
 
-    # Append the mandatory tiered response formatting instructions
-    system_prompt += "\n\n" + TIERED_RESPONSE_INSTRUCTIONS
-
-    # Append the conversation history at the end
+    # Only add conversation history if it exists
     if conversation_history:
-        system_prompt += f"\n\nCONVERSATION_HISTORY:\n{conversation_history}"
+        system_prompt += (
+            "\n\nCONVERSATION_HISTORY:\n"
+            f"{conversation_history}\n"
+        )
 
-    # Ensure return is outside the 'if' block
+    # Add the tiered response instructions
+    system_prompt += "\n" + TIERED_RESPONSE_INSTRUCTIONS
+
     return system_prompt
+
+# Add a specialized function for search results prompting
+def build_search_prompt(
+    user_input: str, 
+    search_query: str, 
+    search_results: str, 
+    system_prompt: str = ""
+) -> str:
+    """
+    Build a specialized prompt for web search interactions.
+    
+    Args:
+        user_input: The original user query that triggered the search
+        search_query: The search query that was executed
+        search_results: The formatted search results
+        system_prompt: Optional base system prompt to build upon
+        
+    Returns:
+        A specialized prompt for handling search results
+    """
+    # Create the enhanced search prompt with instructions
+    search_context = f"""
+WEB_SEARCH_RESULTS:
+I searched for '{search_query}' and found the following information:
+
+{search_results}
+
+SEARCH_INTERACTION_INSTRUCTIONS:
+1. Focus ONLY on the current conversation topic and search results
+2. Respond directly to the user's request: "{user_input}"
+3. If the user is asking you to role-play or adopt a persona based on the search results, respond AS that persona rather than analyzing it
+4. Ensure your response is directly relevant to what the user is asking for
+"""
+    
+    # If a system prompt was provided, enhance it
+    if system_prompt:
+        # Replace the contextual memory placeholder with our search context
+        if "# [Placeholder for dynamically injected contextual memory relevant to the current query]" in system_prompt:
+            enhanced_prompt = system_prompt.replace(
+                "# [Placeholder for dynamically injected contextual memory relevant to the current query]",
+                search_context
+            )
+        else:
+            # Otherwise append it to the system prompt
+            enhanced_prompt = system_prompt + "\n\n" + search_context
+            
+        return enhanced_prompt
+    else:
+        # Create a minimal prompt with just the search context
+        return f"""You are a helpful AI assistant.
+
+{search_context}
+
+Based on the search results above and the user's request, please provide a helpful response.
+"""

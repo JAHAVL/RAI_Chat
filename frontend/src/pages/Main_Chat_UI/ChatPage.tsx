@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { useApp } from '../../App';
 import type { Message } from './chat';
 import ChatLibrary from '../../modules/chat_library/ChatLibrary';
 import AttachButton from './components/AttachButton';
 import ChatMessageComponent from './components/ChatMessageComponent';
 import SystemMessageComponent from './components/SystemMessageComponent';
 
+// Import the new ChatContext instead of App context
+import { useChat, NEW_CHAT_SESSION_ID } from '../../contexts/ChatContext';
+
+// Import services for chat library
+import { sessionService, chatLibraryService } from '../../services/chat';
+
 // Import services
-import { messageService, sessionService, chatLibraryService, NEW_CHAT_SESSION_ID } from '../../services/chat';
 import backendApiInterface from '../../api/backend_api_interface';
 
 // --- Type Definitions ---
@@ -89,21 +93,16 @@ const ChatPage: React.FC<AppContentProps> = ({
   isChatLibraryOpen,
   setIsChatLibraryOpen
 }) => {
-  const { state, dispatch } = useApp();
+  // Use the new ChatContext instead of App context
+  const { state, sendMessage } = useChat();
+  
   const [input, setInput] = useState<string>('');
-  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const chatLibraryRef = useRef<any>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get messages from global state
-  const stateMessages: Message[] = (state?.messagesBySession?.[currentSessionId])
-                         ? state.messagesBySession[currentSessionId]!
-                         : [];
-                         
-  // Combine local and state messages, prioritizing local ones
-  // This gives us a direct path for messages while still respecting the global state
-  const currentMessages = localMessages.length > 0 ? localMessages : stateMessages;
+  // Get messages from the chat context state
+  const currentMessages = state.messagesBySession[currentSessionId] || [];
 
   // Set initial height on mount
   useEffect(() => {
@@ -145,9 +144,6 @@ const ChatPage: React.FC<AppContentProps> = ({
       console.log(`STAGE 4 - Last message role: ${lastMessage.role}`);
       console.log(`STAGE 4 - Last message content: ${lastMessage.content.substring(0, 100)}...`);
     }
-    
-    // Load session messages if needed (e.g., on first load)
-    sessionService.loadSessionMessages(currentSessionId, currentMessages, dispatch);
   }, [currentMessages]);
 
   // Effect to handle session changes and load messages
@@ -155,12 +151,7 @@ const ChatPage: React.FC<AppContentProps> = ({
     if (currentSessionId === NEW_CHAT_SESSION_ID) {
         inputRef.current?.focus();
     }
-    
-    // Use the sessionService to load messages
-    const currentMessages = state?.messagesBySession?.[currentSessionId];
-    sessionService.loadSessionMessages(currentSessionId, currentMessages, dispatch);
-    
-  }, [currentSessionId, dispatch, state.messagesBySession]);
+  }, [currentSessionId]);
 
   const handleSendMessage = async (message: string) => {
     if (!message.trim()) return;
@@ -169,122 +160,32 @@ const ChatPage: React.FC<AppContentProps> = ({
       // Clear input field immediately for better UX
       setInput('');
       
-      // Create a user message to show immediately
-      const userMessage: Message = {
-        id: `user-${Date.now()}`,
-        role: 'user',
-        content: message,
-        timestamp: new Date()
-      };
+      // Call the sendMessage function from the ChatContext
+      // Note: The ChatContext sendMessage function already handles:
+      // - Adding the user message
+      // - Creating a loading message
+      // - Sending the message to the backend
+      // - Updating the state with the assistant's response
+      await sendMessage(message, currentSessionId);
       
-      // Create a loading message to show while waiting for response
-      const loadingMessage: Message = {
-        id: `loading-${Date.now()}`,
-        role: 'assistant',
-        content: 'Thinking...',
-        timestamp: new Date(),
-        isLoading: true
-      };
-      
-      // Update local messages immediately to show user message and loading indicator
-      setLocalMessages(prev => [...prev, userMessage, loadingMessage]);
-      
-      // Make the API request directly
-      const backendApi = backendApiInterface;
-      const response = await backendApi.sendMessage(currentSessionId, message);
-      
-      console.log('Direct API response:', response);
-      
-      // Extract content directly from the response
-      let responseContent = '';
-      if (response.content) {
-        responseContent = response.content;
-        console.log('Found content field:', responseContent);
-      } else if (response.tier3) {
-        responseContent = response.tier3;
-        console.log('Found tier3 field:', responseContent);
-      } else {
-        responseContent = 'No response received (direct path)';
-        console.error('No content found in response:', response);
-      }
-      
-      // Create the assistant message
-      const assistantMessage: Message = {
-        id: `asst-${Date.now()}`,
-        role: 'assistant',
-        content: responseContent,
-        timestamp: new Date()
-      };
-      
-      // If we're in a new chat, handle session ID update
-      if (currentSessionId === NEW_CHAT_SESSION_ID && response.sessionId) {
-        // Update session ID
-        setCurrentSessionId(response.sessionId);
-        
-        // Handle chat placeholder
-        const title = response.title || message.substring(0, 30);
-        onConfirmNewChat(`temp-${Date.now()}`, {
-          id: response.sessionId,
-          title
-        });
-      }
-      
-      // Update local messages, replacing loading indicator with real response
-      setLocalMessages(prev => {
-        // Find and remove the loading message
-        const withoutLoading = prev.filter(msg => !msg.isLoading);
-        
-        // Add the assistant message
-        return [...withoutLoading, assistantMessage];
-      });
-      
-      // Still dispatch to global state as a backup - use supported action types
-      // First add the user message
-      dispatch({ 
-        type: 'ADD_USER_MESSAGE', 
-        payload: { 
-          sessionId: response.sessionId || currentSessionId, 
-          message: userMessage
-        } 
-      });
-      
-      // Then add the assistant response
-      dispatch({
-        type: 'PROCESS_ASSISTANT_RESPONSE',
-        payload: {
-          sessionId: response.sessionId || currentSessionId,
-          loadingId: loadingMessage.id,
-          assistantMessage: assistantMessage
+      // After successfully sending, check if we need to update the session ID
+      // Important: ChatContext will update its internal state.currentSessionId
+      if (currentSessionId === NEW_CHAT_SESSION_ID) {
+        const newSessionId = state.currentSessionId;
+        if (newSessionId && newSessionId !== NEW_CHAT_SESSION_ID) {
+          // Update UI state to match the context state
+          setCurrentSessionId(newSessionId);
+          
+          // Handle chat library update
+          onConfirmNewChat(`temp-${Date.now()}`, {
+            id: newSessionId,
+            title: message.substring(0, 30) 
+          });
         }
-      });
-      
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      
-      // Create error message
-      const errorMessage: Message = {
-        id: Math.random().toString(36).substr(2, 9),
-        role: 'system',
-        content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        timestamp: new Date(),
-        messageType: 'error'
-      };
-      
-      // Update local messages with error
-      setLocalMessages(prev => {
-        // Remove any loading message
-        const withoutLoading = prev.filter(msg => !msg.isLoading);
-        return [...withoutLoading, errorMessage];
-      });
-      
-      // Also update global state
-      dispatch({ 
-        type: 'ADD_SYSTEM_MESSAGE', 
-        payload: { 
-          sessionId: currentSessionId, 
-          message: errorMessage 
-        } 
-      });
+      alert(`Error sending message: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

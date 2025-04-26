@@ -1,0 +1,25 @@
+{
+    "messages": [
+        {
+            "turn_id": "f33e4bd7-9e44-40b7-8921-9c02ccbd5886",
+            "timestamp": "2025-04-23T19:45:44.549900",
+            "user_input": "I need information about Paris. Please do a web search with the exact search term [SEARCH: What is Paris famous for]",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T19:45:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information about Paris and asks for a web search on 'What is Paris famous for'.\",\n      \"tier2\": \"The user needs details about Paris and specifically wants a web search performed using the exact search term 'What is Paris famous for'.  This suggests they want to know the city's key attractions and notable features.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T19:45:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, Jordan, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for information on what Paris is famous for.  I'll get back to you with the results shortly.\",\n      \"tier3\": \"[SEARCH: What is Paris famous for]\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "98f98ffd-f57c-41f8-983d-547cf9dc1143",
+            "timestamp": "2025-04-23T19:45:44.556052",
+            "user_input": "I need information about Paris. Please do a web search with the exact search term [SEARCH: What is Paris famous for]",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T19:45:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information about Paris and asks for a web search on 'What is Paris famous for'.\",\n      \"tier2\": \"The user needs details about Paris and specifically wants a web search performed using the exact search term 'What is Paris famous for'.  This suggests they want to know the city's key attractions and notable features.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T19:45:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, Jordan, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for information on what Paris is famous for.  I'll get back to you with the results shortly.\",\n      \"tier3\": \"[SEARCH: What is Paris famous for]\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T19:45:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user requests information about Paris and asks for a web search on 'What is Paris famous for'.\",\n      \"tier2\": \"The user needs details about Paris and specifically wants a web search performed using the exact search term 'What is Paris famous for'.  This suggests they want to know the city's key attractions and notable features.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T19:45:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Okay, Jordan, I've initiated a web search for you.\",\n      \"tier2\": \"I'm searching the web for information on what Paris is famous for.  I'll get back to you with the results shortly.\",\n      \"tier3\": \"[SEARCH: What is Paris famous for]\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

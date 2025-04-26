@@ -10,12 +10,12 @@ from pathlib import Path
 from sqlalchemy.orm import Session as SQLAlchemySession
 from sqlalchemy import desc, update, delete
 
-# Import core components
-from core.database.models import Session as SessionModel
-from core.database.connection import get_db # To be used by calling functions
+# Import models directly instead of from core
+from models.session import Session as SessionModel
+from models.connection import get_db # To be used by calling functions
 
 # Import path manager functions
-from utils.path import DATA_DIR, get_user_chat_filepath, get_user_base_dir # Import necessary paths/functions
+from utils.pathconfig import DATA_DIR, get_user_chat_filepath, get_user_base_dir # Import necessary paths/functions
 
 logger = logging.getLogger(__name__)
 

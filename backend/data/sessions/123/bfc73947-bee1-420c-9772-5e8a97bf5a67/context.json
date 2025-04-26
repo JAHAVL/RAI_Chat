@@ -1,0 +1,25 @@
+{
+    "messages": [
+        {
+            "turn_id": "d12d2a05-4f3a-45b3-88a1-a60b58b21433",
+            "timestamp": "2025-04-24T03:10:12.125615",
+            "user_input": "Please describe the features of RAI Chat without searching the web.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Describe the features of RAI Chat.\",\n      \"tier2\": \"The user is requesting a description of the features offered by a chatbot application called RAI Chat.  No web search is allowed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm sorry, Jordan, I don't have access to information about a specific chatbot called RAI Chat.\",\n      \"tier2\": \"My knowledge base doesn't include details on RAI Chat's features.  As I am a large language model, my information is not connected to a live, updating database of applications. To get information about RAI Chat, you'll need to consult other sources.\",\n      \"tier3\": \"I apologize that I cannot fulfill your request directly.  My training data does not contain specific details about the features of a chatbot named RAI Chat.  To learn about this application, you will need to visit the application's website, consult online reviews, or contact the application's developers.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "fa7bc412-d82f-4774-8e69-c6f1396cc7a1",
+            "timestamp": "2025-04-24T03:10:12.134367",
+            "user_input": "Please describe the features of RAI Chat without searching the web.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Describe the features of RAI Chat.\",\n      \"tier2\": \"The user is requesting a description of the features offered by a chatbot application called RAI Chat.  No web search is allowed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm sorry, Jordan, I don't have access to information about a specific chatbot called RAI Chat.\",\n      \"tier2\": \"My knowledge base doesn't include details on RAI Chat's features.  As I am a large language model, my information is not connected to a live, updating database of applications. To get information about RAI Chat, you'll need to consult other sources.\",\n      \"tier3\": \"I apologize that I cannot fulfill your request directly.  My training data does not contain specific details about the features of a chatbot named RAI Chat.  To learn about this application, you will need to visit the application's website, consult online reviews, or contact the application's developers.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T03:12:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"Describe the features of RAI Chat.\",\n      \"tier2\": \"The user is requesting a description of the features offered by a chatbot application called RAI Chat.  No web search is allowed.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T03:12:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"I'm sorry, Jordan, I don't have access to information about a specific chatbot called RAI Chat.\",\n      \"tier2\": \"My knowledge base doesn't include details on RAI Chat's features.  As I am a large language model, my information is not connected to a live, updating database of applications. To get information about RAI Chat, you'll need to consult other sources.\",\n      \"tier3\": \"I apologize that I cannot fulfill your request directly.  My training data does not contain specific details about the features of a chatbot named RAI Chat.  To learn about this application, you will need to visit the application's website, consult online reviews, or contact the application's developers.\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

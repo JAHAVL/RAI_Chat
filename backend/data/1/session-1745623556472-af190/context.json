@@ -1,0 +1,13 @@
+{
+    "messages": [
+        {
+            "turn_id": "11128485-8bbb-4468-a22f-ae244e808064",
+            "timestamp": "2025-04-25T23:25:58.622061",
+            "user_input": "hi",
+            "llm_output": {
+                "content": "Hello! It's late, but I'm here if you need anything.  Let me know how I can assist you."
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

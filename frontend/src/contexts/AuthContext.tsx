@@ -1,13 +1,12 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
-import raiAPIClient from '../api/rai_api';
+import backendApi, { Session, ApiResponse } from '../api/backend_api_interface';
 import tokenService from '../services/TokenService';
 
 // Import Session type
-import type { Session } from '../api/rai_api';
 
 interface AuthState {
   token: string | null;
-  user: { username: string; user_id?: number } | null; // Added user_id
+  user: { username: string; email?: string; user_id?: number } | null; // Made email optional
   sessions: Session[] | null; // Added state for sessions
   isLoading: boolean;
   error: string | null;
@@ -15,8 +14,8 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>; // Updated to use email
+  register: (username: string, email: string, password: string) => Promise<void>; // Updated to include email
   logout: () => void;
   isAuthenticated: () => boolean;
   fetchUserSessions: () => Promise<void>; // Expose fetch function
@@ -33,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   log("--- AuthProvider Render ---");
 
   const [authState, setAuthState] = useState<AuthState>({
-    token: null, // Initialize token as null, check localStorage in useEffect
+    token: tokenService.getToken(), // Initialize from localStorage
     user: null,
     sessions: null,
     isLoading: false,
@@ -51,148 +50,79 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     if (!currentToken) {
       log("AuthContext: Cannot fetch sessions, no token available.");
-      // Create a development token if in development mode
-      const mockToken = tokenService.createDevelopmentToken();
-      raiAPIClient.setAuthToken(mockToken);
-      
-      // Update state with the new token
       setAuthState(prev => ({ 
         ...prev, 
-        token: mockToken,
-        isFetchingSessions: false
+        isFetchingSessions: false,
+        error: "Authentication required"
       }));
       return;
     }
 
     try {
-      // Ensure API client has the latest token (redundant if set correctly elsewhere, but safe)
-      raiAPIClient.setAuthToken(currentToken);
-      log(`AuthContext: fetchUserSessions - Calling API with token: ${currentToken ? 'Yes' : 'No'}`);
+      // Ensure API client has the latest token
+      backendApi.setAuthToken(currentToken);
+      log(`AuthContext: fetchUserSessions - Calling API with token`);
 
-      // For development mode, create mock sessions instead of calling the API
-      // This ensures we always have sessions even if the backend is having issues
-      const mockSessions = [
-        {
-          id: 'session1',
-          title: 'Development Session 1',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        },
-        {
-          id: 'session2',
-          title: 'Development Session 2',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        }
-      ];
-      
-      log(`AuthContext: Using mock sessions for development. Count: ${mockSessions.length}`);
-      setAuthState(prev => ({ 
-        ...prev, 
-        sessions: mockSessions, 
-        isFetchingSessions: false,
-        error: null // Clear any error messages
-      }));
-      
-      // Skip the actual API call in development mode
-      return;
+      // Call the real backend API
+      const response = await backendApi.getChatSessions(); 
 
-      /* Commented out for development mode
-      const response = await raiAPIClient.getChatSessions(); // API client handles token inclusion
-
-      if (response && response.status === 'success') {
+      if (response && response.success) {
         const fetchedSessions = (Array.isArray(response.sessions)) ? response.sessions : null;
         if (fetchedSessions === null && response.sessions) {
-          log(`AuthContext: API returned 'sessions' but it was not an array. Type: ${typeof response.sessions}. Value: ${JSON.stringify(response.sessions)}`);
+          log(`AuthContext: API returned 'sessions' but it was not an array. Type: ${typeof response.sessions}`);
         }
         log(`AuthContext: Successfully processed fetch. Sessions count: ${fetchedSessions?.length ?? 0}.`);
         setAuthState(prev => ({ ...prev, sessions: fetchedSessions, isFetchingSessions: false }));
       } else {
-        throw new Error(response?.error || 'Failed to fetch sessions: Invalid response');
+        throw new Error(response.success === false ? 'Failed to fetch sessions' : 'Invalid response');
       }
-      */
     } catch (err: any) {
-      log(`AuthContext: Error fetching sessions: ${JSON.stringify({ message: err?.message, status: err?.status })}`);
-      // In development mode, don't show authentication errors to the user
-      // Just use mock sessions instead
-      const mockSessions = [
-        {
-          id: 'session1',
-          title: 'Development Session 1',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        },
-        {
-          id: 'session2',
-          title: 'Development Session 2',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        }
-      ];
+      log(`AuthContext: Error fetching sessions: ${err?.message}`);
       
-      log(`AuthContext: Using mock sessions after error. Count: ${mockSessions.length}`);
       setAuthState(prev => ({ 
         ...prev, 
-        sessions: mockSessions, 
         isFetchingSessions: false,
-        error: null // Clear any error messages
+        error: "Failed to load sessions"
       }));
     }
-  }, [authState.token, log]); // Depend on token and log
+  }, [authState.token]); // Depend on token
 
-  // Auto-authenticate on mount without contacting the backend
+  // Auto-authenticate on mount if token exists
   useEffect(() => {
-    log("AuthProvider Mount: Auto-authenticating for development...");
+    const savedToken = tokenService.getToken();
     
-    // Use TokenService to create a development token
-    const mockToken = tokenService.createDevelopmentToken();
-    
-    // Set the token in the API client
-    raiAPIClient.setAuthToken(mockToken);
-    log("AuthProvider: Token set in API client");
-    
-    // Get user info from token
-    const userInfo = tokenService.getUserFromToken();
-    
-    // Set the authenticated state and clear any error messages
-    setAuthState(prev => ({ 
-      ...prev, 
-      token: mockToken,
-      user: userInfo || {
-        username: 'developer',
-        user_id: 1
-      },
-      isLoading: false,
-      error: null // Clear any error messages
-    }));
-    
-    // After setting user, fetch their sessions (this will likely fail but we'll handle it)
-    setTimeout(() => {
-      // Create mock sessions
-      const mockSessions = [
-        {
-          id: 'session1',
-          title: 'Development Session 1',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        },
-        {
-          id: 'session2',
-          title: 'Development Session 2',
-          timestamp: new Date().toISOString(),
-          last_modified: new Date().toISOString()
-        }
-      ];
+    if (savedToken) {
+      log("AuthProvider Mount: Token found, retrieving session...");
       
-      setAuthState(prev => ({ 
-        ...prev, 
-        sessions: mockSessions,
-        isFetchingSessions: false
-      }));
+      // Set the token in the API client
+      backendApi.setAuthToken(savedToken);
       
-      log("AuthProvider: Auto-authenticated with mock data for development");
-    }, 500);
-  }, []); // No dependencies needed
+      // Get user info from token (or if needed, fetch from /api/me endpoint)
+      const userInfo = tokenService.getUserFromToken();
+      
+      if (userInfo) {
+        setAuthState(prev => ({ 
+          ...prev, 
+          token: savedToken,
+          user: userInfo
+        }));
+        
+        // Fetch sessions after setting user
+        fetchUserSessions();
+      } else {
+        // Token exists but can't get user info - might be invalid
+        log("AuthProvider: Token exists but invalid. Clearing...");
+        tokenService.clearToken();
+        setAuthState(prev => ({ 
+          ...prev, 
+          token: null,
+          user: null
+        }));
+      }
+    } else {
+      log("AuthProvider Mount: No saved token found");
+    }
+  }, []); // Run once on mount
 
   // Effect to fetch sessions when token changes (and is not null)
   useEffect(() => {
@@ -217,64 +147,71 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => clearInterval(interval);
   }, [authState.token, fetchUserSessions]);
 
-  const login = async (username: string, password: string): Promise<void> => {
-    log("AuthContext: Using auto-login for development...");
+  const login = async (email: string, password: string): Promise<void> => {
+    log(`AuthContext: Attempting to login with email: ${email}`);
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
     
-    // Simulate a delay for a more realistic experience
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Use TokenService to create a development token
-    const mockToken = tokenService.createDevelopmentToken();
-    
-    // Set the token in the API client
-    raiAPIClient.setAuthToken(mockToken);
-    
-    // Get user info from token
-    const userInfo = tokenService.getUserFromToken();
-    
-    // Update auth state with token and user info
-    setAuthState(prev => ({ 
-      ...prev, 
-      token: mockToken,
-      user: userInfo || { username, user_id: 1 },
-      isLoading: false
-    }));
-    
-    // Create mock sessions
-    const mockSessions = [
-      {
-        id: 'session1',
-        title: 'Development Session 1',
-        timestamp: new Date().toISOString(),
-        last_modified: new Date().toISOString()
-      },
-      {
-        id: 'session2',
-        title: 'Development Session 2',
-        timestamp: new Date().toISOString(),
-        last_modified: new Date().toISOString()
+    try {
+      // Call the real API endpoint
+      const response = await backendApi.login(email, password);
+      
+      if (response && response.status === 'success' && response.token) {
+        // Store the token
+        tokenService.setToken(response.token);
+        backendApi.setAuthToken(response.token);
+        
+        // Update auth state with token and user info
+        setAuthState(prev => ({ 
+          ...prev, 
+          token: response.token || null,
+          user: response.user || null,
+          isLoading: false,
+          error: null
+        }));
+        
+        // Sessions will be fetched via the useEffect that watches the token
+        log("AuthContext: Login successful");
+      } else {
+        throw new Error(response?.message || 'Login failed: Invalid response');
       }
-    ];
-    
-    setAuthState(prev => ({ 
-      ...prev, 
-      sessions: mockSessions,
-      isFetchingSessions: false
-    }));
-    
-    log("AuthProvider: Auto-authenticated with mock data for development");
+    } catch (err: any) {
+      log(`AuthContext: Login error: ${err.message}`);
+      const errorMessage = err.response?.data?.message || err.message || 'Login failed';
+      setAuthState(prev => ({ ...prev, isLoading: false, error: errorMessage }));
+      throw new Error(errorMessage);
+    }
   };
 
-  const register = async (username: string, password: string) => {
+  const register = async (username: string, email: string, password: string) => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    log(`AuthContext: Starting registration for ${username}`);
+    log(`AuthContext: Starting registration for ${username} (${email})`);
+    
     try {
-      const response = await raiAPIClient.register(username, password);
-      if (response && response.message === 'User registered successfully') {
+      // Call the real API endpoint
+      const response = await backendApi.register(username, email, password);
+      
+      if (response && response.status === 'success') {
          log(`AuthContext: Registration successful for ${username}`);
-         setAuthState(prev => ({ ...prev, isLoading: false, error: null }));
-         // Optionally automatically log in or just show success message
+         
+         // Check if the API returns a token for automatic login
+         if (response.token) {
+           // Store the token and user info
+           tokenService.setToken(response.token);
+           backendApi.setAuthToken(response.token);
+           
+           setAuthState(prev => ({ 
+             ...prev, 
+             token: response.token || null,
+             user: response.user || null,
+             isLoading: false,
+             error: null
+           }));
+           
+           log("AuthContext: Auto-logged in after registration");
+         } else {
+           // Just update loading/error state if no auto-login
+           setAuthState(prev => ({ ...prev, isLoading: false, error: null }));
+         }
       } else {
         throw new Error(response?.message || 'Registration failed');
       }
@@ -282,18 +219,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       log(`AuthContext: Register error: ${err.message}`);
       const errorMessage = err.response?.data?.message || err.message || 'Registration failed';
       setAuthState(prev => ({ ...prev, isLoading: false, error: errorMessage }));
-       throw new Error(errorMessage); // Re-throw for component handling
+      throw new Error(errorMessage);
     }
   };
 
   const logout = () => {
     log('AuthContext: Logging out user.');
-    // Use TokenService to clear the token
-    tokenService.clearToken();
-    raiAPIClient.setAuthToken(null); // Clear token in API client
-    // Reset entire state on logout
-    setAuthState({ token: null, user: null, sessions: null, isLoading: false, error: null, isFetchingSessions: false });
-    log('User logged out and token cleared.');
+    
+    try {
+      // Call the real logout endpoint
+      backendApi.logout().then(() => {
+        log('AuthContext: Logout API call successful');
+      }).catch(err => {
+        log(`AuthContext: Logout API call failed, but proceeding with client-side logout: ${err.message}`);
+      }).finally(() => {
+        // Always clear local state regardless of API response
+        tokenService.clearToken();
+        backendApi.setAuthToken(null); // Clear token in API client
+        setAuthState({ 
+          token: null, 
+          user: null, 
+          sessions: null, 
+          isLoading: false, 
+          error: null, 
+          isFetchingSessions: false 
+        });
+        log('User logged out and token cleared.');
+      });
+    } catch (err: any) {
+      // Even if the API call fails, proceed with client-side logout
+      log(`AuthContext: Logout error, proceeding with client-side logout: ${err}`);
+      tokenService.clearToken();
+      backendApi.setAuthToken(null);
+      setAuthState({ 
+        token: null, 
+        user: null, 
+        sessions: null, 
+        isLoading: false, 
+        error: null, 
+        isFetchingSessions: false 
+      });
+    }
   };
 
   const isAuthenticated = (): boolean => {

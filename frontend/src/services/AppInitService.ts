@@ -6,7 +6,7 @@
  */
 
 import tokenService from './TokenService';
-import raiAPIClient from '../api/rai_api';
+import backendApi from '../api/backend_api_interface';
 
 // Development mode detection
 const isDevelopmentMode = (): boolean => {
@@ -43,13 +43,13 @@ class AppInitService {
         console.log('AppInitService: No token found, creating development token');
         const devToken = tokenService.createDevelopmentToken();
         tokenService.setToken(devToken);
-        raiAPIClient.setAuthToken(devToken);
+        backendApi.setAuthToken(devToken);
       } else {
         console.log('AppInitService: Using existing token');
         // Ensure the API client has the token
         const existingToken = tokenService.getToken();
         if (existingToken) {
-          raiAPIClient.setAuthToken(existingToken);
+          backendApi.setAuthToken(existingToken);
         }
       }
     } else {
@@ -59,11 +59,11 @@ class AppInitService {
       const token = tokenService.getToken();
       if (token && tokenService.isTokenValid()) {
         console.log('AppInitService: Valid token found, setting in API client');
-        raiAPIClient.setAuthToken(token);
+        backendApi.setAuthToken(token);
       } else if (token) {
         console.log('AppInitService: Invalid token found, clearing');
         tokenService.clearToken();
-        raiAPIClient.setAuthToken(null);
+        backendApi.setAuthToken(null);
       }
     }
   }

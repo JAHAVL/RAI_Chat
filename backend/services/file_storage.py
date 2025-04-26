@@ -3,19 +3,18 @@
 import os
 import json
 import logging
-import re
+from flask import current_app, make_response
+from werkzeug.utils import secure_filename
+import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional, Any
 from pathlib import Path
-from sqlalchemy.orm import Session as SQLAlchemySession
-from sqlalchemy import desc, update, delete
 
-# Import core components using absolute imports instead of relative imports
-from core.database.models import Session as SessionModel
-from core.database.session import get_db # To be used by calling functions
+# Database import
+from models.connection import get_db # To be used by calling functions
 
 # Import path utilities using absolute imports
-from utils.path import DATA_DIR, get_user_chat_filepath, get_user_base_dir
+from utils.pathconfig import DATA_DIR, get_user_chat_filepath, get_user_base_dir
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +76,7 @@ class ChatFileManager:
             
         return safe_session_id
 
-    def list_sessions(self, db: SQLAlchemySession, user_id: int) -> List[Dict[str, Any]]:
+    def list_sessions(self, db, user_id: int) -> List[Dict[str, Any]]:
         """
         Returns a list of session metadata dictionaries for the user from the database,
         ordered by last activity descending.
@@ -141,7 +140,7 @@ class ChatFileManager:
             logger.error(f"Unexpected error reading transcript file {transcript_path}: {e}", exc_info=True)
             return None
 
-    def save_session_transcript(self, db: SQLAlchemySession, user_id: int, session_id: str, transcript_data: List[Dict[str, Any]], session_metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def save_session_transcript(self, db, user_id: int, session_id: str, transcript_data: List[Dict[str, Any]], session_metadata: Optional[Dict[str, Any]] = None) -> bool:
         """
         Saves transcript data to a file and updates/creates session metadata in the database.
 
@@ -218,7 +217,7 @@ class ChatFileManager:
             return False
 
 
-    def delete_session(self, db: SQLAlchemySession, user_id: int, session_id: str) -> bool:
+    def delete_session(self, db, user_id: int, session_id: str) -> bool:
         """
         Deletes the session record from the database and the associated transcript file.
         Note: Does NOT delete contextual_memory.json (handled by ContextualMemoryManager).

@@ -1,0 +1,27 @@
+{
+    "messages": [
+        {
+            "turn_id": "b125cbda-796f-4ef9-a87e-28414163e1b1",
+            "timestamp": "2025-04-23T18:44:44.319762",
+            "user_input": "Hello, can you tell me about yourself? What is RAI Chat?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:46:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about me and RAI Chat.\",\n      \"tier2\": \"The user is asking for a description of my capabilities and what RAI Chat is.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:46:15Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi there! I'm a large language model, designed to assist you with various tasks.  RAI Chat is the platform I'm currently running on.\",\n      \"tier2\": \"I can help you with things like answering questions, summarizing text, writing different kinds of creative content, and translating languages. I'm still under development, but I'm learning new things every day. RAI Chat is the system that allows me to interact with you.\",\n      \"tier3\": \"I am a large language model, trained to be informative and comprehensive.  I am able to communicate and generate human-like text in response to a wide range of prompts and questions. My purpose is to help users by providing information, completing tasks, and engaging in conversation.  RAI Chat is the platform or system that facilitates this interaction.  It provides the infrastructure for me to receive your requests, process them, and send you my responses.  Think of RAI Chat as the environment where I operate and you interact with me.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "c70aa8a9-db80-4243-a556-a2c2d99da590",
+            "timestamp": "2025-04-23T18:44:44.327552",
+            "user_input": "Hello, can you tell me about yourself? What is RAI Chat?",
+            "llm_output": {
+                "llm_response": {
+                    "response_tiers": {
+                        "tier3": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:46:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about me and RAI Chat.\",\n      \"tier2\": \"The user is asking for a description of my capabilities and what RAI Chat is.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:46:15Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi there! I'm a large language model, designed to assist you with various tasks.  RAI Chat is the platform I'm currently running on.\",\n      \"tier2\": \"I can help you with things like answering questions, summarizing text, writing different kinds of creative content, and translating languages. I'm still under development, but I'm learning new things every day. RAI Chat is the system that allows me to interact with you.\",\n      \"tier3\": \"I am a large language model, trained to be informative and comprehensive.  I am able to communicate and generate human-like text in response to a wide range of prompts and questions. My purpose is to help users by providing information, completing tasks, and engaging in conversation.  RAI Chat is the platform or system that facilitates this interaction.  It provides the infrastructure for me to receive your requests, process them, and send you my responses.  Think of RAI Chat as the environment where I operate and you interact with me.\"\n    }\n  }\n}\n```\n"
+                    },
+                    "response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:46:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants information about me and RAI Chat.\",\n      \"tier2\": \"The user is asking for a description of my capabilities and what RAI Chat is.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:46:15Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi there! I'm a large language model, designed to assist you with various tasks.  RAI Chat is the platform I'm currently running on.\",\n      \"tier2\": \"I can help you with things like answering questions, summarizing text, writing different kinds of creative content, and translating languages. I'm still under development, but I'm learning new things every day. RAI Chat is the system that allows me to interact with you.\",\n      \"tier3\": \"I am a large language model, trained to be informative and comprehensive.  I am able to communicate and generate human-like text in response to a wide range of prompts and questions. My purpose is to help users by providing information, completing tasks, and engaging in conversation.  RAI Chat is the platform or system that facilitates this interaction.  It provides the infrastructure for me to receive your requests, process them, and send you my responses.  Think of RAI Chat as the environment where I operate and you interact with me.\"\n    }\n  }\n}\n```\n"
+                }
+            }
+        }
+    ],
+    "current_context_summary": ""
+}

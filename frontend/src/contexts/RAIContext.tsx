@@ -1,15 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-// Import the client and necessary types from rai_api.ts
-import raiAPIClient from '../api/rai_api';
-import type {
-    HealthStatus,
-    LLMInfoResponse,
-    MemoryResponse,
-    SendMessageResponse,
-    GenerateTextResponse,
-    ResetSessionResponse
-} from '../api/rai_api'; // Adjust path/export if needed
-import type { Message } from '../pages/Main_Chat_UI/chat.d'; // Import Message type from correct location
+// Import the client and necessary types from backend_api_interface.ts
+import backendApi, { 
+  Message,
+  ApiResponse,
+  ChatMessageResponse
+} from '../api/backend_api_interface';
+// Import Message type from correct location if needed for additional properties
+import type { Message as UIMessage } from '../pages/Main_Chat_UI/chat.d';
 
 // --- Type Definitions ---
 
@@ -17,13 +14,13 @@ import type { Message } from '../pages/Main_Chat_UI/chat.d'; // Import Message t
 interface RAIContextType {
   isConnected: boolean;
   isLoading: boolean;
-  messages: Message[]; // Use the Message type
+  messages: UIMessage[]; // Use the Message type
   memory: any | null; // Type more specifically if memory structure is known
   llmInfo: any | null; // Type more specifically if llmInfo structure is known
   error: string | null;
-  sendMessage: (message: string) => Promise<SendMessageResponse | { error: string }>; // Adjust return type based on implementation
-  generateText: (prompt: string, options?: object) => Promise<GenerateTextResponse | { error: string }>; // Adjust return type
-  resetConversation: () => Promise<ResetSessionResponse | { error: string }>; // Adjust return type
+  sendMessage: (message: string) => Promise<ChatMessageResponse | { error: string }>; // Adjust return type based on implementation
+  generateText: (prompt: string, options?: object) => Promise<any | { error: string }>; // Adjust return type
+  resetConversation: () => Promise<ApiResponse | { error: string }>; // Adjust return type
 }
 
 interface RAIProviderProps {
@@ -40,7 +37,7 @@ const RAIContext = createContext<RAIContextType | undefined>(undefined);
 export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([]); // Use Message type
+  const [messages, setMessages] = useState<UIMessage[]>([]); // Use Message type
   const [memory, setMemory] = useState<any | null>(null); // Use specific type if known
   const [llmInfo, setLLMInfo] = useState<any | null>(null); // Use specific type if known
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +48,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
     const initConnection = async () => {
       try {
         // Check API health
-        const health: HealthStatus = await raiAPIClient.healthCheck();
+        const health = await backendApi.healthCheck();
         // Use 'success' based on RaiApiResponse
         if (isMounted && health.status === 'success') {
           setIsConnected(true);
@@ -59,7 +56,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
 
           // Get LLM info
           try {
-              const llmInfoResponse: LLMInfoResponse = await raiAPIClient.getLLMInfo();
+              const llmInfoResponse = await backendApi.getLLMInfo();
               if (isMounted && llmInfoResponse.status === 'success') {
                 // Assuming the actual info is in a property like 'model_info' based on original code
                 setLLMInfo(llmInfoResponse.model_info || llmInfoResponse);
@@ -70,7 +67,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
           }
 
           // Add initial system message
-          const initialMessage: Message = {
+          const initialMessage: UIMessage = {
               id: 'sys-initial', // Add an ID for key prop
               role: 'system',
               content: "Hi, I'm R.ai. How can I help?",
@@ -80,7 +77,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
 
           // Get memory
           try {
-              const memoryResponse: MemoryResponse = await raiAPIClient.getMemory();
+              const memoryResponse = await backendApi.getMemory();
               if (isMounted && memoryResponse.status === 'success') {
                 setMemory(memoryResponse.memory);
               }
@@ -107,7 +104,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
     // Ping API every 30 seconds to check connection status
     const pingInterval = setInterval(async () => {
       try {
-        const health = await raiAPIClient.healthCheck();
+        const health = await backendApi.healthCheck();
         if (isMounted) {
             // Use 'success'
             const currentlyConnected = health.status === 'success';
@@ -141,54 +138,54 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
    * @param {string} message Message to send
    * @returns {Promise<SendMessageResponse | { error: string }>} Response object or error object
    */
-  const sendMessage = async (message: string): Promise<SendMessageResponse | { error: string }> => {
+  const sendMessage = async (message: string): Promise<ChatMessageResponse | { error: string }> => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Add user message to state
-      const userMessage: Message = {
-          id: `user-${Date.now()}`, // Add ID
-          role: 'user',
-          content: message,
-          timestamp: new Date() // Add timestamp
+      // Add user message to chat state
+      const userMessage: UIMessage = {
+        id: `user-${Date.now()}`, // Add unique id
+        role: 'user',
+        content: message,
+        timestamp: new Date() // Add timestamp
       };
       setMessages(prevMessages => [...prevMessages, userMessage]);
 
-      // Send message to API (Note: This might be handled by IPC in App.tsx now)
-      // If using IPC, this context method might become obsolete or need refactoring
-      const response = await raiAPIClient.sendMessage({
-        message,
-        sessionId: 'new_chat' // Use a string ID to create a new session
-      });
+      // Get active session ID (would need to be passed in or stored in state)
+      const sessionId = 'current'; // Placeholder, replace with actual session ID
+      
+      // Send message to backend
+      const response = await backendApi.sendMessage(sessionId, message);
+      
+      setIsLoading(false);
 
-      if (response.status === 'success') {
-        // Add assistant response to state
-        const assistantMessage: Message = {
-            id: `asst-${Date.now()}`, // Add ID
-            role: 'assistant',
-            content: response.response || '...', // Use response content
-            timestamp: new Date() // Add timestamp
+      if (response && !response.error) {
+        // Build assistant message from response
+        const assistantMessage: UIMessage = {
+          id: response.id || `resp-${Date.now()}`, // Use response ID or generate
+          role: 'assistant',
+          content: response.content || response.response || 'I received your message',
+          timestamp: new Date() // Use current time as timestamp
         };
+        
+        // Add assistant message to messages state
         setMessages(prevMessages => [...prevMessages, assistantMessage]);
-
-        // Refresh memory (optional, depending on API design)
-        try {
-            const memoryResponse = await raiAPIClient.getMemory();
-            if (memoryResponse.status === 'success') {
-              setMemory(memoryResponse.memory);
-            }
-        } catch (memErr: any) {
-            console.warn("Failed to refresh memory after message:", memErr.message);
-        }
-
-        setIsLoading(false);
+        
         return response;
       } else {
-        const errorMsg = response.error || 'Failed to get response';
+        const errorMsg = response.error || 'Failed to get response from server';
         setError(errorMsg);
-        setIsLoading(false);
-        // Add error message to chat? Maybe not, let component decide based on error object
+        
+        // Add error message as assistant message
+        const errorResponse: UIMessage = {
+          id: `err-${Date.now()}`,
+          role: 'assistant',
+          content: `Sorry, there was an error: ${errorMsg}`,
+          timestamp: new Date()
+        };
+        setMessages(prevMessages => [...prevMessages, errorResponse]);
+        
         return { error: errorMsg };
       }
     } catch (err: any) {
@@ -196,7 +193,7 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
       const errorMessage = err.message || 'Failed to connect to the server';
 
       // Add error message to chat state
-      const errorResponse: Message = {
+      const errorResponse: UIMessage = {
         id: `err-${Date.now()}`, // Add ID
         role: 'assistant', // Display as assistant message
         content: `Sorry, I encountered an error: ${errorMessage}`,
@@ -217,12 +214,12 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
    * @param {object} options Options for generation
    * @returns {Promise<GenerateTextResponse | { error: string }>} Response with generated text or error
    */
-  const generateText = async (prompt: string, options: object = {}): Promise<GenerateTextResponse | { error: string }> => {
+  const generateText = async (prompt: string, options: object = {}): Promise<any | { error: string }> => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await raiAPIClient.generateText(prompt, options); // Using placeholder
+      const response = await backendApi.generateText(prompt, options);
 
       setIsLoading(false);
       if (response.status === 'success') {
@@ -245,24 +242,24 @@ export const RAIProvider: React.FC<RAIProviderProps> = ({ children }) => {
    * Reset the conversation (Placeholder)
    * @returns {Promise<ResetSessionResponse | { error: string }>} Reset status or error
    */
-  const resetConversation = async (): Promise<ResetSessionResponse | { error: string }> => {
+  const resetConversation = async (): Promise<ApiResponse | { error: string }> => {
     try {
       setIsLoading(true);
       setError(null);
 
       // Reset session on API (using placeholder)
-      const response = await raiAPIClient.resetSession();
+      const response = await backendApi.resetSession();
 
       if (response.status === 'success') {
         // Reset local state
-        const initialMessage: Message = {
+        const initialMessage: UIMessage = {
             id: 'sys-reset', role: 'system', content: "Conversation reset. How can I help?", timestamp: new Date()
         };
         setMessages([initialMessage]);
 
         // Reset memory (using placeholder)
         try {
-            const memoryResponse = await raiAPIClient.getMemory();
+            const memoryResponse = await backendApi.getMemory();
             if (memoryResponse.status === 'success') {
               setMemory(memoryResponse.memory);
             } else {

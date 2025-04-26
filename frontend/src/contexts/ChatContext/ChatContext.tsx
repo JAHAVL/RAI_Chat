@@ -332,6 +332,11 @@ export const ChatProvider: React.FC<{
   // Function to send a message to the backend
   const sendMessage = useCallback(async (messageContent: string, sessionId: string) => {
     try {
+      // Check if this is a search query
+      const searchPattern = /\[SEARCH:\s*(.+?)\s*\]/i;
+      const searchMatch = messageContent.match(searchPattern);
+      const isSearchQuery = !!searchMatch;
+      
       // Create user message
       const userMessage = createUserMessage(messageContent);
       
@@ -392,6 +397,89 @@ export const ChatProvider: React.FC<{
         });
         
         return sessionId; // Return original session ID since we couldn't get a new one
+      }
+      
+      // Handle search-specific responses
+      if (isSearchQuery || (response && (
+          response.type === 'search_start' || 
+          response.type === 'search_results' ||
+          response.action === 'web_search' || 
+          response.status === 'searching' || 
+          response.status === 'search_error'))) {
+        
+        console.log('Handling search response:', response);
+        
+        // For search start or progress updates
+        if (response.type === 'search_start' || response.status === 'searching') {
+          // Create a search-specific message
+          const searchMessage: Message = {
+            id: `search-${Date.now()}`,
+            role: 'system',
+            content: response.content || `Searching for: ${searchMatch ? searchMatch[1] : messageContent}...`,
+            timestamp: new Date(),
+            messageType: 'info',
+            isSearchMessage: true
+          };
+          
+          // Replace loading indicator with search message
+          dispatch({
+            type: 'PROCESS_ASSISTANT_RESPONSE',
+            payload: {
+              sessionId,
+              loadingId,
+              assistantMessage: searchMessage,
+              originalContent: searchMessage.content
+            }
+          });
+          
+          return sessionId;
+        }
+        
+        // For search results
+        if (response.type === 'search_results') {
+          let content = '';
+          
+          if (response.content) {
+            content = response.content;
+          } else if (response.raw_results) {
+            // Format raw results if available
+            content = 'Search results:\n\n';
+            try {
+              const results = Array.isArray(response.raw_results) ? response.raw_results : [response.raw_results];
+              content += results.map((result: any, index: number) => 
+                `${index + 1}. **${result.title || 'No title'}**\n${result.url || 'No URL'}\n${result.snippet || 'No description'}\n`
+              ).join('\n');
+            } catch (e) {
+              console.error('Error formatting search results:', e);
+              content = `Search results available but could not be formatted: ${JSON.stringify(response.raw_results).substring(0, 100)}...`;
+            }
+          } else {
+            content = 'Search complete, but no results were found.';
+          }
+          
+          // Create a search result message
+          const resultMessage: Message = {
+            id: `search-result-${Date.now()}`,
+            role: 'assistant',
+            content: content,
+            timestamp: new Date(),
+            messageType: response.status === 'error' ? 'error' : 'success',
+            isSearchMessage: true
+          };
+          
+          // Replace loading indicator with result message
+          dispatch({
+            type: 'PROCESS_ASSISTANT_RESPONSE',
+            payload: {
+              sessionId,
+              loadingId,
+              assistantMessage: resultMessage,
+              originalContent: content
+            }
+          });
+          
+          return sessionId;
+        }
       }
       
       // If this is a new chat and we received a real session ID, initialize the session

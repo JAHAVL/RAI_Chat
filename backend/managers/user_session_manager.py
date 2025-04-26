@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 # Define a base path for data storage - In Docker, we use /app/data
 DEFAULT_BASE_DATA_PATH = Path("/app/data")
 
+# Create a singleton instance of UserSessionManager to be reused
+_user_session_manager = None
+
 class UserSessionManager:
     """
     Manages user sessions and provides access to conversation managers.
@@ -47,6 +50,47 @@ class UserSessionManager:
         self.file_manager = ChatFileManager()
         
         logger.info(f"UserSessionManager initialized with base path: {self.base_data_path}")
+    
+    @staticmethod
+    def get_instance(base_data_path: Optional[Path] = None) -> 'UserSessionManager':
+        """
+        Get or create the singleton instance of UserSessionManager.
+        
+        Args:
+            base_data_path: Optional base path for storing session data
+            
+        Returns:
+            The singleton UserSessionManager instance
+        """
+        global _user_session_manager
+        
+        # Create the UserSessionManager singleton if it doesn't exist
+        if _user_session_manager is None:
+            logger.info("Creating new UserSessionManager singleton instance")
+            _user_session_manager = UserSessionManager(base_data_path)
+        
+        return _user_session_manager
+    
+    @staticmethod
+    def get_conversation_manager_for_user_session(user_id: str, session_id: Optional[str] = None) -> Tuple[str, ConversationManager]:
+        """
+        Get or create a conversation manager for the specified user and session.
+        
+        This static method provides easy access to conversation managers through
+        the singleton UserSessionManager instance.
+        
+        Args:
+            user_id: The ID of the user
+            session_id: Optional session ID. If not provided, a new session will be created.
+            
+        Returns:
+            Tuple containing the session_id and conversation_manager
+        """
+        # Get the singleton instance
+        instance = UserSessionManager.get_instance()
+        
+        # Get or create a conversation manager for this user and session
+        return instance.get_conversation_manager(user_id, session_id)
     
     def get_conversation_manager(self, user_id: str, session_id: Optional[str] = None) -> Tuple[str, ConversationManager]:
         """
@@ -91,11 +135,13 @@ class UserSessionManager:
         # Create the conversation manager
         conversation_manager = ConversationManager(
             user_id=user_id,
-            session_id=session_id,
             file_manager=self.file_manager,
             contextual_memory=contextual_memory,
             episodic_memory=episodic_memory
         )
+        
+        # Load the session after creating the conversation manager
+        conversation_manager.load_session(session_id)
         
         # Store the conversation manager and update last activity
         self._conversation_managers[key] = conversation_manager
@@ -156,8 +202,11 @@ class UserSessionManager:
         Returns:
             A dictionary containing session information
         """
-        # Use the file manager to list sessions
-        return self.file_manager.list_sessions(user_id)
+        from models.connection import get_db
+        
+        # Get a database session and use the file manager to list sessions
+        with get_db() as db:
+            return self.file_manager.list_sessions(db, user_id)
     
     def delete_session(self, user_id: str, session_id: str) -> bool:
         """
@@ -170,6 +219,8 @@ class UserSessionManager:
         Returns:
             True if the session was deleted, False otherwise
         """
+        from models.connection import get_db
+        
         # Remove the conversation manager if it exists
         key = (user_id, session_id)
         if key in self._conversation_managers:
@@ -177,4 +228,193 @@ class UserSessionManager:
             self._last_activity.pop(key, None)
         
         # Use the file manager to delete the session
-        return self.file_manager.delete_session(user_id, session_id)
+        with get_db() as db:
+            return self.file_manager.delete_session(db, user_id, session_id)
+    
+    @staticmethod
+    def get_sessions_for_user(user_id: str):
+        """
+        Static convenience method to get all sessions for a user.
+        
+        Args:
+            user_id: The ID of the user
+            
+        Returns:
+            List of sessions for the user
+        """
+        from models.connection import get_db
+        from models import Session
+        
+        # Initialize empty list in case there are no sessions
+        sessions = []
+        
+        # Use the database directly to query sessions for this user
+        with get_db() as db:
+            db_sessions = db.query(Session).filter(Session.user_id == user_id).all()
+            # Make a copy of the sessions before the session closes
+            for session in db_sessions:
+                sessions.append(session)
+        
+        return sessions
+    
+    @staticmethod
+    def get_session_by_id(session_id: str, user_id: str):
+        """
+        Static convenience method to get a specific session by ID.
+        
+        Args:
+            session_id: The ID of the session
+            user_id: The ID of the user
+            
+        Returns:
+            Session object if found, None otherwise
+        """
+        from models.connection import get_db
+        from models import Session
+        
+        with get_db() as db:
+            session = db.query(Session).filter(
+                Session.id == session_id,
+                Session.user_id == user_id
+            ).first()
+            
+            # If no session found, return None
+            if not session:
+                return None
+                
+            # Make a copy of the session before the database session closes
+            # to avoid DetachedInstanceError
+            session_copy = Session(
+                id=session.id,
+                user_id=session.user_id,
+                title=session.title,
+                created_at=session.created_at,
+                updated_at=session.updated_at
+            )
+        
+        return session_copy
+    
+    @staticmethod
+    def get_messages_for_session(session_id: str):
+        """
+        Static convenience method to get all messages for a session.
+        
+        Args:
+            session_id: The ID of the session
+            
+        Returns:
+            List of messages for the session
+        """
+        from models.connection import get_db
+        from models import Message
+        
+        messages = []
+        
+        with get_db() as db:
+            db_messages = db.query(Message).filter(Message.session_id == session_id).all()
+            
+            # Make copies of all messages before the session closes
+            for msg in db_messages:
+                messages.append(msg)
+        
+        return messages
+    
+    @staticmethod
+    def get_message_count_for_session(session_id: str):
+        """
+        Static convenience method to get the message count for a session.
+        
+        Args:
+            session_id: The ID of the session
+            
+        Returns:
+            Number of messages in the session
+        """
+        from models.connection import get_db
+        from models import Message
+        
+        with get_db() as db:
+            count = db.query(Message).filter(Message.session_id == session_id).count()
+            
+        return count
+    
+    @staticmethod
+    def reset_session(session_id: str, user_id: str):
+        """
+        Static convenience method to reset a session.
+        
+        Args:
+            session_id: The ID of the session
+            user_id: The ID of the user
+            
+        Returns:
+            True if the session was reset, False otherwise
+        """
+        from models.connection import get_db
+        from models import Message, Session
+        from sqlalchemy import delete
+        
+        try:
+            with get_db() as db:
+                # Verify the session belongs to the user
+                session = db.query(Session).filter(
+                    Session.id == session_id,
+                    Session.user_id == user_id
+                ).first()
+                
+                if not session:
+                    return False
+                
+                # Delete all messages for this session
+                db.execute(delete(Message).where(Message.session_id == session_id))
+                db.commit()
+                
+            return True
+        except Exception as e:
+            return False
+    
+    @staticmethod
+    def create_session(user_id: str, title: str = ""):
+        """
+        Static convenience method to create a new session.
+        
+        Args:
+            user_id: The ID of the user
+            title: Optional title for the session
+            
+        Returns:
+            The created Session object
+        """
+        from models.connection import get_db
+        from models import Session
+        import datetime
+        import uuid
+        
+        # Generate a unique session ID
+        session_id = str(uuid.uuid4())
+        
+        # Create the session in the database
+        with get_db() as db:
+            # Create a new session
+            new_session = Session(
+                id=session_id,
+                user_id=user_id,
+                title=title or f"Chat {session_id[:8]}",
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow()
+            )
+            
+            # Add to database
+            db.add(new_session)
+            db.commit()
+            
+            # Create a copy to return after the session closes
+            session_copy = Session(
+                id=new_session.id,
+                user_id=new_session.user_id,
+                title=new_session.title,
+                created_at=new_session.created_at,
+                updated_at=new_session.updated_at
+            )
+        
+        return session_copy

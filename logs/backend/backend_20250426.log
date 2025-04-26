@@ -1,0 +1,1062 @@
+2025-04-26 01:46:53,385 - models.connection - INFO - Using MySQL database at: mysql:3306/rai_chat
+2025-04-26 01:46:53,385 - models.connection - INFO - Attempting to connect to database (attempt 1/5)
+2025-04-26 01:46:53,396 - models.connection - INFO - Database connection successful!
+2025-04-26 01:46:53,404 - components.action_handler - INFO - Current directory: /app/components
+2025-04-26 01:46:53,404 - components.action_handler - INFO - Checking for .env at: /app/components/../../Backend/.env
+2025-04-26 01:46:53,404 - components.action_handler - INFO - Checking for .env at: /app/components/../../backend/.env
+2025-04-26 01:46:53,405 - components.action_handler - INFO - Checking for .env at: /app/components/../../../.env
+2025-04-26 01:46:53,405 - components.action_handler - INFO - Checking for .env at: /.env
+2025-04-26 01:46:53,405 - components.action_handler - WARNING - Could not find .env file in any of the checked directories.
+2025-04-26 01:46:53,405 - components.action_handler - INFO - TAVILY_API_KEY loaded: YES (length: 41)
+2025-04-26 01:46:53,405 - components.action_handler - INFO - Checked for .env file in multiple locations
+2025-04-26 01:46:53,409 - components.action_handler - INFO - Initializing Tavily client with API key: tvly...VPLb
+2025-04-26 01:46:53,409 - components.action_handler - INFO - Tavily client initialized successfully
+2025-04-26 01:46:53,409 - components.action_handler - INFO - Web search functionality is available
+2025-04-26 01:46:53,409 - managers.conversation_manager - INFO - LLM Engine path: /app/llm_client
+2025-04-26 01:46:53,410 - managers.conversation_manager - INFO - Successfully initialized Docker LLM API client
+2025-04-26 01:46:53,414 - app - INFO - Registered unified frontend API blueprint
+2025-04-26 01:46:53,417 - waitress - INFO - Serving on http://0.0.0.0:6102
+2025-04-26 01:47:29,160 - managers.user_session_manager - INFO - Creating new UserSessionManager singleton instance
+2025-04-26 01:47:29,161 - managers.chat_file_manager - INFO - ChatFileManager initialized. Base data path: /app/data
+2025-04-26 01:47:29,162 - managers.user_session_manager - INFO - UserSessionManager initialized with base path: /app/data
+2025-04-26 01:47:29,162 - managers.user_session_manager - INFO - Creating new conversation manager for user: 1, session: new_chat
+2025-04-26 01:47:29,163 - api.llm_engine.llm_api_interface - INFO - Initializing LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 01:47:29,164 - EpisodicMemMgr_User1 - INFO - Summary index file not found for user 1. Initialized empty index.
+2025-04-26 01:47:29,164 - EpisodicMemMgr_User1 - INFO - EpisodicMemoryManager initialized for user 1. Episodic path: /app/data/1/episodic
+2025-04-26 01:47:29,164 - CtxMemMgr_User1 - INFO - Successfully initialized LLM API client for memory extraction
+2025-04-26 01:47:29,165 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:47:29,166 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:47:29,167 - CtxMemMgr_User1 - INFO - ContextualMemoryManager initialized for user 1.
+2025-04-26 01:47:29,167 - managers.conversation_manager - INFO - Initializing Docker LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 01:47:29,167 - conversation_manager_1 - INFO - Using LLM API client: DockerLLMAPI
+2025-04-26 01:47:29,167 - conversation_manager_1 - INFO - Successfully initialized database session
+2025-04-26 01:47:29,170 - managers.memory.tier_manager - WARNING - Using fallback LLM API client
+2025-04-26 01:47:29,171 - managers.memory.tier_manager - INFO - TierManager initialized with LLM API client
+2025-04-26 01:47:29,171 - managers.memory.context_builder - INFO - ContextBuilder initialized
+2025-04-26 01:47:29,171 - managers.memory.request_parser - INFO - RequestParser initialized
+2025-04-26 01:47:29,171 - managers.memory.memory_pruner - INFO - MemoryPruner initialized with 30000 token limit
+2025-04-26 01:47:29,171 - managers.memory.memory_importance_scorer - INFO - MemoryImportanceScorer initialized
+2025-04-26 01:47:29,171 - conversation_manager_1 - INFO - Initialized memory importance scorer for automatic tier management
+2025-04-26 01:47:29,172 - components.prompt_builder - INFO - PromptBuilder initialized for user 1
+2025-04-26 01:47:29,172 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 01:47:29,172 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 01:47:29,172 - conversation_manager_1 - INFO - Conversation manager for user 1 initialized successfully
+2025-04-26 01:47:29,172 - conversation_manager_1 - INFO - Loading session new_chat
+2025-04-26 01:47:29,173 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:47:29,173 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 01:47:29,173 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 01:47:29,173 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:47:29,173 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 01:47:29,180 - CtxMemMgr_User1 - INFO - Loading session context for new_chat from /app/data/1/new_chat/context.json
+2025-04-26 01:47:29,181 - CtxMemMgr_User1 - INFO - Successfully loaded context for session new_chat (39 messages).
+2025-04-26 01:47:29,181 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 01:47:29,189 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 01:47:29,189 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 01:47:29,189 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 01:47:29,189 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 01:47:29,189 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 01:47:29,189 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:47:29,192 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:47:31,141 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T01:48:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted the a...
+2025-04-26 01:47:31,142 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:47:31,142 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:47:31,143 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:47:31,143 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:47:31,143 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 01:47:31,144 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 01:47:31,144 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 01:47:31,144 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 01:47:31,144 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 01:47:31,145 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 01:47:31,145 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 01:47:31,146 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan! It's good to hear from you. How can I assist you today?  I remember you're working on the...
+2025-04-26 01:47:31,146 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan! It's good to hear from you. How can I assist you today?  I remember you're working on the...
+2025-04-26 01:47:31,147 - CtxMemMgr_User1 - INFO - Stored turn 41910d5d-0d59-4491-a4af-5d887fb94c4e for active session new_chat
+2025-04-26 01:47:31,147 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 01:47:32,020 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 01:47:32,020 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~157 / 30000
+2025-04-26 01:47:32,021 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 01:47:32,024 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 01:47:32,024 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan! It's good to hear from you. How can I assist you today?  I remember you're working on the 'What' project and need a dry lease agreement for a Cessna Citation Sovereign+.", "session_id": "new_chat", "timestamp": "2025-04-26T01:47:32.024687"}
+2025-04-26 01:47:37,497 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:47:37,497 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 01:47:37,497 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 01:47:37,498 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:47:37,498 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 01:47:37,502 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 01:47:37,504 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 01:47:37,504 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 01:47:37,504 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 01:47:37,504 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 01:47:37,504 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 01:47:37,504 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:47:37,506 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:47:39,534 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T01:48:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted me wi...
+2025-04-26 01:47:39,535 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:47:39,535 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:47:39,536 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:47:39,537 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:47:39,537 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 01:47:39,537 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 01:47:39,538 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 01:47:39,538 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 01:47:39,538 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 01:47:39,539 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 01:47:39,539 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 01:47:39,540 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan! It's good to hear from you. How can I assist you today?  Remember, I'm here to help with ...
+2025-04-26 01:47:39,540 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan! It's good to hear from you. How can I assist you today?  Remember, I'm here to help with ...
+2025-04-26 01:47:39,541 - CtxMemMgr_User1 - INFO - Stored turn cfcfa65a-7356-4acf-8f17-36cb8a9301bc for active session new_chat
+2025-04-26 01:47:39,541 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 01:47:40,445 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 01:47:40,445 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~157 / 30000
+2025-04-26 01:47:40,446 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 01:47:40,450 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 01:47:40,450 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan! It's good to hear from you. How can I assist you today?  Remember, I'm here to help with your 'What' project, and I'm still working on getting you that dry lease agreement for the Cessna Citation Sovereign+.", "session_id": "new_chat", "timestamp": "2025-04-26T01:47:40.450458"}
+2025-04-26 01:49:55,818 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:49:55,827 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 01:49:55,828 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 01:49:55,828 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:49:55,828 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 01:49:55,833 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 01:49:55,836 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 01:49:55,836 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 01:49:55,836 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 01:49:55,836 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 01:49:55,836 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 01:49:55,836 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:49:55,837 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:49:57,895 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T01:50:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user says \'hi\'."...
+2025-04-26 01:49:57,896 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:49:57,896 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:49:57,896 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:49:57,897 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:49:57,897 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 01:49:57,897 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 01:49:57,897 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 01:49:57,897 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 01:49:57,897 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 01:49:57,897 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 01:49:57,898 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 01:49:57,898 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan!  It's great to connect with you again.  Is there anything I can assist you with today?  R...
+2025-04-26 01:49:57,898 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan!  It's great to connect with you again.  Is there anything I can assist you with today?  R...
+2025-04-26 01:49:57,898 - CtxMemMgr_User1 - INFO - Stored turn 8913ce10-dd50-44d7-9cc9-eed46f53c32b for active session new_chat
+2025-04-26 01:49:57,898 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 01:49:58,761 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 01:49:58,762 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~157 / 30000
+2025-04-26 01:49:58,762 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 01:49:58,765 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 01:49:58,766 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan!  It's great to connect with you again.  Is there anything I can assist you with today?  Remember, I'm working on getting you that dry lease agreement for the Cessna Citation Sovereign+ for your 'What' project.  Let me know if you need any updates on that.", "session_id": "new_chat", "timestamp": "2025-04-26T01:49:58.766216"}
+2025-04-26 01:50:24,664 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:50:24,665 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 01:50:24,665 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 01:50:24,665 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:50:24,665 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 01:50:24,670 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Hello....
+2025-04-26 01:50:24,675 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 01:50:24,675 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Hello.'
+2025-04-26 01:50:24,675 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 01:50:24,675 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 01:50:24,676 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 01:50:24,676 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:50:24,678 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:50:26,830 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T01:51:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted the a...
+2025-04-26 01:50:26,830 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:50:26,830 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:50:26,831 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:50:26,831 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:50:26,832 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 01:50:26,832 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 01:50:26,832 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 01:50:26,832 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 01:50:26,833 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 01:50:26,833 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 01:50:26,833 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 01:50:26,834 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hello Jordan! It's a pleasure to speak with you.  Given your previous requests for a dry lease agree...
+2025-04-26 01:50:26,834 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hello Jordan! It's a pleasure to speak with you.  Given your previous requests for a dry lease agree...
+2025-04-26 01:50:26,834 - CtxMemMgr_User1 - INFO - Stored turn c8fdc53d-6e60-4c60-b117-f109e2980dc8 for active session new_chat
+2025-04-26 01:50:26,834 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 01:50:27,741 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 01:50:27,741 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~158 / 30000
+2025-04-26 01:50:27,741 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 01:50:27,743 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 01:50:27,743 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hello Jordan! It's a pleasure to speak with you.  Given your previous requests for a dry lease agreement for a Cessna Citation Sovereign+ and information about your 'What' project, I'm ready to help in any way I can. Do you have any questions or tasks for me today?", "session_id": "new_chat", "timestamp": "2025-04-26T01:50:27.743133"}
+2025-04-26 01:57:58,136 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:57:58,136 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 01:57:58,137 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 01:57:58,137 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 01:57:58,137 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 01:57:58,143 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Who is Dan Martell?...
+2025-04-26 01:57:58,145 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 01:57:58,145 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Who is Dan Martell?'
+2025-04-26 01:57:58,145 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 01:57:58,145 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 01:57:58,146 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 01:57:58,146 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 01:57:58,148 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 01:58:00,459 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T01:58:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 01:58:00,459 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:58:00,460 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:58:00,460 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 01:58:00,460 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 01:58:00,461 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 01:58:00,461 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 01:58:00,461 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 01:58:00,461 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 01:58:00,462 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 01:58:00,462 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 01:58:00,462 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 01:58:00,462 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 01:58:00,462 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 01:58:00,463 - CtxMemMgr_User1 - INFO - Stored turn 45ab0ce6-348d-464b-ad40-3fe23ecc6b8f for active session new_chat
+2025-04-26 01:58:00,463 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 01:58:01,265 - CtxMemMgr_User1 - WARNING - Memory extraction response was not valid JSON: Please provide me with the next user message and the assistant's response. I need that information to continue the conversation and identify any further facts or preferences.
+2025-04-26 01:58:01,265 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~162 / 30000
+2025-04-26 01:58:01,266 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 01:58:01,270 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 01:58:01,270 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "[SEARCH: Dan Martell biography]", "session_id": "new_chat", "timestamp": "2025-04-26T01:58:01.270618"}
+2025-04-26 02:00:30,332 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:00:30,332 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:00:30,333 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:00:30,333 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:00:30,334 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:00:30,346 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 02:00:30,351 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:00:30,351 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 02:00:30,351 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:00:30,351 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:00:30,351 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:00:30,352 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:00:30,355 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:00:32,326 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:00:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted me wi...
+2025-04-26 02:00:32,326 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:00:32,326 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:00:32,327 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:00:32,327 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:00:32,327 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:00:32,328 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:00:32,328 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:00:32,328 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:00:32,328 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:00:32,328 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:00:32,328 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:00:32,329 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan! It's nice to hear from you. How can I assist you with your 'What' project today?  I recal...
+2025-04-26 02:00:32,329 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan! It's nice to hear from you. How can I assist you with your 'What' project today?  I recal...
+2025-04-26 02:00:32,329 - CtxMemMgr_User1 - INFO - Stored turn d55b8fee-9754-4cd3-b16a-465e96aec63e for active session new_chat
+2025-04-26 02:00:32,329 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:00:33,298 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.', 'User prefers summaries of documents.']
+2025-04-26 02:00:33,299 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~162 / 30000
+2025-04-26 02:00:33,300 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:00:33,303 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:00:33,303 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan! It's nice to hear from you. How can I assist you with your 'What' project today?  I recall you need a dry lease agreement for a Cessna Citation Sovereign+ and prefer summaries of documents. Let me know if there's anything specific I can help you with.", "session_id": "new_chat", "timestamp": "2025-04-26T02:00:33.303544"}
+2025-04-26 02:01:35,241 - models.connection - INFO - Using MySQL database at: mysql:3306/rai_chat
+2025-04-26 02:01:35,241 - models.connection - INFO - Attempting to connect to database (attempt 1/5)
+2025-04-26 02:01:35,253 - models.connection - INFO - Database connection successful!
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Current directory: /app/components
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Checking for .env at: /app/components/../../Backend/.env
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Checking for .env at: /app/components/../../backend/.env
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Checking for .env at: /app/components/../../../.env
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Checking for .env at: /.env
+2025-04-26 02:01:35,265 - components.action_handler - WARNING - Could not find .env file in any of the checked directories.
+2025-04-26 02:01:35,265 - components.action_handler - INFO - TAVILY_API_KEY loaded: YES (length: 41)
+2025-04-26 02:01:35,265 - components.action_handler - INFO - Checked for .env file in multiple locations
+2025-04-26 02:01:35,270 - components.action_handler - INFO - Initializing Tavily client with API key: tvly...VPLb
+2025-04-26 02:01:35,270 - components.action_handler - INFO - Tavily client initialized successfully
+2025-04-26 02:01:35,270 - components.action_handler - INFO - Web search functionality is available
+2025-04-26 02:01:35,271 - managers.conversation_manager - INFO - LLM Engine path: /app/llm_client
+2025-04-26 02:01:35,271 - managers.conversation_manager - INFO - Successfully initialized Docker LLM API client
+2025-04-26 02:01:35,275 - app - INFO - Registered unified frontend API blueprint
+2025-04-26 02:01:35,279 - waitress - INFO - Serving on http://0.0.0.0:6102
+2025-04-26 02:02:16,667 - managers.user_session_manager - INFO - Creating new UserSessionManager singleton instance
+2025-04-26 02:02:16,667 - managers.chat_file_manager - INFO - ChatFileManager initialized. Base data path: /app/data
+2025-04-26 02:02:16,668 - managers.user_session_manager - INFO - UserSessionManager initialized with base path: /app/data
+2025-04-26 02:02:16,668 - managers.user_session_manager - INFO - Creating new conversation manager for user: 1, session: new_chat
+2025-04-26 02:02:16,669 - api.llm_engine.llm_api_interface - INFO - Initializing LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:02:16,669 - EpisodicMemMgr_User1 - INFO - Summary index file not found for user 1. Initialized empty index.
+2025-04-26 02:02:16,670 - EpisodicMemMgr_User1 - INFO - EpisodicMemoryManager initialized for user 1. Episodic path: /app/data/1/episodic
+2025-04-26 02:02:16,670 - CtxMemMgr_User1 - INFO - Successfully initialized LLM API client for memory extraction
+2025-04-26 02:02:16,670 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:02:16,673 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:02:16,673 - CtxMemMgr_User1 - INFO - ContextualMemoryManager initialized for user 1.
+2025-04-26 02:02:16,674 - managers.conversation_manager - INFO - Initializing Docker LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:02:16,674 - conversation_manager_1 - INFO - Using LLM API client: DockerLLMAPI
+2025-04-26 02:02:16,674 - conversation_manager_1 - INFO - Successfully initialized database session
+2025-04-26 02:02:16,678 - managers.memory.tier_manager - WARNING - Using fallback LLM API client
+2025-04-26 02:02:16,679 - managers.memory.tier_manager - INFO - TierManager initialized with LLM API client
+2025-04-26 02:02:16,679 - managers.memory.context_builder - INFO - ContextBuilder initialized
+2025-04-26 02:02:16,679 - managers.memory.request_parser - INFO - RequestParser initialized
+2025-04-26 02:02:16,679 - managers.memory.memory_pruner - INFO - MemoryPruner initialized with 30000 token limit
+2025-04-26 02:02:16,679 - managers.memory.memory_importance_scorer - INFO - MemoryImportanceScorer initialized
+2025-04-26 02:02:16,679 - conversation_manager_1 - INFO - Initialized memory importance scorer for automatic tier management
+2025-04-26 02:02:16,680 - components.prompt_builder - INFO - PromptBuilder initialized for user 1
+2025-04-26 02:02:16,680 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:02:16,680 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:02:16,680 - conversation_manager_1 - INFO - Conversation manager for user 1 initialized successfully
+2025-04-26 02:02:16,680 - conversation_manager_1 - INFO - Loading session new_chat
+2025-04-26 02:02:16,680 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:02:16,680 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:02:16,681 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:02:16,681 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:02:16,681 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:02:16,688 - CtxMemMgr_User1 - INFO - Loading session context for new_chat from /app/data/1/new_chat/context.json
+2025-04-26 02:02:16,688 - CtxMemMgr_User1 - INFO - Successfully loaded context for session new_chat (45 messages).
+2025-04-26 02:02:16,688 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: who is dan martell?...
+2025-04-26 02:02:16,697 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:02:16,698 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'who is dan martell?'
+2025-04-26 02:02:16,698 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:02:16,698 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:02:16,698 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:02:16,698 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:02:16,701 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:02:18,722 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:06:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:02:18,722 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:02:18,722 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:02:18,723 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:02:18,723 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:02:18,723 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:02:18,723 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:02:18,724 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:02:18,724 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:02:18,724 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:02:18,724 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:02:18,725 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:02:18,725 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:02:18,725 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:02:18,726 - CtxMemMgr_User1 - INFO - Stored turn f3fbc3c3-47eb-446d-b790-50be1b590159 for active session new_chat
+2025-04-26 02:02:18,726 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:02:19,371 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~166 / 30000
+2025-04-26 02:02:19,371 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:02:19,374 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:02:19,375 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "[SEARCH: Dan Martell biography]", "session_id": "new_chat", "timestamp": "2025-04-26T02:02:19.374949"}
+2025-04-26 02:12:52,226 - models.connection - INFO - Using MySQL database at: mysql:3306/rai_chat
+2025-04-26 02:12:52,226 - models.connection - INFO - Attempting to connect to database (attempt 1/5)
+2025-04-26 02:12:52,237 - models.connection - INFO - Database connection successful!
+2025-04-26 02:12:52,251 - components.action_handler - INFO - Current directory: /app/components
+2025-04-26 02:12:52,251 - components.action_handler - INFO - Checking for .env at: /app/components/../../Backend/.env
+2025-04-26 02:12:52,251 - components.action_handler - INFO - Checking for .env at: /app/components/../../backend/.env
+2025-04-26 02:12:52,251 - components.action_handler - INFO - Checking for .env at: /app/components/../../../.env
+2025-04-26 02:12:52,252 - components.action_handler - INFO - Checking for .env at: /.env
+2025-04-26 02:12:52,252 - components.action_handler - WARNING - Could not find .env file in any of the checked directories.
+2025-04-26 02:12:52,252 - components.action_handler - INFO - TAVILY_API_KEY loaded: YES (length: 41)
+2025-04-26 02:12:52,252 - components.action_handler - INFO - Checked for .env file in multiple locations
+2025-04-26 02:12:52,257 - components.action_handler - INFO - Initializing Tavily client with API key: tvly...VPLb
+2025-04-26 02:12:52,257 - components.action_handler - INFO - Tavily client initialized successfully
+2025-04-26 02:12:52,257 - components.action_handler - INFO - Web search functionality is available
+2025-04-26 02:12:52,257 - managers.conversation_manager - INFO - LLM Engine path: /app/llm_client
+2025-04-26 02:12:52,257 - managers.conversation_manager - INFO - Successfully initialized Docker LLM API client
+2025-04-26 02:12:52,261 - app - INFO - Registered unified frontend API blueprint
+2025-04-26 02:12:52,265 - waitress - INFO - Serving on http://0.0.0.0:6102
+2025-04-26 02:13:02,834 - managers.user_session_manager - INFO - Creating new UserSessionManager singleton instance
+2025-04-26 02:13:02,834 - managers.chat_file_manager - INFO - ChatFileManager initialized. Base data path: /app/data
+2025-04-26 02:13:02,835 - managers.user_session_manager - INFO - UserSessionManager initialized with base path: /app/data
+2025-04-26 02:13:02,835 - managers.user_session_manager - INFO - Creating new conversation manager for user: 1, session: new_chat
+2025-04-26 02:13:02,835 - api.llm_engine.llm_api_interface - INFO - Initializing LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:13:02,835 - EpisodicMemMgr_User1 - INFO - Summary index file not found for user 1. Initialized empty index.
+2025-04-26 02:13:02,836 - EpisodicMemMgr_User1 - INFO - EpisodicMemoryManager initialized for user 1. Episodic path: /app/data/1/episodic
+2025-04-26 02:13:02,836 - CtxMemMgr_User1 - INFO - Successfully initialized LLM API client for memory extraction
+2025-04-26 02:13:02,836 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:13:02,837 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:13:02,838 - CtxMemMgr_User1 - INFO - ContextualMemoryManager initialized for user 1.
+2025-04-26 02:13:02,838 - managers.conversation_manager - INFO - Initializing Docker LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:13:02,838 - conversation_manager_1 - INFO - Using LLM API client: DockerLLMAPI
+2025-04-26 02:13:02,838 - conversation_manager_1 - INFO - Successfully initialized database session
+2025-04-26 02:13:02,841 - managers.memory.tier_manager - WARNING - Using fallback LLM API client
+2025-04-26 02:13:02,841 - managers.memory.tier_manager - INFO - TierManager initialized with LLM API client
+2025-04-26 02:13:02,841 - managers.memory.context_builder - INFO - ContextBuilder initialized
+2025-04-26 02:13:02,841 - managers.memory.request_parser - INFO - RequestParser initialized
+2025-04-26 02:13:02,842 - managers.memory.memory_pruner - INFO - MemoryPruner initialized with 30000 token limit
+2025-04-26 02:13:02,842 - managers.memory.memory_importance_scorer - INFO - MemoryImportanceScorer initialized
+2025-04-26 02:13:02,842 - conversation_manager_1 - INFO - Initialized memory importance scorer for automatic tier management
+2025-04-26 02:13:02,842 - components.prompt_builder - INFO - PromptBuilder initialized for user 1
+2025-04-26 02:13:02,842 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:13:02,842 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:13:02,842 - conversation_manager_1 - INFO - Conversation manager for user 1 initialized successfully
+2025-04-26 02:13:02,842 - conversation_manager_1 - INFO - Loading session new_chat
+2025-04-26 02:13:02,842 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:13:02,842 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:13:02,842 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:13:02,843 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:13:02,843 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:13:02,846 - CtxMemMgr_User1 - INFO - Loading session context for new_chat from /app/data/1/new_chat/context.json
+2025-04-26 02:13:02,847 - CtxMemMgr_User1 - INFO - Successfully loaded context for session new_chat (46 messages).
+2025-04-26 02:13:02,847 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 02:13:02,853 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:13:02,853 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 02:13:02,853 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:13:02,853 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:13:02,853 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:13:02,853 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:13:02,856 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:13:05,131 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:14:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted me wi...
+2025-04-26 02:13:05,132 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:13:05,132 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:13:05,133 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:13:05,133 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:13:05,133 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:13:05,133 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:13:05,134 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:13:05,134 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:13:05,134 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:13:05,135 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:13:05,135 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:13:05,136 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan! How can I help you today?  It's still early, but I'm ready to assist with your 'What' pro...
+2025-04-26 02:13:05,136 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan! How can I help you today?  It's still early, but I'm ready to assist with your 'What' pro...
+2025-04-26 02:13:05,137 - CtxMemMgr_User1 - INFO - Stored turn 78400fa6-a722-4dbd-b617-b17e777abc8e for active session new_chat
+2025-04-26 02:13:05,137 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:13:06,098 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 02:13:06,099 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~166 / 30000
+2025-04-26 02:13:06,099 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:13:06,103 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:13:06,104 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan! How can I help you today?  It's still early, but I'm ready to assist with your 'What' project and finding that dry lease agreement for the Cessna Citation Sovereign+. Let me know what you need.", "session_id": "new_chat", "timestamp": "2025-04-26T02:13:06.104059"}
+2025-04-26 02:13:14,207 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:13:14,207 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:13:14,208 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:13:14,208 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:13:14,208 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:13:14,213 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Who is Dan Martell?...
+2025-04-26 02:13:14,216 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:13:14,216 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Who is Dan Martell?'
+2025-04-26 02:13:14,216 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:13:14,216 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:13:14,216 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:13:14,216 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:13:14,218 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:13:16,266 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:14:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:13:16,267 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:13:16,268 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:13:16,268 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:13:16,269 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:13:16,269 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:13:16,270 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:13:16,270 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:13:16,271 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:13:16,271 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:13:16,272 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:13:16,272 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:13:16,272 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:13:16,273 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:13:16,273 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell biography
+2025-04-26 02:13:16,273 - CtxMemMgr_User1 - INFO - Stored turn 33095e4d-f586-4a2e-9f18-affd7026e47e for active session new_chat
+2025-04-26 02:13:16,274 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:13:17,219 - CtxMemMgr_User1 - WARNING - Memory extraction response was not valid JSON: I need more information to continue.  Please provide the next user message and the assistant's response.  I cannot continue the conversation without that context.
+2025-04-26 02:13:17,220 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~170 / 30000
+2025-04-26 02:13:17,221 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:13:17,223 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:13:17,223 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "[SEARCH: Dan Martell biography]", "session_id": "new_chat", "timestamp": "2025-04-26T02:13:17.223698"}
+2025-04-26 02:16:45,910 - models.connection - INFO - Using MySQL database at: mysql:3306/rai_chat
+2025-04-26 02:16:45,910 - models.connection - INFO - Attempting to connect to database (attempt 1/5)
+2025-04-26 02:16:45,921 - models.connection - INFO - Database connection successful!
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Current directory: /app/components
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Checking for .env at: /app/components/../../Backend/.env
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Checking for .env at: /app/components/../../backend/.env
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Checking for .env at: /app/components/../../../.env
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Checking for .env at: /.env
+2025-04-26 02:16:45,937 - components.action_handler - WARNING - Could not find .env file in any of the checked directories.
+2025-04-26 02:16:45,937 - components.action_handler - INFO - TAVILY_API_KEY loaded: YES (length: 41)
+2025-04-26 02:16:45,937 - components.action_handler - INFO - Checked for .env file in multiple locations
+2025-04-26 02:16:45,942 - components.action_handler - INFO - Initializing Tavily client with API key: tvly...VPLb
+2025-04-26 02:16:45,942 - components.action_handler - INFO - Tavily client initialized successfully
+2025-04-26 02:16:45,942 - components.action_handler - INFO - Web search functionality is available
+2025-04-26 02:16:45,943 - managers.conversation_manager - INFO - LLM Engine path: /app/llm_client
+2025-04-26 02:16:45,943 - managers.conversation_manager - INFO - Successfully initialized Docker LLM API client
+2025-04-26 02:16:45,947 - app - INFO - Registered unified frontend API blueprint
+2025-04-26 02:16:45,950 - waitress - INFO - Serving on http://0.0.0.0:6102
+2025-04-26 02:17:51,265 - managers.user_session_manager - INFO - Creating new UserSessionManager singleton instance
+2025-04-26 02:17:51,266 - managers.chat_file_manager - INFO - ChatFileManager initialized. Base data path: /app/data
+2025-04-26 02:17:51,266 - managers.user_session_manager - INFO - UserSessionManager initialized with base path: /app/data
+2025-04-26 02:17:51,266 - managers.user_session_manager - INFO - Creating new conversation manager for user: 1, session: new_chat
+2025-04-26 02:17:51,267 - api.llm_engine.llm_api_interface - INFO - Initializing LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:17:51,267 - EpisodicMemMgr_User1 - INFO - Summary index file not found for user 1. Initialized empty index.
+2025-04-26 02:17:51,268 - EpisodicMemMgr_User1 - INFO - EpisodicMemoryManager initialized for user 1. Episodic path: /app/data/1/episodic
+2025-04-26 02:17:51,268 - CtxMemMgr_User1 - INFO - Successfully initialized LLM API client for memory extraction
+2025-04-26 02:17:51,269 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:17:51,273 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:17:51,274 - CtxMemMgr_User1 - INFO - ContextualMemoryManager initialized for user 1.
+2025-04-26 02:17:51,280 - managers.conversation_manager - INFO - Initializing Docker LLM API client with URL: http://rai-llm-engine:6101
+2025-04-26 02:17:51,280 - conversation_manager_1 - INFO - Using LLM API client: DockerLLMAPI
+2025-04-26 02:17:51,280 - conversation_manager_1 - INFO - Successfully initialized database session
+2025-04-26 02:17:51,286 - managers.memory.tier_manager - WARNING - Using fallback LLM API client
+2025-04-26 02:17:51,286 - managers.memory.tier_manager - INFO - TierManager initialized with LLM API client
+2025-04-26 02:17:51,286 - managers.memory.context_builder - INFO - ContextBuilder initialized
+2025-04-26 02:17:51,286 - managers.memory.request_parser - INFO - RequestParser initialized
+2025-04-26 02:17:51,287 - managers.memory.memory_pruner - INFO - MemoryPruner initialized with 30000 token limit
+2025-04-26 02:17:51,287 - managers.memory.memory_importance_scorer - INFO - MemoryImportanceScorer initialized
+2025-04-26 02:17:51,287 - conversation_manager_1 - INFO - Initialized memory importance scorer for automatic tier management
+2025-04-26 02:17:51,287 - components.prompt_builder - INFO - PromptBuilder initialized for user 1
+2025-04-26 02:17:51,287 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:17:51,288 - components.action_handler - INFO - ActionHandler initialized for user 1
+2025-04-26 02:17:51,288 - conversation_manager_1 - INFO - Conversation manager for user 1 initialized successfully
+2025-04-26 02:17:51,288 - conversation_manager_1 - INFO - Loading session new_chat
+2025-04-26 02:17:51,288 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:17:51,288 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:17:51,288 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:17:51,289 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:17:51,289 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:17:51,295 - CtxMemMgr_User1 - INFO - Loading session context for new_chat from /app/data/1/new_chat/context.json
+2025-04-26 02:17:51,296 - CtxMemMgr_User1 - INFO - Successfully loaded context for session new_chat (48 messages).
+2025-04-26 02:17:51,296 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: hi...
+2025-04-26 02:17:51,302 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:17:51,302 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'hi'
+2025-04-26 02:17:51,303 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:17:51,303 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:17:51,303 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:17:51,303 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:17:51,305 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:17:53,248 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:18:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted me.",...
+2025-04-26 02:17:53,249 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:17:53,249 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:17:53,250 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:17:53,250 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:17:53,250 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:17:53,251 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:17:53,251 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:17:53,251 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:17:53,251 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:17:53,251 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:17:53,252 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:17:53,252 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan!  It's still early, but I'm ready to assist. How can I help you with your project today?  ...
+2025-04-26 02:17:53,252 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan!  It's still early, but I'm ready to assist. How can I help you with your project today?  ...
+2025-04-26 02:17:53,253 - CtxMemMgr_User1 - INFO - Stored turn 6893b6e1-403f-4f31-a3af-1ded9185ac2b for active session new_chat
+2025-04-26 02:17:53,253 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:17:54,156 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.']
+2025-04-26 02:17:54,157 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~170 / 30000
+2025-04-26 02:17:54,157 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:17:54,160 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:17:54,161 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan!  It's still early, but I'm ready to assist. How can I help you with your project today?  Do you need any further assistance with the dry lease agreement for the Cessna Citation Sovereign+, or perhaps something related to the 'What' project?", "session_id": "new_chat", "timestamp": "2025-04-26T02:17:54.161156"}
+2025-04-26 02:18:01,203 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:18:01,204 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:18:01,204 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:18:01,204 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:18:01,204 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:18:01,210 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Who is Dan Martell?...
+2025-04-26 02:18:01,212 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:18:01,212 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Who is Dan Martell?'
+2025-04-26 02:18:01,213 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:18:01,213 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:18:01,213 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:18:01,213 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:18:01,216 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:18:03,526 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:20:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:18:03,527 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:18:03,527 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:18:03,527 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:18:03,528 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:18:03,528 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:18:03,528 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:18:03,529 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:18:03,529 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:18:03,529 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:18:03,529 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:18:03,530 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:18:03,530 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:18:03,530 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:18:03,531 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell biography
+2025-04-26 02:18:03,531 - CtxMemMgr_User1 - INFO - Stored turn 78439123-e7b8-438c-9a77-21c6a5f6d163 for active session new_chat
+2025-04-26 02:18:03,531 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:18:04,281 - CtxMemMgr_User1 - WARNING - Memory extraction response was not valid JSON: Please provide the next user message and the assistant's response. I need that information to continue the conversation and identify any further facts or preferences.
+2025-04-26 02:18:04,281 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~174 / 30000
+2025-04-26 02:18:04,282 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:18:04,285 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:18:04,285 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:18:04,285 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:18:04,286 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:18:06,650 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell biography]', 'follow_up_questions': None, 'answer': 'Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful c...
+2025-04-26 02:18:06,650 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell biography]
+
+Summary: Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful companies like Spheric T...
+2025-04-26 02:18:06,651 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell biography]' and found the following information:
+
+Search result...
+2025-04-26 02:18:09,679 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:20:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a bi...
+2025-04-26 02:18:09,679 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:18:09,680 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:18:09,681 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:18:09,681 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:18:09,682 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:18:09,682 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recogn...
+2025-04-26 02:18:09,682 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recogn...
+2025-04-26 02:18:09,682 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recognized for his expertise in SaaS and effective time management strategies.  He's a serial entrepreneur, having founded multiple successful companies.  Notable examples include Spheric Technologies and Clarity.fm.  Beyond his business ventures, Martell is also a bestselling author and a frequent keynote speaker, sharing his insights and experience with others. His estimated net worth is approximately $80 million, reflecting his considerable success in the business world.  Various online sources detail his career trajectory, highlighting both his early challenges and subsequent triumphs.", "session_id": "new_chat", "timestamp": "2025-04-26T02:18:09.682901"}
+2025-04-26 02:18:18,370 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:18:18,371 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:18:18,371 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:18:18,371 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:18:18,371 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:18:18,377 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Can you emulate him?...
+2025-04-26 02:18:18,379 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:18:18,379 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Can you emulate him?'
+2025-04-26 02:18:18,380 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:18:18,380 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:18:18,380 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:18:18,380 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:18:18,382 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:18:21,155 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:20:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests that...
+2025-04-26 02:18:21,155 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:18:21,155 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:18:21,156 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:18:21,156 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:18:21,156 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:18:21,156 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:18:21,156 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:18:21,156 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:18:21,156 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:18:21,156 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:18:21,157 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:18:21,157 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: To accurately emulate someone, I require specific information.  Please provide details such as:
+
+* *...
+2025-04-26 02:18:21,157 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): To accurately emulate someone, I require specific information.  Please provide details such as:
+
+* *...
+2025-04-26 02:18:21,157 - CtxMemMgr_User1 - INFO - Stored turn ac637c74-ce82-4faa-8a75-ae0550902739 for active session new_chat
+2025-04-26 02:18:21,157 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:18:21,859 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~179 / 30000
+2025-04-26 02:18:21,860 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:18:21,864 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:18:21,865 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "To accurately emulate someone, I require specific information.  Please provide details such as:\n\n* **Name:** The name of the person you'd like me to emulate.\n* **Examples:**  Links to interviews, writings, videos, or recordings of their speech.\n* **Personality traits:**  Key personality characteristics (e.g., humor, seriousness, optimism).\n* **Communication style:** Formal or informal?  Witty?  Direct?\n\nThe more details you give me, the better I can emulate the person.", "session_id": "new_chat", "timestamp": "2025-04-26T02:18:21.865154"}
+2025-04-26 02:26:22,959 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:26:22,959 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:26:22,960 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:26:22,960 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:26:22,960 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:26:22,964 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: who is dan Martell?...
+2025-04-26 02:26:22,968 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:26:22,968 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'who is dan Martell?'
+2025-04-26 02:26:22,968 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:26:22,968 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:26:22,969 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:26:22,969 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:26:22,970 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:26:25,094 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:26:25,094 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:25,095 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:25,095 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:25,095 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:25,095 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:26:25,096 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:26:25,096 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:26:25,096 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:26:25,096 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:26:25,096 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:26:25,097 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:26:25,097 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:26:25,097 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:26:25,097 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell biography
+2025-04-26 02:26:25,098 - CtxMemMgr_User1 - INFO - Stored turn a869139f-fd48-4590-8eb4-4737158d78bd for active session new_chat
+2025-04-26 02:26:25,098 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:26:25,798 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~183 / 30000
+2025-04-26 02:26:25,799 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:26:25,803 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:26:25,803 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:26:25,803 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:26:25,804 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:26:26,653 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell biography]', 'follow_up_questions': None, 'answer': 'Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful c...
+2025-04-26 02:26:26,654 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell biography]
+
+Summary: Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful companies like Spheric T...
+2025-04-26 02:26:26,655 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell biography]' and found the following information:
+
+Search result...
+2025-04-26 02:26:29,461 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a bi...
+2025-04-26 02:26:29,461 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:29,462 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:29,462 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:26:29,463 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:26:29,463 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:26:29,463 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Dan Martell is a Canadian entrepreneur, investor, and business coach renowned for his expertise in s...
+2025-04-26 02:26:29,463 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Dan Martell is a Canadian entrepreneur, investor, and business coach renowned for his expertise in s...
+2025-04-26 02:26:29,464 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Dan Martell is a Canadian entrepreneur, investor, and business coach renowned for his expertise in software-as-a-service (SaaS) and effective time management.  He's founded several successful companies, including Spheric Technologies and Clarity.fm.  Beyond his business ventures, he's a bestselling author and sought-after keynote speaker, sharing his knowledge and insights with others.  His estimated net worth is a substantial $80 million, reflecting his considerable achievements in the business world.  He's described as a serial entrepreneur, husband, and athlete, highlighting a multifaceted and successful life.", "session_id": "new_chat", "timestamp": "2025-04-26T02:26:29.464201"}
+2025-04-26 02:26:37,128 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:26:37,128 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:26:37,128 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:26:37,129 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:26:37,129 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:26:37,135 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: I want you to emulate him....
+2025-04-26 02:26:37,137 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:26:37,137 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'I want you to emulate him.'
+2025-04-26 02:26:37,138 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:26:37,138 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:26:37,138 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:26:37,138 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:26:37,140 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:26:39,471 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests emul...
+2025-04-26 02:26:39,472 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:39,472 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:39,473 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:39,474 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:39,474 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:26:39,474 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:26:39,475 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:26:39,475 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:26:39,475 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:26:39,475 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:26:39,476 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:26:39,476 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public pers...
+2025-04-26 02:26:39,477 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public pers...
+2025-04-26 02:26:39,478 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona
+2025-04-26 02:26:39,478 - CtxMemMgr_User1 - INFO - Stored turn a46e07b0-5a4a-4654-83f9-52d63d232563 for active session new_chat
+2025-04-26 02:26:39,478 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:26:40,096 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~189 / 30000
+2025-04-26 02:26:40,096 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:26:40,100 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:26:40,101 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona]'
+2025-04-26 02:26:40,101 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona]'
+2025-04-26 02:26:40,101 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona]'
+2025-04-26 02:26:43,291 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona]', 'follow_up_questions': None, 'answer': 'Dan Martell is known for his direct commun...
+2025-04-26 02:26:43,292 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Martell public persona]
+
+Summary: Dan Martell is known for his direct communication style, business...
+2025-04-26 02:26:43,293 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell communication style; Dan Martell business philosophies; Dan Mar...
+2025-04-26 02:26:46,147 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a su...
+2025-04-26 02:26:46,147 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:26:46,147 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:26:46,148 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:26:46,148 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:26:46,148 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:26:46,148 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Dan Martell's public persona is that of a highly successful entrepreneur and motivational speaker.  ...
+2025-04-26 02:26:46,149 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Dan Martell's public persona is that of a highly successful entrepreneur and motivational speaker.  ...
+2025-04-26 02:26:46,149 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Dan Martell's public persona is that of a highly successful entrepreneur and motivational speaker.  His communication style, as evidenced by the provided links, appears direct and action-oriented.  He emphasizes practical business strategies, particularly around time management and scaling businesses for sustainable growth.  His business philosophies seem to be rooted in his personal journey, transforming from a troubled youth to a highly successful individual.  This narrative is often used to inspire and motivate others. The search results highlight his focus on sharing actionable advice and frameworks for business success.", "session_id": "new_chat", "timestamp": "2025-04-26T02:26:46.149257"}
+2025-04-26 02:27:03,511 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:27:03,511 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:27:03,512 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:27:03,512 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:27:03,512 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:27:03,517 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Okay so now you are going to pretend to be him....
+2025-04-26 02:27:03,520 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:27:03,520 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Okay so now you are going to pretend to be him.'
+2025-04-26 02:27:03,520 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:27:03,520 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:27:03,520 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:27:03,520 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:27:03,522 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:27:05,618 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user wants me to e...
+2025-04-26 02:27:05,618 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:27:05,619 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:27:05,620 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:27:05,621 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:27:05,621 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:27:05,622 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:27:05,622 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:27:05,622 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:27:05,623 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:27:05,623 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:27:05,623 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:27:05,624 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell communication style examples]...
+2025-04-26 02:27:05,624 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell communication style examples]...
+2025-04-26 02:27:05,624 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell communication style examples
+2025-04-26 02:27:05,624 - CtxMemMgr_User1 - INFO - Stored turn 28b4cba1-6b68-4d93-bc7c-bab4ca4281ad for active session new_chat
+2025-04-26 02:27:05,624 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:27:06,270 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~200 / 30000
+2025-04-26 02:27:06,271 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:27:06,273 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:27:06,274 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell communication style examples]'
+2025-04-26 02:27:06,274 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell communication style examples]'
+2025-04-26 02:27:06,274 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell communication style examples]'
+2025-04-26 02:27:08,557 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell communication style examples]', 'follow_up_questions': None, 'answer': 'Dan Martell is known for his direct and results-driven communication style, often using framewor...
+2025-04-26 02:27:08,558 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell communication style examples]
+
+Summary: Dan Martell is known for his direct and results-driven communication style, often using frameworks to guide his messagi...
+2025-04-26 02:27:08,558 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell communication style examples]' and found the following informat...
+2025-04-26 02:27:11,483 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:28:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a su...
+2025-04-26 02:27:11,484 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:27:11,484 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:27:11,485 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:27:11,485 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:27:11,486 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:27:11,486 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Based on the provided search results, Dan Martell's communication style can be characterized as dire...
+2025-04-26 02:27:11,486 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Based on the provided search results, Dan Martell's communication style can be characterized as dire...
+2025-04-26 02:27:11,487 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Based on the provided search results, Dan Martell's communication style can be characterized as direct, results-driven, and highly structured. He emphasizes clarity and conciseness in his messaging, often utilizing frameworks to guide his communication. This is apparent in his business advice, where he frequently shares structured processes and methodologies for achieving specific outcomes.  Examples include his use of frameworks for writing effective cold emails and building successful business playbooks.  His approach suggests a focus on efficiency and delivering impactful messages, prioritizing actionable results over lengthy or ambiguous explanations.  The provided links suggest his content is structured and aimed at helping others achieve tangible results through clear, focused communication.", "session_id": "new_chat", "timestamp": "2025-04-26T02:27:11.487069"}
+2025-04-26 02:31:06,877 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:06,877 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:31:06,878 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:31:06,878 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:06,878 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:31:06,883 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Who is Dan Martell?...
+2025-04-26 02:31:06,887 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:31:06,887 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Who is Dan Martell?'
+2025-04-26 02:31:06,888 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:31:06,888 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:31:06,888 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:31:06,888 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:31:06,890 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:31:08,969 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:33:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:31:08,970 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:08,970 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:08,971 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:08,971 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:08,971 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:31:08,972 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:31:08,972 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:31:08,972 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:31:08,973 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:31:08,973 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:31:08,973 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:31:08,974 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:31:08,974 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:31:08,974 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell biography
+2025-04-26 02:31:08,975 - CtxMemMgr_User1 - INFO - Stored turn f3757b3c-ad8f-45c6-af8c-4d1edb13cd0e for active session new_chat
+2025-04-26 02:31:08,975 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:31:09,806 - CtxMemMgr_User1 - WARNING - Memory extraction response was not valid JSON: I need more information to continue.  Please provide the next user message and the assistant's response.  I cannot continue the conversation without that context.
+2025-04-26 02:31:09,806 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~204 / 30000
+2025-04-26 02:31:09,807 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:31:09,811 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:31:09,811 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:31:09,811 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:31:09,812 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:31:13,558 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell biography]', 'follow_up_questions': None, 'answer': 'Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful c...
+2025-04-26 02:31:13,558 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell biography]
+
+Summary: Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful companies like Spheric T...
+2025-04-26 02:31:13,558 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell biography]' and found the following information:
+
+Search result...
+2025-04-26 02:31:16,733 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:33:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a bi...
+2025-04-26 02:31:16,733 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:16,734 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:16,734 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:31:16,735 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:31:16,735 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:31:16,735 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recogn...
+2025-04-26 02:31:16,735 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recogn...
+2025-04-26 02:31:16,736 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach. He's widely recognized for his expertise in Software as a Service (SaaS) and his strategies for effective time management.  Martell's entrepreneurial journey has involved founding multiple successful companies, including Spheric Technologies and Clarity.fm.  While he experienced early setbacks in his entrepreneurial endeavors, he persevered to build significant businesses.  His net worth is estimated to be around $80 million.  He's also a bestselling author and keynote speaker, sharing his knowledge and experience with aspiring entrepreneurs.  His online presence includes a personal website detailing his career and offering insights into his approach to business and success.", "session_id": "new_chat", "timestamp": "2025-04-26T02:31:16.735990"}
+2025-04-26 02:31:32,786 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:32,786 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:31:32,786 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:31:32,787 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:32,787 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:31:32,791 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Great now you are going to talk to me a if you were him. I need business advise....
+2025-04-26 02:31:32,792 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:31:32,792 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Great now you are going to talk to me a if you were him. I need business advise.'
+2025-04-26 02:31:32,793 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:31:32,793 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:31:32,793 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:31:32,793 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:31:32,794 - CtxMemMgr_User1 - INFO - Loaded 10 facts from DB for user 1
+2025-04-26 02:31:35,717 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:33:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user wants busines...
+2025-04-26 02:31:35,718 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:35,718 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:35,719 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:35,719 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:35,720 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:31:35,720 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:31:35,720 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:31:35,720 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:31:35,721 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:31:35,721 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:31:35,721 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:31:35,722 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Okay Jordan, let's cut the fluff. What's your biggest business hurdle right now?  Don't sugarcoat it...
+2025-04-26 02:31:35,722 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Okay Jordan, let's cut the fluff. What's your biggest business hurdle right now?  Don't sugarcoat it...
+2025-04-26 02:31:35,722 - CtxMemMgr_User1 - INFO - Stored turn a40d5562-fc11-43b8-9b46-0e923c7a36b3 for active session new_chat
+2025-04-26 02:31:35,722 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:31:36,632 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", 'User needs business advice.', 'User is interested in direct and results-oriented communication.']
+2025-04-26 02:31:36,632 - CtxMemMgr_User1 - INFO - Added 2 new facts to user memory.
+2025-04-26 02:31:36,637 - CtxMemMgr_User1 - INFO - Updated remembered_facts in DB for user 1 (12 facts). Pending commit.
+2025-04-26 02:31:36,641 - CtxMemMgr_User1 - INFO - Successfully saved 2 new facts to database.
+2025-04-26 02:31:36,641 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~224 / 30000
+2025-04-26 02:31:36,641 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:31:36,642 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:31:36,642 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Okay Jordan, let's cut the fluff. What's your biggest business hurdle right now?  Don't sugarcoat it. I need the raw, unvarnished truth.  I'm looking for the core issue, not the symptoms.  Once we identify that, we can laser-focus on a solution.  What's your revenue model? What's your customer acquisition cost? What are your margins? Give me the numbers.  I want to see how you're measuring success, and where the bottlenecks are. We need to identify the single most impactful action you can take right now to move the needle. Then, we execute.  Let's get to work.", "session_id": "new_chat", "timestamp": "2025-04-26T02:31:36.642533"}
+2025-04-26 02:31:49,260 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:49,260 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:31:49,261 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:31:49,261 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:31:49,261 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:31:49,265 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: I feel like I dont have enough time to get things done....
+2025-04-26 02:31:49,268 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:31:49,268 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'I feel like I dont have enough time to get things done.'
+2025-04-26 02:31:49,268 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:31:49,268 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:31:49,268 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:31:49,268 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:31:49,269 - CtxMemMgr_User1 - INFO - Loaded 12 facts from DB for user 1
+2025-04-26 02:31:52,366 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:34:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "Jordan feels overwhelm...
+2025-04-26 02:31:52,367 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:52,367 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:52,367 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:31:52,367 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:31:52,367 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:31:52,368 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:31:52,368 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:31:52,368 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:31:52,368 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:31:52,368 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:31:52,368 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:31:52,369 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Jordan, I understand feeling overwhelmed by a lack of time.  To best assist you, I need a clearer pi...
+2025-04-26 02:31:52,369 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Jordan, I understand feeling overwhelmed by a lack of time.  To best assist you, I need a clearer pi...
+2025-04-26 02:31:52,369 - CtxMemMgr_User1 - INFO - Stored turn 2fa34274-08de-4d44-a583-1c46a5125c47 for active session new_chat
+2025-04-26 02:31:52,369 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:31:53,598 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan.", 'User feels overwhelmed by a lack of time.', "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.', 'User needs help with time management and prioritization.']
+2025-04-26 02:31:53,599 - CtxMemMgr_User1 - INFO - Added 2 new facts to user memory.
+2025-04-26 02:31:53,602 - CtxMemMgr_User1 - INFO - Updated remembered_facts in DB for user 1 (14 facts). Pending commit.
+2025-04-26 02:31:53,607 - CtxMemMgr_User1 - INFO - Successfully saved 2 new facts to database.
+2025-04-26 02:31:53,607 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~237 / 30000
+2025-04-26 02:31:53,607 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:31:53,608 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:31:53,609 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Jordan, I understand feeling overwhelmed by a lack of time.  To best assist you, I need a clearer picture of your current workload and commitments. Could you list your current tasks and projects, along with estimated time requirements for each?  Once we have that, we can prioritize based on urgency and importance, break down large projects into smaller, more manageable steps, and potentially reschedule some items to create more breathing room.  I can also access and review your calendar to identify potential scheduling conflicts or areas for optimization. This will allow us to create a more effective time management strategy tailored to your needs and the demands of your 'What' project and the Cessna Citation Sovereign+ dry lease agreement.", "session_id": "new_chat", "timestamp": "2025-04-26T02:31:53.609070"}
+2025-04-26 02:37:47,564 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:37:47,565 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:37:47,566 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:37:47,566 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:37:47,566 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:37:47,572 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Hi...
+2025-04-26 02:37:47,574 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:37:47,574 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Hi'
+2025-04-26 02:37:47,575 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:37:47,575 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:37:47,575 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:37:47,575 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:37:47,577 - CtxMemMgr_User1 - INFO - Loaded 14 facts from DB for user 1
+2025-04-26 02:37:49,413 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:38:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user greeted me wi...
+2025-04-26 02:37:49,413 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:37:49,414 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:37:49,414 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:37:49,415 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:37:49,415 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:37:49,415 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:37:49,415 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:37:49,416 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:37:49,416 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:37:49,416 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:37:49,417 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:37:49,417 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: Hi Jordan! It's early, but I'm here and ready to assist. How can I help you today?...
+2025-04-26 02:37:49,417 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): Hi Jordan! It's early, but I'm here and ready to assist. How can I help you today?...
+2025-04-26 02:37:49,417 - CtxMemMgr_User1 - INFO - Stored turn 61e595f2-3219-4042-b01e-185cd4549f35 for active session new_chat
+2025-04-26 02:37:49,417 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:37:50,154 - CtxMemMgr_User1 - INFO - Suggested memory items: ["User's name is Jordan."]
+2025-04-26 02:37:50,155 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~237 / 30000
+2025-04-26 02:37:50,155 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:37:50,158 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:37:50,159 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Hi Jordan! It's early, but I'm here and ready to assist. How can I help you today?", "session_id": "new_chat", "timestamp": "2025-04-26T02:37:50.159035"}
+2025-04-26 02:38:00,464 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:38:00,464 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:38:00,465 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:38:00,465 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:38:00,466 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:38:00,473 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Who is Dan Martell?...
+2025-04-26 02:38:00,475 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:38:00,475 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Who is Dan Martell?'
+2025-04-26 02:38:00,476 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:38:00,476 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:38:00,476 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:38:00,476 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:38:00,478 - CtxMemMgr_User1 - INFO - Loaded 14 facts from DB for user 1
+2025-04-26 02:38:02,428 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:40:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user is asking for...
+2025-04-26 02:38:02,428 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:02,428 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:02,429 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:02,429 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:02,429 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:38:02,429 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:38:02,429 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:38:02,429 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:38:02,429 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:38:02,430 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:38:02,430 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:38:02,430 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: [SEARCH: Dan Martell biography]...
+2025-04-26 02:38:02,430 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): [SEARCH: Dan Martell biography]...
+2025-04-26 02:38:02,430 - ActionHandler_User1 - INFO - Detected [SEARCH:] pattern with query:  Dan Martell biography
+2025-04-26 02:38:02,431 - CtxMemMgr_User1 - INFO - Stored turn c191d560-a31e-40fe-b5ea-3b394b2d670d for active session new_chat
+2025-04-26 02:38:02,431 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:38:03,272 - CtxMemMgr_User1 - WARNING - Memory extraction response was not valid JSON: I need more information to continue.  Please provide the next user message and the assistant's response.  I cannot continue the conversation without that context.
+2025-04-26 02:38:03,272 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~241 / 30000
+2025-04-26 02:38:03,272 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:38:03,273 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:38:03,274 - conversation_manager_1 - INFO - LLM requested search for: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:38:03,274 - components.action_handler - INFO - Performing Tavily search for query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:38:03,274 - components.action_handler - INFO - Calling Tavily search API with query: '[SEARCH: Dan Martell biography]'
+2025-04-26 02:38:05,603 - components.action_handler - INFO - Tavily search response: {'query': '[SEARCH: Dan Martell biography]', 'follow_up_questions': None, 'answer': 'Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful c...
+2025-04-26 02:38:05,603 - components.action_handler - INFO - Formatted search results (first 200 chars): Search results for: [SEARCH: Dan Martell biography]
+
+Summary: Dan Martell is a Canadian entrepreneur known for his expertise in SaaS and time management. He founded successful companies like Spheric T...
+2025-04-26 02:38:05,603 - conversation_manager_1 - INFO - Sending search results back to LLM with prompt: I searched for '[SEARCH: Dan Martell biography]' and found the following information:
+
+Search result...
+2025-04-26 02:38:08,591 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:40:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests info...
+2025-04-26 02:38:08,591 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:08,591 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:08,592 - conversation_manager_1 - INFO - Extracting content from response of type: <class 'dict'>
+2025-04-26 02:38:08,592 - conversation_manager_1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:38:08,592 - conversation_manager_1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:38:08,592 - conversation_manager_1 - INFO - Successfully extracted tier3 content: Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach renowned for his ex...
+2025-04-26 02:38:08,592 - conversation_manager_1 - INFO - Extracted content (first 100 chars): Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach renowned for his ex...
+2025-04-26 02:38:08,593 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "Dan Martell (born 1979) is a Canadian entrepreneur, investor, and business coach renowned for his expertise in software-as-a-service (SaaS) and effective time management.  He's built a substantial net worth, estimated at $80 million, through his various ventures.  His career has involved founding successful companies like Spheric Technologies and Clarity.fm.  Beyond his business accomplishments, he's also a bestselling author, keynote speaker, and shares his knowledge and experience through coaching and public appearances.  He's known for overcoming early failures to achieve significant success in the tech industry.", "session_id": "new_chat", "timestamp": "2025-04-26T02:38:08.593125"}
+2025-04-26 02:38:15,688 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:38:15,688 - conversation_manager_1 - WARNING - Initializing unhealthy components...
+2025-04-26 02:38:15,689 - conversation_manager_1 - INFO - Reinitialized database session
+2025-04-26 02:38:15,689 - conversation_manager_1 - WARNING - System health check detected degraded components
+2025-04-26 02:38:15,689 - conversation_manager_1 - WARNING - System still in degraded state after recovery attempts
+2025-04-26 02:38:15,695 - CtxMemMgr_User1 - INFO - Processing user input for active session new_chat: Summarize that...
+2025-04-26 02:38:15,698 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:38:15,699 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Summarize that'
+2025-04-26 02:38:15,699 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:38:15,699 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:38:15,699 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:38:15,699 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:38:15,701 - CtxMemMgr_User1 - INFO - Loaded 14 facts from DB for user 1
+2025-04-26 02:38:18,382 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:40:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a su...
+2025-04-26 02:38:18,383 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:18,384 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:18,385 - conversation_manager_1 - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:18,386 - conversation_manager_1 - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:18,386 - conversation_manager_1 - INFO - LLM response[status] type: <class 'str'>
+2025-04-26 02:38:18,387 - conversation_manager_1 - INFO - LLM response[text] type: <class 'str'>
+2025-04-26 02:38:18,387 - ActionHandler_User1 - INFO - Processing LLM response for session new_chat, user 1
+2025-04-26 02:38:18,387 - ActionHandler_User1 - INFO - Response data type: <class 'dict'>
+2025-04-26 02:38:18,387 - ActionHandler_User1 - INFO - Response data keys: ['status', 'text']
+2025-04-26 02:38:18,388 - ActionHandler_User1 - INFO - Found markdown JSON block in response, attempting to extract tier3 content
+2025-04-26 02:38:18,388 - ActionHandler_User1 - INFO - Successfully parsed JSON from markdown block, keys: ['user_message_analysis', 'llm_response']
+2025-04-26 02:38:18,388 - ActionHandler_User1 - INFO - Successfully extracted tier3 content: The conversation began with repeated inquiries about Dan Martell, a serial entrepreneur.  You then r...
+2025-04-26 02:38:18,388 - ActionHandler_User1 - INFO - Extracted content (first 100 chars): The conversation began with repeated inquiries about Dan Martell, a serial entrepreneur.  You then r...
+2025-04-26 02:38:18,388 - ActionHandler_User1 - INFO - Detected tier request in: The conversation began with repeated inquiries about Dan Martell, a serial entrepreneur.  You then r...
+2025-04-26 02:38:18,389 - CtxMemMgr_User1 - INFO - Stored turn 2f78575a-b357-4177-b8dd-0ad461e69596 for active session new_chat
+2025-04-26 02:38:18,389 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:38:19,548 - CtxMemMgr_User1 - INFO - Suggested memory items: ['User is interested in Dan Martell and his communication style.', 'User needs business advice.', "User is working on a project called 'What' (needs clarification).", 'User needs a dry lease agreement for a Cessna Citation Sovereign+.', 'User needs help with time management and prioritization.', 'User prefers summaries.']
+2025-04-26 02:38:19,548 - CtxMemMgr_User1 - INFO - Added 2 new facts to user memory.
+2025-04-26 02:38:19,551 - CtxMemMgr_User1 - INFO - Updated remembered_facts in DB for user 1 (16 facts). Pending commit.
+2025-04-26 02:38:19,556 - CtxMemMgr_User1 - INFO - Successfully saved 2 new facts to database.
+2025-04-26 02:38:19,557 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~244 / 30000
+2025-04-26 02:38:19,557 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:38:19,558 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:38:19,558 - conversation_manager_1 - INFO - Detected special command in LLM response, processing with RequestParser
+2025-04-26 02:38:19,558 - managers.memory.request_parser - INFO - Found tier upgrade request: message msg_1234 to tier 2
+2025-04-26 02:38:19,559 - managers.memory.request_parser - INFO - Found tier upgrade request: message msg_1234 to tier 2
+2025-04-26 02:38:19,559 - managers.memory.request_parser - INFO - Found 2 tier requests
+2025-04-26 02:38:19,559 - managers.memory.request_parser - INFO - Processing 2 tier upgrade requests
+2025-04-26 02:38:19,559 - managers.memory.request_parser - INFO - Upgrading message msg_1234 to tier 2
+2025-04-26 02:38:19,561 - managers.memory.request_parser - WARNING - Message msg_1234 not found in session new_chat
+2025-04-26 02:38:19,562 - managers.memory.request_parser - INFO - Upgrading message msg_1234 to tier 2
+2025-04-26 02:38:19,562 - managers.memory.request_parser - WARNING - Message msg_1234 not found in session new_chat
+2025-04-26 02:38:19,563 - conversation_manager_1 - INFO - Rebuilding context with updated tier levels
+2025-04-26 02:38:19,566 - managers.memory.context_builder - INFO - Building context with max tokens: 4000
+2025-04-26 02:38:19,566 - conversation_manager_1 - ERROR - Error building token-aware context: 'NoneType' object has no attribute 'startswith'
+Traceback (most recent call last):
+  File "/app/managers/conversation_manager.py", line 1000, in build_context
+  File "/app/managers/memory/context_builder.py", line 184, in build_context
+    formatted_msg = self.format_message(message_dict)
+  File "/app/managers/memory/context_builder.py", line 255, in format_message
+    if not message_id.startswith("msg_") and not message_id.startswith("message_"):
+AttributeError: 'NoneType' object has no attribute 'startswith'
+2025-04-26 02:38:19,567 - conversation_manager_1 - INFO - Constructing enriched system prompt with updated context
+2025-04-26 02:38:19,567 - components.prompt_builder - INFO - Constructing prompt for session new_chat, user 1, depth 0
+2025-04-26 02:38:19,567 - EpisodicMemMgr_User1 - INFO - Searching episodic memories for user 1, query: 'Summarize that'
+2025-04-26 02:38:19,567 - EpisodicMemMgr_User1 - INFO - No relevant summaries found for user 1.
+2025-04-26 02:38:19,567 - components.prompt_builder - INFO - No current context summary (Tier 2) found.
+2025-04-26 02:38:19,568 - components.prompt_builder - INFO - No episodic summaries found.
+2025-04-26 02:38:19,568 - CtxMemMgr_User1 - INFO - Loading remembered facts for user 1
+2025-04-26 02:38:19,569 - CtxMemMgr_User1 - INFO - Loaded 16 facts from DB for user 1
+2025-04-26 02:38:19,570 - conversation_manager_1 - INFO - Regenerating with context size: 0 tokens
+2025-04-26 02:38:19,570 - conversation_manager_1 - INFO - Regenerating LLM response with upgraded context
+2025-04-26 02:38:22,414 - managers.conversation_manager - INFO - LLM API raw response: {'status': 'success', 'text': '```json\n{\n  "user_message_analysis": {\n    "timestamp": "2025-04-26T02:40:00Z",\n    "speaker": "User",\n    "prompt_tiers": {\n      "tier1": "The user requests a su...
+2025-04-26 02:38:22,414 - managers.conversation_manager - INFO - LLM API response type: <class 'dict'>
+2025-04-26 02:38:22,414 - managers.conversation_manager - INFO - LLM API response keys: ['status', 'text']
+2025-04-26 02:38:22,414 - conversation_manager_1 - ERROR - Error regenerating response: unhashable type: 'slice'
+Traceback (most recent call last):
+  File "/app/managers/conversation_manager.py", line 655, in process_message
+    # Search episodic memory
+TypeError: unhashable type: 'slice'
+2025-04-26 02:38:22,415 - conversation_manager_1 - INFO - Storing regenerated assistant response in contextual memory
+2025-04-26 02:38:22,415 - CtxMemMgr_User1 - INFO - Stored turn 62c140bb-acfd-4a24-b0ce-d479c547b1af for active session new_chat
+2025-04-26 02:38:22,415 - CtxMemMgr_User1 - INFO - Updated current_context_summary for session new_chat: '...'
+2025-04-26 02:38:23,185 - CtxMemMgr_User1 - INFO - Suggested memory items: ['User prefers summaries.']
+2025-04-26 02:38:23,185 - CtxMemMgr_User1 - INFO - Session new_chat: Active history token count ~247 / 30000
+2025-04-26 02:38:23,186 - CtxMemMgr_User1 - INFO - Saving active session context for new_chat to /app/data/1/new_chat/context.json
+2025-04-26 02:38:23,190 - CtxMemMgr_User1 - INFO - Successfully saved context for session new_chat
+2025-04-26 02:38:23,190 - routes.handlers.chat - INFO - Final response being sent to frontend: {"type": "final", "content": "I apologize, but I encountered an error retrieving the information you requested. Please try asking again.", "session_id": "new_chat", "timestamp": "2025-04-26T02:38:23.190736"}

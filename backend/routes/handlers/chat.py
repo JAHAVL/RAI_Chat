@@ -32,10 +32,12 @@ def handle_chat():
         session_id = data.get('session_id')
         streaming = data.get('streaming', False)
         
-        # Direct search handling
+        # Direct search handling - look for [SEARCH: query] pattern anywhere in the message
         search_match = re.search(r"\[SEARCH:\s*(.+?)\s*\]", user_input)
         if search_match:
-            return handle_search(search_match.group(1).strip(), session_id)
+            logger.info(f"Detected search pattern in message: {search_match.group(0)}")
+            query = search_match.group(1).strip()
+            return handle_search(query, session_id)
         
         # Get conversation manager
         session_id, conversation_manager = UserSessionManager.get_conversation_manager_for_user_session(user_id, session_id)
@@ -110,20 +112,45 @@ def handle_search(query, session_id=None):
                 if search_results:
                     # Format the results
                     formatted_results = conversation_manager.format_search_results(search_results)
+                    # Notify frontend about the search results (intermediate step)
                     yield json.dumps({
                         'type': 'search_results', 
                         'content': formatted_results,
                         'raw_results': search_results,
                         'session_id': session_id_to_use
                     }) + "\n"
+                    
+                    # Now, instead of just stopping here, feed these results to the LLM
+                    # Create a prompt that includes the search results
+                    enhanced_query = f"I searched for '{query}' and found the following information:\n\n{formatted_results}\n\nBased on this information, please provide a comprehensive answer about: {query}"
+                    
+                    logger.info(f"Sending search results to LLM with enhanced query: {enhanced_query[:100]}...")
+                    
+                    # Process the enhanced query through the conversation manager
+                    # This will send it to the LLM and return the response
+                    for chunk in conversation_manager.process_message(enhanced_query, session_id_to_use):
+                        # Pass through the LLM's response chunks
+                        yield json.dumps(chunk) + "\n"
+                        
                 else:
-                    # No results found
+                    # No results found - still ask LLM for a response
+                    no_results_message = "No results found for your search query."
                     yield json.dumps({
                         'type': 'search_results', 
-                        'content': "No results found for your search query.",
+                        'content': no_results_message,
                         'raw_results': [],
                         'session_id': session_id_to_use
                     }) + "\n"
+                    
+                    # Ask LLM to respond even without search results
+                    enhanced_query = f"I searched for '{query}' but couldn't find relevant information. Please provide what you know about: {query}"
+                    
+                    logger.info("No search results found, asking LLM to respond with general knowledge")
+                    
+                    # Process through conversation manager
+                    for chunk in conversation_manager.process_message(enhanced_query, session_id_to_use):
+                        # Pass through the LLM's response chunks
+                        yield json.dumps(chunk) + "\n"
                     
             except Exception as e:
                 # Handle any errors during search

@@ -20,8 +20,8 @@ COPY . .
 # Create data directory for SQLite and logs
 RUN mkdir -p data/logs
 
-# Set environment variables
-ENV PYTHONPATH=/RAI_Chat_V1.3.1_20250408_1319PM:/app
+# Set environment variables - IMPORTANT: use only /app for PYTHONPATH
+ENV PYTHONPATH=/app
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
 

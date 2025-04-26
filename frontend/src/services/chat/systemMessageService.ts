@@ -4,8 +4,8 @@
  * This service separates business logic from UI components.
  */
 
-import { Message } from '../../api/rai_api';
-import raiAPIClient from '../../api/rai_api';
+import { Message } from '../../api/backend_api_interface';
+import backendApi from '../../api/backend_api_interface';
 
 /**
  * Types of system messages that can be displayed
@@ -112,10 +112,10 @@ class SystemMessageService {
   ): Promise<void> {
     try {
       // This will just log the message for now
-      await raiAPIClient.createSystemMessage(
+      await backendApi.createSystemMessage(
         sessionId,
         content,
-        type,
+        type.toString(),
         relatedMessageId
       );
     } catch (error) {
@@ -133,7 +133,7 @@ class SystemMessageService {
   ): Promise<void> {
     try {
       // This will just return an empty array for now
-      await raiAPIClient.getSystemMessages(sessionId);
+      await backendApi.getSystemMessages(sessionId);
       console.log(`Future feature: Would fetch system messages for session ${sessionId}`);
     } catch (error) {
       console.error('Error fetching system messages:', error);

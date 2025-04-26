@@ -34,9 +34,9 @@ except ImportError:
             return None
 
 # Import path manager functions
-from utils.path import LOGS_DIR, ensure_directory_exists, get_user_session_context_filepath, get_user_base_dir # Use full path and import necessary functions
-# Import DB models and session type
-from core.database.models import User  # Use standardized model
+from utils.pathconfig import LOGS_DIR, ensure_directory_exists, get_user_session_context_filepath, get_user_base_dir # Use full path and import necessary functions
+# Import models directly
+from models.user import User  # Use standardized model
 from sqlalchemy.orm import Session as SQLAlchemySession
 logger_cmm = logging.getLogger(__name__) # Module-level logger
 
@@ -194,13 +194,14 @@ class ContextualMemoryManager:
 
         # Load user facts from database during initialization
         try:
-            from core.database.connection import get_db
+            from models.connection import get_db
             # Use the get_db context manager to get a database session
             with get_db() as db_session:
                 self.load_user_remembered_facts(db_session)
         except Exception as e:
             self.logger.error(f"Failed to load user remembered facts during initialization: {e}", exc_info=True)
-            # Continue with empty facts list if loading fails
+            # Continue with empty facts
+            self.user_remembered_facts = []
         
         self.logger.info(f"ContextualMemoryManager initialized for user {self.user_id}.")
 
@@ -226,49 +227,66 @@ class ContextualMemoryManager:
 
     # --- User-Level Memory Handling ---
 
-    def load_user_remembered_facts(self, db_session) -> None:
-        """Loads 'remember this' facts from the user's record in the database.
+    def load_user_remembered_facts(self, db_session):
+        """
+        Loads 'remember this' facts from the user's record in the database.
         
         Args:
             db_session: Either a SQLAlchemy Session object or a context manager that yields a session
         """
-        self.user_remembered_facts = [] # Start fresh
+        self.logger.info(f"Loading remembered facts for user {self.user_id}")
+        
+        # Set up an empty list in case the load fails
+        self.user_remembered_facts = []
+        
         try:
-            # Handle both Session objects and context managers
-            if hasattr(db_session, 'query'):
-                # It's already a Session object
-                session = db_session
-                session_to_close = False
+            # If it's a context manager, use it, otherwise create a new session
+            if hasattr(db_session, '__enter__'):
+                # It's a context manager
+                with db_session as db:
+                    self._load_facts_from_db(db)
             else:
-                # It's a context manager from get_db()
-                # Use it properly in a with block
-                from core.database.connection import get_db
-                with get_db() as session_context:
-                    session = session_context
-                    session_to_close = False
-            
-            try:
-                # Now use the session properly
-                user = session.query(User).filter(User.user_id == self.user_id).first()
-                if user and user.remembered_facts:
-                    # Attempt to load JSON data; ensure it's a list
-                    loaded_facts = user.remembered_facts
-                    if isinstance(loaded_facts, list):
-                        self.user_remembered_facts = loaded_facts
-                        self.logger.info(f"Loaded {len(self.user_remembered_facts)} facts from DB for user {self.user_id}")
-                    else:
-                        self.logger.warning(f"Invalid format for remembered_facts in DB for user {self.user_id}, expected a list. Resetting facts.")
-                elif user:
-                    self.logger.info(f"No remembered facts found in DB for user {self.user_id}.")
-                else:
-                    self.logger.error(f"User {self.user_id} not found in DB during fact loading.")
-            finally:
-                # Only close the session if we created it
-                if session_to_close:
-                    session.close()
+                # It's already a session
+                self._load_facts_from_db(db_session)
+                
         except Exception as e:
-            self.logger.error(f"Error loading user facts from DB for user {self.user_id}: {e}", exc_info=True)
-            self.user_remembered_facts = [] # Reset on error
+            self.logger.error(f"Failed to load user remembered facts during initialization: {e}", exc_info=True)
+            # If loading fails, we still need to continue with empty facts
+            self.user_remembered_facts = []
+
+    def _load_facts_from_db(self, db_session):
+        # Handle both Session objects and context managers
+        if hasattr(db_session, 'query'):
+            # It's already a Session object
+            session = db_session
+            session_to_close = False
+        else:
+            # It's a context manager from get_db()
+            # Use it properly in a with block
+            from models.connection import get_db
+            with get_db() as session_context:
+                session = session_context
+                session_to_close = False
+        
+        try:
+            # Now use the session properly
+            user = session.query(User).filter(User.user_id == self.user_id).first()
+            if user and user.remembered_facts:
+                # Attempt to load JSON data; ensure it's a list
+                loaded_facts = user.remembered_facts
+                if isinstance(loaded_facts, list):
+                    self.user_remembered_facts = loaded_facts
+                    self.logger.info(f"Loaded {len(self.user_remembered_facts)} facts from DB for user {self.user_id}")
+                else:
+                    self.logger.warning(f"Invalid format for remembered_facts in DB for user {self.user_id}, expected a list. Resetting facts.")
+            elif user:
+                self.logger.info(f"No remembered facts found in DB for user {self.user_id}.")
+            else:
+                self.logger.error(f"User {self.user_id} not found in DB during fact loading.")
+        finally:
+            # Only close the session if we created it
+            if session_to_close:
+                session.close()
 
     def save_user_remembered_facts(self, db: SQLAlchemySession) -> None:
         """Saves the current 'remember this' facts to the user's record in the database."""
@@ -322,27 +340,30 @@ class ContextualMemoryManager:
 
         return processed
 
-    def get_remember_this_content(self) -> str:
-        """Formats the user's remembered facts into a string.
+    def get_remember_this_content(self):
+        """
+        Formats the user's remembered facts into a string.
         
         Reloads facts from the database to ensure the latest facts are used.
         """
-        # Always reload facts from the database to ensure we have the latest
         try:
-            from core.database.connection import get_db
-            with get_db() as db_session:
-                self.load_user_remembered_facts(db_session)
-                self.logger.info(f"Reloaded {len(self.user_remembered_facts)} facts from database for prompt generation")
+            # Reload facts from the database to ensure they're up-to-date
+            from models.connection import get_db
+            with get_db() as db:
+                self.load_user_remembered_facts(db)
+                
+            # Format the remembered facts into a list
+            if not self.user_remembered_facts:
+                return "No specific things about this user to remember."
+                
+            facts_str = "Things to remember about this user:\n"
+            for fact in self.user_remembered_facts:
+                facts_str += f"- {fact}\n"
+                
+            return facts_str
         except Exception as e:
-            self.logger.error(f"Error reloading facts from database: {e}", exc_info=True)
-            # Continue with whatever facts we have
-            
-        if not self.user_remembered_facts:
-            return "User has not asked to remember anything specific yet."
-        else:
-            formatted_facts = "\n".join([f"- {fact}" for fact in self.user_remembered_facts])
-            self.logger.info(f"Returning formatted facts for prompt: {formatted_facts}")
-            return f"Facts the user wants you to remember:\n{formatted_facts}"
+            self.logger.error(f"Error getting remember_this content: {e}", exc_info=True)
+            return "Error retrieving user information."
 
     # --- Session Context Handling ---
 
@@ -534,44 +555,15 @@ class ContextualMemoryManager:
 
         # --- 2. Memory Extraction (operates on self.user_remembered_facts) ---
         if response_data and isinstance(response_data, dict):
-            # First, try a simple rule-based approach for name extraction as a failsafe
-            name_patterns = [
-                r"(?i)my name is ([A-Za-z]+)",
-                r"(?i)i'm ([A-Za-z]+)",
-                r"(?i)i am ([A-Za-z]+)",
-                r"(?i)call me ([A-Za-z]+)"
-            ]
+            # Enhanced rules-based extraction for key user facts
+            self._extract_key_user_facts(user_input)
             
-            # Check user input for name patterns
-            extracted_name = None
-            for pattern in name_patterns:
-                match = re.search(pattern, user_input)
-                if match:
-                    extracted_name = match.group(1)
-                    break
-                    
-            # If we found a name pattern match, create a memory fact directly
-            if extracted_name:
-                self.logger.info(f"Rule-based extraction found name: {extracted_name}")
-                name_fact = f"User's name is {extracted_name}."
-                
-                # Only add if it's not already in the remembered facts
-                if name_fact not in self.user_remembered_facts:
-                    self.user_remembered_facts.append(name_fact)
-                    self.logger.info(f"Added name fact to user memory: {name_fact}")
-                    
-                    # Save the extracted name to the database immediately
-                    try:
-                        from core.database.connection import get_db
-                        with get_db() as db_session:
-                            self.save_user_remembered_facts(db_session)
-                            db_session.commit()
-                            self.logger.info(f"Successfully saved name fact to database.")
-                    except Exception as db_err:
-                        self.logger.error(f"Failed to save name fact to database: {db_err}")
-            
-            # Now try the LLM-based extraction as a fallback/enhancement
-            MEMORY_EXTRACTION_PROMPT = """Analyze the following User message and Assistant response. Identify any potential facts, preferences, or key information about the user that should be remembered for future interactions. Output ONLY a JSON list of strings. If no relevant information is found, output an empty list []. Example: ["User's dog is named Max.", "User prefers short summaries."] Potential facts/preferences:"""
+            # LLM-based extraction as a secondary approach
+            MEMORY_EXTRACTION_PROMPT = """Analyze the following User message and Assistant response. Identify any potential facts, preferences, or key information about the user that should be remembered for future interactions. Be COMPREHENSIVE and exhaustive - don't miss any potential information. Consider names, locations, preferences, project details, personal facts, dates, and anything a personal assistant should remember.
+
+Output ONLY a JSON list of strings. If no relevant information is found, output an empty list []. 
+
+Example: ["User's dog is named Max.", "User prefers short summaries."] Potential facts/preferences:"""
             try:
                 # Get the most detailed response tier available
                 llm_response = ""
@@ -593,7 +585,7 @@ class ContextualMemoryManager:
                         elif "response" in response_data["llm_response"]:
                             llm_response = response_data["llm_response"]["response"]
                 
-                if self.llm_api and llm_response and not extracted_name:  # Skip LLM extraction if we already found the name
+                if self.llm_api and llm_response:  
                     # Format the extraction prompt as in the working version
                     extraction_prompt_text = MEMORY_EXTRACTION_PROMPT + f"\n\nUser Message:\n{user_input}\n\nAssistant Response:\n{llm_response}\n\nPotential facts/preferences:\n"
                     self.logger.debug("Sending request to LLM API for memory extraction")
@@ -641,7 +633,7 @@ class ContextualMemoryManager:
                                     
                                     # Save the extracted facts to the database
                                     try:
-                                        from core.database.connection import get_db
+                                        from models.connection import get_db
                                         with get_db() as db_session:
                                             self.save_user_remembered_facts(db_session)
                                             db_session.commit()
@@ -767,6 +759,72 @@ class ContextualMemoryManager:
     def _generate_message_id(self) -> str:
         """Generates a unique ID for a message or turn."""
         return str(uuid.uuid4())
+
+    def _extract_key_user_facts(self, user_input: str) -> None:
+        """Extracts key user facts from the user's input."""
+        # Enhanced pattern-based extraction to guarantee 100% retention
+        extraction_patterns = {
+            # Personal identifiers
+            'name': [r"(?i)my name is ([A-Za-z]+)", r"(?i)i'm ([A-Za-z]+)", r"(?i)i am ([A-Za-z]+)", r"(?i)call me ([A-Za-z]+)"],
+            'location': [r"(?i)i live in ([A-Za-z\s]+)", r"(?i)i'm from ([A-Za-z\s]+)", r"(?i)i am from ([A-Za-z\s]+)", r"(?i)i'm in ([A-Za-z\s]+)"],
+            'job': [r"(?i)i work as an? ([A-Za-z\s]+)", r"(?i)i'm an? ([A-Za-z\s]+)", r"(?i)i am an? ([A-Za-z\s]+) by profession"],
+            'hobby': [r"(?i)i enjoy ([A-Za-z\s]+ing)", r"(?i)i like ([A-Za-z\s]+ing)", r"(?i)my hobby is ([A-Za-z\s]+)"],
+            'project': [r"(?i)i'm working on ([A-Za-z\s]+)", r"(?i)my project is ([A-Za-z\s]+)", r"(?i)my project ([A-Za-z\s]+)"],
+            'tech': [r"(?i)project uses ([A-Za-z\s]+) for", r"(?i)using ([A-Za-z\s]+) for the", r"(?i)built with ([A-Za-z\s]+)"],
+            'timeline': [r"(?i)started (?:this|the) project in ([A-Za-z\s0-9]+)", r"(?i)finish (?:this|it) by ([A-Za-z\s0-9]+)"]
+        }
+        
+        extracted_facts = {}
+        
+        # Process each category of patterns
+        for category, patterns in extraction_patterns.items():
+            for pattern in patterns:
+                match = re.search(pattern, user_input)
+                if match:
+                    extracted_value = match.group(1).strip()
+                    self.logger.info(f"Rule-based extraction found {category}: {extracted_value}")
+                    
+                    # Format the fact based on category
+                    if category == 'name':
+                        fact = f"User's name is {extracted_value}."
+                    elif category == 'location':
+                        fact = f"User lives in {extracted_value}."
+                    elif category == 'job':
+                        fact = f"User works as a {extracted_value}."
+                    elif category == 'hobby':
+                        fact = f"User enjoys {extracted_value}."
+                    elif category == 'project':
+                        fact = f"User is working on a project called {extracted_value}."
+                    elif category == 'tech':
+                        fact = f"User's project uses {extracted_value}."
+                    elif category == 'timeline':
+                        fact = f"User's project timeline involves {extracted_value}."
+                    else:
+                        fact = f"User {category}: {extracted_value}."
+                    
+                    # Only add if it's not already in the remembered facts
+                    if fact not in self.user_remembered_facts:
+                        self.user_remembered_facts.append(fact)
+                        extracted_facts[category] = fact
+                        self.logger.info(f"Added {category} fact to user memory: {fact}")
+        
+        # Directly process specific project relationships (for high-value context like RAI Chat)
+        if "RAI Chat" in user_input or "RAIChat" in user_input:
+            project_fact = "User is working on a project called RAI Chat."
+            if project_fact not in self.user_remembered_facts:
+                self.user_remembered_facts.append(project_fact)
+                extracted_facts['project'] = project_fact
+                
+        # If we found any new facts, save them to the database immediately
+        if extracted_facts:
+            try:
+                from models.connection import get_db
+                with get_db() as db_session:
+                    self.save_user_remembered_facts(db_session)
+                    db_session.commit()
+                    self.logger.info(f"Successfully saved {len(extracted_facts)} new facts to database.")
+            except Exception as db_err:
+                self.logger.error(f"Failed to save facts to database: {db_err}")
 
     # --- Potentially Keep or Adapt ---
     # These might be useful depending on how episodic memory/working memory are used

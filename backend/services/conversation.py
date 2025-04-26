@@ -11,25 +11,27 @@ from sqlalchemy.orm import Session as SQLAlchemySession # For type hinting DB se
 
 # Import type hints for managers using new paths
 if TYPE_CHECKING:
-    from .memory.contextual import ContextualMemoryManager
-    from .memory.episodic import EpisodicMemoryManager
-    from .file_storage import ChatFileManager
-    from ..core.database.connection import get_db # For DB session context
+    from ..managers.memory.contextual_memory import ContextualMemoryManager
+    from ..managers.memory.episodic_memory import EpisodicMemoryManager
+    from ..managers.user_session_manager import UserSessionManager
 
 # Import concrete classes for runtime checks if needed
 from .memory.contextual import ContextualMemoryManager
 from .memory.episodic import EpisodicMemoryManager
 from .file_storage import ChatFileManager
 
-# Import path utilities
-from ..utils.path import LOGS_DIR, ensure_directory_exists
+# Import database utilities
+from models.connection import get_db
+
+# Import from utils
+from ..utils.pathconfig import LOGS_DIR, ensure_directory_exists
 
 # Import components
 from ..components.prompt_builder import PromptBuilder
 from ..components.action_handler import ActionHandler, ACTION_CONTINUE, ACTION_BREAK, ACTION_FETCH, ACTION_SEARCH, ACTION_SEARCH_DEEPER, ACTION_ANSWER, ACTION_ERROR
 
 # Import database models
-from ..core.database.models import Session as SessionModel
+from models.session import Session as SessionModel
 from sqlalchemy import desc
 
 import time

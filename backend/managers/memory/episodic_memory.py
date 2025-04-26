@@ -10,6 +10,7 @@ import glob
 import hashlib
 import time # Needed for LLM retry logic
 from pathlib import Path
+import math
 
 # Import llm_Engine using a more robust approach
 import sys
@@ -31,7 +32,7 @@ except ImportError:
             return None
 
 # Import path manager functions
-from utils.path import ensure_directory_exists, LOGS_DIR, DATA_DIR # Use full path and import necessary paths/functions (removed get_user_memory_dir)
+from utils.pathconfig import ensure_directory_exists, LOGS_DIR, DATA_DIR # Use full path and import necessary paths/functions (removed get_user_memory_dir)
 
 logger_emm = logging.getLogger(__name__) # Module-level logger
 
@@ -213,81 +214,258 @@ class EpisodicMemoryManager:
             self.logger.error(f"Failed to store summary for chunk {chunk_id} in index for user {self.user_id}: {e}", exc_info=True)
             return False
 
-    def retrieve_memories(self, query: str, top_k: int = 5, user_id: Optional[int] = None) -> List[Dict]:
+    def retrieve_memories(self, query: str, limit: int = 5, user_id: Optional[int] = None, session_id: Optional[str] = None) -> List[Dict]:
         """
-        Searches all summaries across all sessions for the user and returns the top_k most relevant.
-        (Changed from search_episodic_memory to reflect broader search)
+        Searches episodic memory summaries and returns the most relevant results.
+        
+        Args:
+            query: The search query
+            limit: Maximum number of results to return (default: 5)
+            user_id: Optional user ID to check against this instance's user ID
+            session_id: Optional session ID to filter results by specific session
+            
+        Returns:
+            List of dictionaries containing matched summaries with relevance scores
         """
+        # Check user ID if provided
         if user_id is not None and user_id != self.user_id:
-             self.logger.error(f"Mismatched user_id provided ({user_id}) to instance for user {self.user_id}.")
-             return []
+            self.logger.error(f"Mismatched user_id provided ({user_id}) to instance for user {self.user_id}.")
+            return []
 
-        self.logger.info(f"Searching all episodic summaries for user {self.user_id}, query: '{query}'")
+        self.logger.info(f"Searching episodic memories for user {self.user_id}, query: '{query}'")
+        if session_id:
+            self.logger.info(f"Filtering results by session: {session_id}")
+            
         query_lower = query.lower()
         all_scored_summaries = []
 
-        # Iterate through all sessions in the user's index
-        for session_id, chunks in self.summary_index.items():
+        # Determine which sessions to search
+        sessions_to_search = {}
+        if session_id and session_id in self.summary_index:
+            # Only search the specified session
+            sessions_to_search = {session_id: self.summary_index[session_id]}
+        else:
+            # Search all sessions if no session_id specified or the session_id doesn't exist
+            sessions_to_search = self.summary_index
+            
+            if session_id and session_id not in self.summary_index:
+                self.logger.warning(f"Session {session_id} not found in summary index. Searching all sessions instead.")
+
+        # Search through the selected sessions
+        for current_session_id, chunks in sessions_to_search.items():
             for chunk_id, summary in chunks.items():
+                # Calculate relevance score for the summary
                 score = self._calculate_summary_relevance(query_lower, summary.lower())
-                if score > 0.1: # Basic threshold to filter out completely irrelevant summaries
+                
+                # Use a dynamic threshold based on query length to filter out irrelevant summaries
+                min_score = 0.1 if len(query.split()) > 2 else 0.2
+                
+                if score > min_score:
+                    # Enhanced result with more metadata
                     all_scored_summaries.append({
                         "score": score,
-                        "session_id": session_id,
+                        "session_id": current_session_id,
                         "chunk_id": chunk_id,
-                        "summary": summary
+                        "summary": summary,
+                        "timestamp": self._get_timestamp_for_chunk(current_session_id, chunk_id)
                     })
 
         if not all_scored_summaries:
-            self.logger.info(f"No relevant summaries found across all sessions for user {self.user_id}.")
+            self.logger.info(f"No relevant summaries found for user {self.user_id}.")
             return []
 
         # Sort all found summaries by score
         all_scored_summaries.sort(key=lambda x: x["score"], reverse=True)
 
-        # Return the top_k results
-        top_results = all_scored_summaries[:top_k]
-        self.logger.info(f"Found {len(top_results)} relevant summaries (top {top_k}) for user {self.user_id}.")
+        # Return the top results
+        top_results = all_scored_summaries[:limit]
+        self.logger.info(f"Found {len(top_results)} relevant summaries (top {limit}) for user {self.user_id}.")
         return top_results
         
-    def search_episodic_memory(self, query: str, session_id: str = None, top_k: int = 5, search_depth: int = 0) -> str:
+    def _get_timestamp_for_chunk(self, session_id: str, chunk_id: str) -> str:
         """
-        Compatibility method for older code that expects search_episodic_memory.
-        Searches episodic memory and returns a formatted string of summaries.
+        Attempt to retrieve a timestamp for a specific chunk
         
         Args:
-            query: The search query
-            session_id: Optional session ID (not used in this implementation)
-            top_k: Maximum number of results to return
-            search_depth: Optional search depth (not used in this implementation)
+            session_id: The session ID
+            chunk_id: The chunk ID
             
         Returns:
-            A formatted string of summaries
+            A timestamp string or empty string if not available
         """
-        self.logger.info(f"search_episodic_memory called with query: '{query}', session_id: {session_id}, top_k: {top_k}, search_depth: {search_depth}")
-        
-        # Call retrieve_memories to get the actual results
-        memories = self.retrieve_memories(query, top_k)
-        
-        # Format the results as a string
-        if not memories:
+        try:
+            # This is a placeholder - in a production system, you would
+            # retrieve the actual timestamp from metadata storage
+            # For now just return an empty string
             return ""
+        except Exception as e:
+            self.logger.error(f"Error retrieving timestamp: {str(e)}")
+            return ""
+
+    def search_episodic_memory(self, query: str, session_id: str = None, top_k: int = 5) -> str:
+        """
+        Search episodic memory for relevant memories based on query.
+        Returns a formatted string of summaries.
+        
+        Args:
+            query (str): The query to search for
+            session_id (str, optional): Filter by session ID
+            top_k (int, optional): Number of results to return. Defaults to 5.
             
-        formatted_summaries = "\n".join([f"- {memory['summary']}" for memory in memories])
-        return formatted_summaries
-
-
-    def _calculate_summary_relevance(self, query: str, summary: str) -> float:
-        """Calculates a simple relevance score based on keyword overlap."""
-        # (Implementation remains the same)
-        query_words = set(re.findall(r'\w+', query)) # Extract words
-        summary_words = set(re.findall(r'\w+', summary))
-        if not query_words: return 0.0 # Avoid division by zero if query is empty
-        common_words = query_words.intersection(summary_words)
-        # Jaccard index variation - prioritize query coverage
-        score = len(common_words) / len(query_words) if query_words else 0.0
-        return score
-
+        Returns:
+            str: Formatted string of summaries
+        """
+        self.logger.info(f"Searching episodic memory with query: '{query}' in session: '{session_id}'")
+        
+        try:
+            # Preprocess query for better matching
+            cleaned_query = self._preprocess_query(query)
+            
+            # Set default filter to match any session if not specified
+            filter_condition = {}
+            if session_id:
+                filter_condition = {"session_id": session_id}
+                
+            self.logger.info(f"Using filter condition: {filter_condition}")
+            
+            # Get documents from the collection with optional session filtering
+            documents = self.collection.get(
+                where=filter_condition,
+                include=["metadatas", "documents"],
+                limit=50  # Fetch more initially for better filtering
+            )
+            
+            if not documents or len(documents["ids"]) == 0:
+                self.logger.warning(f"No matching memories found for session {session_id}")
+                return "No relevant memories found."
+                
+            # Log number of initial document matches
+            self.logger.info(f"Found {len(documents['ids'])} document candidates before semantic ranking")
+            
+            # Combine metadata and documents for better context
+            enriched_documents = []
+            for i, doc in enumerate(documents["documents"]):
+                meta = documents["metadatas"][i] if documents["metadatas"] else {}
+                if isinstance(meta, dict) and meta.get("summary"):
+                    # Prioritize summary from metadata if available
+                    enriched_doc = f"{meta.get('summary')} - {doc[:300]}"
+                else:
+                    # Just use the document content
+                    enriched_doc = doc[:300]
+                enriched_documents.append(enriched_doc)
+            
+            # Calculate similarity with query for each document
+            ranked_results = []
+            for i, doc in enumerate(enriched_documents):
+                # Simple word overlap score (fallback if embedding fails)
+                overlap_score = self._calculate_word_overlap(cleaned_query, doc.lower())
+                try:
+                    # Get semantic similarity score if available
+                    if hasattr(self, 'embeddings') and self.embeddings:
+                        # Get embeddings for query and document
+                        query_emb = self.embeddings.embed_query(cleaned_query)
+                        doc_emb = self.embeddings.embed_query(doc[:1000])  # Limit to first 1000 chars
+                        
+                        # Calculate cosine similarity
+                        similarity = self._cosine_similarity(query_emb, doc_emb)
+                        
+                        # Combine with word overlap for more robust matching
+                        combined_score = (similarity * 0.7) + (overlap_score * 0.3)
+                    else:
+                        # Fallback to word overlap if embeddings unavailable
+                        combined_score = overlap_score
+                        
+                    ranked_results.append((i, combined_score, doc))
+                except Exception as e:
+                    self.logger.error(f"Error calculating similarity: {str(e)}", exc_info=True)
+                    # Still include result with word overlap score
+                    ranked_results.append((i, overlap_score, doc))
+            
+            # Sort by score descending
+            ranked_results.sort(key=lambda x: x[1], reverse=True)
+            
+            # Log top scores for debugging
+            if ranked_results:
+                self.logger.info(f"Top matching score: {ranked_results[0][1]:.4f}, Doc preview: {ranked_results[0][2][:50]}...")
+            
+            # Format results
+            formatted_results = []
+            for i, (idx, score, _) in enumerate(ranked_results[:top_k]):
+                meta = documents["metadatas"][idx] if documents["metadatas"] else {}
+                doc = documents["documents"][idx]
+                
+                # Truncate document content if too long
+                if len(doc) > 300:
+                    doc = doc[:300] + "..."
+                
+                # Format memory with metadata
+                timestamp = meta.get("timestamp", "unknown time")
+                source = meta.get("source", "conversation")
+                summary = meta.get("summary", doc[:100] + "...")
+                
+                memory_entry = f"Memory {i+1} [Score: {score:.2f}]: ({timestamp}, {source})\n"
+                memory_entry += f"Summary: {summary}\n"
+                memory_entry += f"Details: {doc}\n"
+                
+                formatted_results.append(memory_entry)
+            
+            # Return formatted results
+            result_text = "\n".join(formatted_results)
+            self.logger.info(f"Returning {len(formatted_results)} memories")
+            return result_text
+            
+        except Exception as e:
+            self.logger.error(f"Error searching episodic memory: {str(e)}", exc_info=True)
+            return f"Error searching memory: {str(e)}"
+            
+    def _preprocess_query(self, query: str) -> str:
+        """
+        Preprocess the query to improve matching
+        """
+        # Remove any search commands
+        cleaned = re.sub(r'\[SEARCH[^\]]+\]', '', query)
+        
+        # Remove common filler words
+        cleaned = re.sub(r'\b(what|when|where|why|how|did|do|does|is|are|was|were)\b', '', cleaned, flags=re.IGNORECASE)
+        
+        # Focus on the core question
+        for phrase in ["tell me about", "can you tell me", "do you remember", "i want to know", "please tell me"]:
+            cleaned = cleaned.replace(phrase, "")
+            
+        # Remove punctuation and excess whitespace
+        cleaned = re.sub(r'[^\w\s]', '', cleaned)
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        
+        return cleaned
+        
+    def _calculate_word_overlap(self, query: str, document: str) -> float:
+        """
+        Calculate simple word overlap between query and document
+        """
+        # Split into words
+        query_words = set(query.lower().split())
+        doc_words = set(document.lower().split())
+        
+        # Calculate overlap score
+        if not query_words:
+            return 0.0
+            
+        # Jaccard similarity
+        intersection = len(query_words.intersection(doc_words))
+        union = len(query_words.union(doc_words))
+        
+        return intersection / max(union, 1)
+        
+    def _cosine_similarity(self, vec1, vec2):
+        """Calculate cosine similarity between two vectors"""
+        dot_product = sum(a * b for a, b in zip(vec1, vec2))
+        magnitude1 = math.sqrt(sum(a * a for a in vec1))
+        magnitude2 = math.sqrt(sum(b * b for b in vec2))
+        
+        if magnitude1 * magnitude2 == 0:
+            return 0.0
+            
+        return dot_product / (magnitude1 * magnitude2)
 
     def get_raw_chunk(self, session_id: str, chunk_id: str) -> Optional[List[Dict]]:
         """
@@ -372,6 +550,101 @@ class EpisodicMemoryManager:
              self.logger.info(f"Successfully deleted archive data for session {session_id} (Files deleted: {files_deleted_count}, Index updated: {session_found_in_index}).")
              return True
 
+    def _execute_with_transaction(self, func, *args, **kwargs):
+        """
+        Execute a function inside a database transaction.
+        
+        Args:
+            func: Function to execute
+            args/kwargs: Arguments to pass to the function
+            
+        Returns:
+            Result of the function
+        """
+        if not hasattr(self, '_db_session'):
+            # Import here to avoid circular imports
+            try:
+                from models.connection import SessionLocal
+                self._db_session = SessionLocal()
+                self.logger.debug("Created new database session")
+            except Exception as e:
+                self.logger.error(f"Failed to create database session: {e}")
+                return None
+            
+        try:
+            # Begin a transaction
+            result = func(self._db_session, *args, **kwargs)
+            self._db_session.commit()
+            return result
+        except Exception as e:
+            # Roll back the transaction on error
+            self._db_session.rollback()
+            self.logger.error(f"Transaction failed and was rolled back: {e}")
+            return None
+
+    def add_memory(self, user_message: Dict[str, Any], assistant_message: Dict[str, Any], 
+                   session_id: str = None) -> None:
+        """
+        Add a new memory to the episodic memory store.
+        
+        Args:
+            user_message: User message dictionary
+            assistant_message: Assistant message dictionary
+            session_id: Session ID
+        """
+        try:
+            # Use the atomic transaction helper
+            def _add_memory_transaction(db, user_msg, assistant_msg, session):
+                # Extract content
+                user_content = user_msg.get('content', '') if isinstance(user_msg, dict) else str(user_msg)
+                assistant_content = assistant_msg.get('content', '') if isinstance(assistant_msg, dict) else str(assistant_msg)
+                
+                # Generate a summary for the memory
+                summary = self._generate_memory_summary(user_content, assistant_content)
+                
+                # Create the memory entry
+                memory_entry = {
+                    'user_message': user_content,
+                    'assistant_message': assistant_content,
+                    'summary': summary,
+                    'timestamp': self._get_timestamp(),
+                    'session_id': session
+                }
+                
+                # Add metadata
+                metadata = {
+                    'summary': summary,
+                    'timestamp': self._get_timestamp(),
+                    'session_id': session,
+                    'source': 'conversation'
+                }
+                
+                # Add to chroma collection
+                self.collection.add(
+                    documents=[json.dumps(memory_entry)],
+                    metadatas=[metadata],
+                    ids=[str(uuid.uuid4())]
+                )
+                
+                return True
+                
+            # Execute the transaction
+            self._execute_with_transaction(_add_memory_transaction, user_message, assistant_message, session_id)
+            self.logger.info(f"Successfully added memory for session {session_id}")
+            
+        except Exception as e:
+            self.logger.error(f"Error adding memory: {str(e)}", exc_info=True)
+
+    def _calculate_summary_relevance(self, query: str, summary: str) -> float:
+        """Calculates a simple relevance score based on keyword overlap."""
+        # (Implementation remains the same)
+        query_words = set(re.findall(r'\w+', query)) # Extract words
+        summary_words = set(re.findall(r'\w+', summary))
+        if not query_words: return 0.0 # Avoid division by zero if query is empty
+        common_words = query_words.intersection(summary_words)
+        # Jaccard index variation - prioritize query coverage
+        score = len(common_words) / len(query_words) if query_words else 0.0
+        return score
 
     # --- Commented out potentially outdated/broken methods ---
     # (Keep commented out as before)

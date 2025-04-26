@@ -1,0 +1,65 @@
+{
+    "messages": [
+        {
+            "turn_id": "5af207f9-74ea-451e-82e0-8552aa746249",
+            "timestamp": "2025-04-23T18:55:04.029788",
+            "user_input": "My name is Jordan. Remember that for later.",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is introducing themselves as Jordan and requesting that their name be remembered.\",\n      \"tier2\": \"Jordan is stating their name and asking the assistant to store this information for future use in the conversation.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:55:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, I've got it!\",\n      \"tier2\": \"It's nice to meet you, Jordan. I will remember your name for our conversation.  Is there anything else I can help you with today?\",\n      \"tier3\": \"I've saved your name, Jordan.  Please let me know how I can assist you further.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "f4bd15d3-2fee-47b3-be90-1f8d6ee25db9",
+            "timestamp": "2025-04-23T18:55:04.042257",
+            "user_input": "My name is Jordan. Remember that for later.",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is introducing themselves as Jordan and requesting that their name be remembered.\",\n      \"tier2\": \"Jordan is stating their name and asking the assistant to store this information for future use in the conversation.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:55:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, I've got it!\",\n      \"tier2\": \"It's nice to meet you, Jordan. I will remember your name for our conversation.  Is there anything else I can help you with today?\",\n      \"tier3\": \"I've saved your name, Jordan.  Please let me know how I can assist you further.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:55:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is introducing themselves as Jordan and requesting that their name be remembered.\",\n      \"tier2\": \"Jordan is stating their name and asking the assistant to store this information for future use in the conversation.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:55:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Hi Jordan, I've got it!\",\n      \"tier2\": \"It's nice to meet you, Jordan. I will remember your name for our conversation.  Is there anything else I can help you with today?\",\n      \"tier3\": \"I've saved your name, Jordan.  Please let me know how I can assist you further.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "6bf5fbe1-3082-49b1-9510-6d72e893bcee",
+            "timestamp": "2025-04-23T18:55:07.940104",
+            "user_input": "What's my name?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's previous messages indicated that their name is Jordan.  They are now requesting confirmation of this information.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember you told me your name is Jordan earlier.  Is there anything else I can help you with, Jordan?\",\n      \"tier3\": \"Based on our previous conversation, your name is Jordan. I have stored this information and will remember it for future interactions.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "7f1a4385-5c24-400c-8488-fbe8b0b7ac4c",
+            "timestamp": "2025-04-23T18:55:07.947125",
+            "user_input": "What's my name?",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's previous messages indicated that their name is Jordan.  They are now requesting confirmation of this information.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember you told me your name is Jordan earlier.  Is there anything else I can help you with, Jordan?\",\n      \"tier3\": \"Based on our previous conversation, your name is Jordan. I have stored this information and will remember it for future interactions.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:56:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user is asking for their name.\",\n      \"tier2\": \"The user's previous messages indicated that their name is Jordan.  They are now requesting confirmation of this information.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:56:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"Your name is Jordan.\",\n      \"tier2\": \"I remember you told me your name is Jordan earlier.  Is there anything else I can help you with, Jordan?\",\n      \"tier3\": \"Based on our previous conversation, your name is Jordan. I have stored this information and will remember it for future interactions.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "ca56f26e-5e74-4a74-8059-a3ebe7f1139a",
+            "timestamp": "2025-04-23T18:55:10.046084",
+            "user_input": "What did I just ask you to remember?",
+            "llm_output": {
+                "status": "success",
+                "text": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants to know what they just asked the assistant to remember.\",\n      \"tier2\": \"The user is querying the assistant's memory to recall a previous request.  Specifically, they want to know what information they asked the assistant to remember.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"You asked me to remember your name, Jordan.\",\n      \"tier2\": \"You asked me to remember your name.  You stated your name is Jordan and requested that I retain this information for later use.\",\n      \"tier3\": \"You instructed me to remember your name.  Your exact words were, \\\"My name is Jordan. Remember that for later.\\\"  I have stored this information and will use it as needed in our conversation.\"\n    }\n  }\n}\n```\n"
+            }
+        },
+        {
+            "turn_id": "5cc5d430-d274-44e8-aab6-d7b7928a3e87",
+            "timestamp": "2025-04-23T18:55:10.050599",
+            "user_input": "What did I just ask you to remember?",
+            "llm_output": {
+                "llm_response": {
+                    "content": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants to know what they just asked the assistant to remember.\",\n      \"tier2\": \"The user is querying the assistant's memory to recall a previous request.  Specifically, they want to know what information they asked the assistant to remember.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"You asked me to remember your name, Jordan.\",\n      \"tier2\": \"You asked me to remember your name.  You stated your name is Jordan and requested that I retain this information for later use.\",\n      \"tier3\": \"You instructed me to remember your name.  Your exact words were, \\\"My name is Jordan. Remember that for later.\\\"  I have stored this information and will use it as needed in our conversation.\"\n    }\n  }\n}\n```\n"
+                },
+                "tier3_response": "```json\n{\n  \"user_message_analysis\": {\n    \"timestamp\": \"2024-10-27T18:57:00Z\",\n    \"speaker\": \"User\",\n    \"prompt_tiers\": {\n      \"tier1\": \"The user wants to know what they just asked the assistant to remember.\",\n      \"tier2\": \"The user is querying the assistant's memory to recall a previous request.  Specifically, they want to know what information they asked the assistant to remember.\"\n    }\n  },\n  \"llm_response\": {\n    \"timestamp\": \"2024-10-27T18:57:05Z\",\n    \"speaker\": \"LLM\",\n    \"response_tiers\": {\n      \"tier1\": \"You asked me to remember your name, Jordan.\",\n      \"tier2\": \"You asked me to remember your name.  You stated your name is Jordan and requested that I retain this information for later use.\",\n      \"tier3\": \"You instructed me to remember your name.  Your exact words were, \\\"My name is Jordan. Remember that for later.\\\"  I have stored this information and will use it as needed in our conversation.\"\n    }\n  }\n}\n```\n"
+            }
+        }
+    ],
+    "current_context_summary": ""
+}
