@@ -48,12 +48,17 @@ interface ChatMessageComponentProps {
 const ChatMessageComponent: React.FC<ChatMessageComponentProps> = ({ message }) => {
   if (!message) return null; // Safety check
 
+  // Ensure content is a string
+  const contentToDisplay = typeof message.content === 'string' 
+    ? message.content 
+    : JSON.stringify(message.content, null, 2);
+
   // System message rendering moved to SystemMessageComponent.tsx
 
   if (message.isLoading) {
      return (
         <MessageContainer role="assistant">
-            <MessageBubble role="assistant" style={{ opacity: 0.7 }}>{message.content}</MessageBubble>
+            <MessageBubble role="assistant" style={{ opacity: 0.7 }}>{contentToDisplay}</MessageBubble>
         </MessageContainer>
      );
   }
@@ -70,7 +75,7 @@ const ChatMessageComponent: React.FC<ChatMessageComponentProps> = ({ message }) 
             a: ({node, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props} />
           }}
         >
-          {message.content}
+          {contentToDisplay}
         </ReactMarkdown>
       </MessageBubble>
     </MessageContainer>

@@ -418,3 +418,31 @@ class UserSessionManager:
             )
         
         return session_copy
+    
+    @staticmethod
+    def get_system_messages_for_session(session_id: str):
+        """
+        Static convenience method to get all system messages for a session.
+        
+        Args:
+            session_id: The ID of the session
+            
+        Returns:
+            List of system messages for the session
+        """
+        from models.connection import get_db
+        from models import SystemMessage
+        
+        system_messages = []
+        
+        with get_db() as db:
+            # Query system messages for this session
+            db_messages = db.query(SystemMessage).filter(
+                SystemMessage.session_id == session_id
+            ).order_by(SystemMessage.created_at.desc()).all()
+            
+            # Make copies of all messages before the session closes
+            for msg in db_messages:
+                system_messages.append(msg)
+        
+        return system_messages

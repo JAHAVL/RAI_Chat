@@ -5,6 +5,9 @@ This module contains handlers for system messages and related functionality.
 """
 
 import logging
+import json
+import uuid
+from datetime import datetime
 from flask import request, g
 from managers.user_session_manager import UserSessionManager
 from models import SystemMessage
@@ -32,16 +35,30 @@ def handle_send_system_message(session_id=None):
         if session_id:
             _, conversation_manager = UserSessionManager.get_conversation_manager_for_user_session(user_id, session_id)
             
-            # Send system message
-            system_message = conversation_manager.add_system_message(content, message_type, session_id)
+            # Format system message content as a string
+            system_message_content = json.dumps({
+                "content": content,
+                "type": message_type
+            })
+            
+            # Send system message using process_user_message instead of add_system_message
+            conversation_manager.contextual_memory.process_user_message(session_id, system_message_content)
+            
+            # Create a response structure similar to what add_system_message would return
+            system_message = {
+                'id': str(uuid.uuid4()),  # Generate a unique ID
+                'content': content,
+                'message_type': message_type,
+                'created_at': datetime.now()
+            }
             
             return create_success_response({
                 'message': 'System message sent successfully',
                 'system_message': {
-                    'id': system_message.id,
-                    'content': system_message.content,
-                    'type': system_message.message_type,
-                    'created_at': system_message.created_at.isoformat() if system_message.created_at else None,
+                    'id': system_message['id'],
+                    'content': system_message['content'],
+                    'type': system_message['message_type'],
+                    'created_at': system_message['created_at'].isoformat() if system_message['created_at'] else None,
                 }
             })
         else:

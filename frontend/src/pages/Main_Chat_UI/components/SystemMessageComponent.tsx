@@ -70,10 +70,15 @@ const SystemMessageComponent: React.FC<SystemMessageComponentProps> = ({ message
   // Use messageType if available, or default to 'default'
   const typeToUse = message.messageType || 'default';
   
+  // Ensure content is a string
+  const contentToDisplay = typeof message.content === 'string' 
+    ? message.content 
+    : JSON.stringify(message.content, null, 2);
+  
   return (
     <SystemMessageContainer>
       <SystemMessage $messageType={typeToUse}>
-        {message.content}
+        {contentToDisplay}
       </SystemMessage>
     </SystemMessageContainer>
   );

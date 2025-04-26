@@ -505,12 +505,13 @@ class ActionHandler:
             if not action_type:
                 action_type = ACTION_ANSWER
                 
-            # Save this turn to memory
+            # Store this turn to memory
             try:
                 if self.contextual_memory:
                     # Create a simplified response structure for storage
                     simplified_response = {"content": content}
-                    self.contextual_memory.process_assistant_message(simplified_response, user_input)
+                    # Fix parameter order - session_id should be first, then content
+                    self.contextual_memory.process_user_message(session_id, content, is_assistant_message=True)
             except Exception as mem_ex:
                 self.logger.error(f"Error saving to contextual memory: {mem_ex}")
                 
@@ -603,13 +604,13 @@ class ActionHandler:
                 if not TAVILY_AVAILABLE:
                      self.logger.error("Web search signal detected, but Tavily client is not available.")
                      # Store turn, return error message as answer
-                     self.contextual_memory.process_assistant_message(response_data, user_input)
+                     self.contextual_memory.process_user_message(session_id, str(response_data))
                      return ACTION_BREAK, "Web search is currently unavailable.", ACTION_ANSWER # Treat as answer
 
                 web_query = action_result
                 self.logger.info(f"WEB SEARCH signal detected for query: '{web_query}' (Session: {session_id})")
                 # Store the turn *before* performing the search
-                self.contextual_memory.process_assistant_message(response_data, user_input)
+                self.contextual_memory.process_user_message(session_id, str(response_data))
 
                 # Generate a unique ID for this search action
                 search_id = f"search-{int(time.time())}-{session_id[:8]}"
@@ -793,28 +794,28 @@ class ActionHandler:
             elif action_signal_type == ACTION_CALCULATE_DETECTED:
                 self.logger.info(f"Calculation signal detected (Session: {session_id})")
                 # Store the turn *before* continuing for calculation
-                self.contextual_memory.process_assistant_message(response_data, user_input)
+                self.contextual_memory.process_user_message(session_id, str(response_data))
                 # Signal ConversationManager to continue the loop for calculation
                 return ACTION_CONTINUE, action_result, ACTION_CALCULATE_DETECTED
 
             elif action_signal_type == ACTION_COMMAND_DETECTED:
                 self.logger.info(f"Command signal detected (Session: {session_id})")
                 # Store the turn *before* continuing for command
-                self.contextual_memory.process_assistant_message(response_data, user_input)
+                self.contextual_memory.process_user_message(session_id, str(response_data))
                 # Signal ConversationManager to continue the loop for command
                 return ACTION_CONTINUE, action_result, ACTION_COMMAND_DETECTED
 
             elif action_signal_type == ACTION_EXECUTE_DETECTED:
                 self.logger.info(f"Execution signal detected (Session: {session_id})")
                 # Store the turn *before* continuing for execution
-                self.contextual_memory.process_assistant_message(response_data, user_input)
+                self.contextual_memory.process_user_message(session_id, str(response_data))
                 # Signal ConversationManager to continue the loop for execution
                 return ACTION_CONTINUE, action_result, ACTION_EXECUTE_DETECTED
 
             else: # Normal response
                 self.logger.info(f"No signals detected. Processing as normal answer (Session: {session_id}).") 
                 # Store the turn
-                self.contextual_memory.process_assistant_message(response_data, user_input)
+                self.contextual_memory.process_user_message(session_id, str(response_data))
                 
                 # Get the actual answer content from the response
                 # Look for tier3 content inside JSON format responses
@@ -891,5 +892,5 @@ class ActionHandler:
             self.logger.error(f"!!! EXCEPTION during LLM response processing in ActionHandler: {proc_ex} !!!", exc_info=True)
             # Attempt to store turn data even if processing failed
             if response_data:
-                 self.contextual_memory.process_assistant_message(response_data, user_input)
+                 self.contextual_memory.process_user_message(session_id, str(response_data))
             return ACTION_BREAK, f"Error processing LLM response: {proc_ex}", ACTION_ERROR

@@ -3,7 +3,7 @@ import logging
 from typing import Dict, List, Any, Optional, TYPE_CHECKING
 
 # Import prompts function from new location
-from components.prompts import build_system_prompt
+from components.prompts import DEFAULT_SYSTEM_PROMPT
 
 # Type hints for managers (using new paths)
 if TYPE_CHECKING:
@@ -86,14 +86,32 @@ class PromptBuilder:
         specialized_instructions_str = "" # TODO: How should this be handled? Passed in?
 
         # --- Build Prompt ---
-        system_prompt = build_system_prompt(
-            conversation_history=conversation_history_str,
-            contextual_memory=contextual_memory_str,
-            specialized_instructions=specialized_instructions_str,
-            remember_this_content=remember_this_str,
-            forget_this_content=forget_this_str,
-            web_search_results=web_search_results
-        )
-
+        # Start with the default system prompt
+        system_prompt = DEFAULT_SYSTEM_PROMPT
+        
+        # Add conversation history
+        if conversation_history_str:
+            system_prompt += f"\n\nCONVERSATION_HISTORY:\n{conversation_history_str}"
+        
+        # Add contextual memory
+        if contextual_memory_str:
+            system_prompt += f"\n\nCONTEXTUAL_MEMORY:\n{contextual_memory_str}"
+        
+        # Add specialized instructions
+        if specialized_instructions_str:
+            system_prompt += f"\n\nSPECIALIZED_INSTRUCTIONS:\n{specialized_instructions_str}"
+        
+        # Add remember this content
+        if remember_this_str:
+            system_prompt += f"\n\nREMEMBER_THIS:\n{remember_this_str}"
+        
+        # Add forget this content
+        if forget_this_str:
+            system_prompt += f"\n\nFORGET_THIS:\n{forget_this_str}"
+        
+        # Add web search results
+        if web_search_results:
+            system_prompt += f"\n\nWEB_SEARCH_RESULTS:\n{web_search_results}"
+            
         logger.debug(f"Constructed system prompt (first 200 chars): {system_prompt[:200]}...")
         return system_prompt

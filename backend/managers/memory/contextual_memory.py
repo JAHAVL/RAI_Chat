@@ -481,18 +481,76 @@ class ContextualMemoryManager:
 
     # --- Core Turn Processing ---
 
-    def process_user_message(self, session_id: str, user_input: str) -> None:
+    def process_user_message(self, session_id: str, user_input: str, is_assistant_message: bool = False) -> None:
         """
-        Handles user input. Currently just logs it, as the turn object is created
-        when the assistant response is processed. Ensures the session context is loaded.
+        Handles processing of all messages (user and assistant). Performs fact extraction,
+        and ensures the session context is loaded.
+        
+        Args:
+            session_id: The session ID to process the message for
+            user_input: The content of the message
+            is_assistant_message: Whether this is an assistant message (default: False)
         """
         if not self.load_session_context(session_id):
              # Handle error - perhaps raise exception or return error status
              self.logger.error(f"Failed to load or initialize context for session {session_id}. Cannot process user message.")
              raise RuntimeError(f"Failed to load context for session {session_id}")
 
-        # No longer returns message_id, just ensures context is ready
-        self.logger.info(f"Processing user input for active session {self.active_session_id}: {user_input[:100]}...")
+        # Log the message being processed
+        self.logger.info(f"Processing {'assistant' if is_assistant_message else 'user'} message for active session {self.active_session_id}: {user_input[:100]}...")
+        
+        # Extract facts regardless of whether it's user or assistant message
+        self._extract_key_user_facts(user_input)
+        
+        # LLM-based extraction for especially important messages or when specific REMEMBERTHIS markers are present
+        if "REMEMBERTHIS" in user_input or is_assistant_message:
+            try:
+                # Prepare extraction prompt
+                MEMORY_EXTRACTION_PROMPT = """Analyze the following message. Identify any potential facts, preferences, or key information about the user that should be remembered for future interactions. Be COMPREHENSIVE and exhaustive - don't miss any potential information. Consider names, locations, preferences, project details, personal facts, dates, and anything a personal assistant should remember.
+
+Focus on extracting specific, factual information rather than general statements or opinions.
+
+Examples of facts to extract:
+- The user's name is John
+- The user lives in New York
+- The user works as a software engineer
+- The user enjoys hiking
+- The user is working on a project called XYZ
+- The user uses Python for their project
+
+Response Format:
+List facts in the format "FACT: <description of fact>"
+If no facts are found, respond with "NO_FACTS_FOUND"
+"""
+                extraction_prompt_text = MEMORY_EXTRACTION_PROMPT + f"\n\nMessage to analyze:\n{user_input}\n\nPotential facts/preferences:\n"
+                
+                # Call the LLM
+                if self.llm_api:
+                    llm_result = self.llm_api.generate_text(extraction_prompt_text)
+                    
+                    # Process LLM result for facts
+                    if isinstance(llm_result, dict) and "text" in llm_result:
+                        extraction_text = llm_result["text"]
+                        # Extract facts using pattern matching
+                        fact_matches = re.findall(r"FACT: (.+?)(?=FACT:|$)", extraction_text, re.DOTALL)
+                        if fact_matches:
+                            for fact in fact_matches:
+                                fact = fact.strip()
+                                if fact and fact not in self.user_remembered_facts:
+                                    self.user_remembered_facts.append(fact)
+                                    self.logger.info(f"LLM-based extraction added fact: {fact}")
+                                    
+                            # Save facts to the database
+                            try:
+                                from models.connection import get_db
+                                with get_db() as db_session:
+                                    self.save_user_remembered_facts(db_session)
+                                    db_session.commit()
+                                    self.logger.info(f"Successfully saved user facts to database.")
+                            except Exception as db_err:
+                                self.logger.error(f"Failed to save facts to database: {db_err}")
+            except Exception as e:
+                self.logger.error(f"Error during LLM-based fact extraction: {e}")
 
     def process_assistant_message(self, response_data: Dict[str, Any], user_input: str, session_id: Optional[str] = None) -> bool:
         """

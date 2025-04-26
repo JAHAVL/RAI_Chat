@@ -78,19 +78,14 @@ class SearchHandler:
                     # Add to contextual memory
                     try:
                         if self.contextual_memory:
-                            # Store as a system message in the conversation
-                            system_message_data = {
-                                'content': search_system_message['content'],
-                                'type': 'search_results'
-                            }
-                            self.contextual_memory.add_system_message(system_message_data, current_session_id)
+                            # In the refactored memory manager, we use process_user_message
+                            # and it handles message creation and fact extraction internally
+                            system_message_content = search_system_message['content']
+                            self.contextual_memory.process_user_message(current_session_id, system_message_content)
                             self.logger.info(f"Added search results to contextual memory for session {current_session_id}")
                             
-                            # Also try to extract key facts from the search results
-                            # This helps the system remember important information from searches
-                            extraction_text = f"Important information from search about '{query}':\n\n{search_results}"
-                            self.contextual_memory.extract_and_store_facts(extraction_text, current_session_id)
-                            self.logger.info("Extracted key facts from search results")
+                            # Note: fact extraction is handled internally by process_user_message
+                            # so we don't need the separate extract_and_store_facts call
                     except Exception as mem_ex:
                         self.logger.error(f"Error storing search results in memory: {str(mem_ex)}", exc_info=True)
                 except Exception as search_ex:

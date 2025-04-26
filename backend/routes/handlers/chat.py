@@ -44,11 +44,17 @@ def handle_chat():
         
         # Process message
         if streaming:
+            # Need to handle session_id before calling process_tiered_message
+            if session_id and session_id != conversation_manager.current_session_id:
+                conversation_manager.load_session(session_id)
             # Return streaming response
-            return stream_response(conversation_manager.process_message(user_input, session_id))
+            return stream_response(conversation_manager.process_tiered_message(user_input))
         else:
+            # Need to handle session_id before calling process_tiered_message
+            if session_id and session_id != conversation_manager.current_session_id:
+                conversation_manager.load_session(session_id)
             # Collect all chunks for a single response
-            chunks = list(conversation_manager.process_message(user_input, session_id))
+            chunks = list(conversation_manager.process_tiered_message(user_input))
             
             # Return the last (final) chunk as a regular JSON response
             if chunks:
@@ -80,8 +86,12 @@ def handle_chat_stream():
         # Get conversation manager
         session_id, conversation_manager = UserSessionManager.get_conversation_manager_for_user_session(user_id, session_id)
         
+        # Need to handle session_id before calling process_tiered_message
+        if session_id and session_id != conversation_manager.current_session_id:
+            conversation_manager.load_session(session_id)
+        
         # Return streaming response
-        return stream_response(conversation_manager.process_message(user_input, session_id))
+        return stream_response(conversation_manager.process_tiered_message(user_input))
     except Exception as e:
         logger.error(f"Error processing streaming chat request: {str(e)}", exc_info=True)
         return create_error_response(f'Error processing request: {str(e)}', 500)
@@ -128,7 +138,12 @@ def handle_search(query, session_id=None):
                     
                     # Process the enhanced query through the conversation manager
                     # This will send it to the LLM and return the response
-                    for chunk in conversation_manager.process_message(enhanced_query, session_id_to_use):
+                    
+                    # Need to handle session_id before calling process_tiered_message
+                    if session_id_to_use and session_id_to_use != conversation_manager.current_session_id:
+                        conversation_manager.load_session(session_id_to_use)
+                    
+                    for chunk in conversation_manager.process_tiered_message(enhanced_query):
                         # Pass through the LLM's response chunks
                         yield json.dumps(chunk) + "\n"
                         
@@ -147,8 +162,12 @@ def handle_search(query, session_id=None):
                     
                     logger.info("No search results found, asking LLM to respond with general knowledge")
                     
+                    # Need to handle session_id before calling process_tiered_message
+                    if session_id_to_use and session_id_to_use != conversation_manager.current_session_id:
+                        conversation_manager.load_session(session_id_to_use)
+                    
                     # Process through conversation manager
-                    for chunk in conversation_manager.process_message(enhanced_query, session_id_to_use):
+                    for chunk in conversation_manager.process_tiered_message(enhanced_query):
                         # Pass through the LLM's response chunks
                         yield json.dumps(chunk) + "\n"
                     

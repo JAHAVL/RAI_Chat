@@ -131,7 +131,9 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       console.log(`STAGE 3 - Reducer processing assistant message:`);
       console.log(`STAGE 3 - Session ID: ${sessionId}`);
       console.log(`STAGE 3 - Assistant Message:`, JSON.stringify(assistantMessage));
-      console.log(`STAGE 3 - Message content:`, assistantMessage.content);
+      console.log(`STAGE 3 - Message content: ${typeof assistantMessage.content === 'string' ? 
+                      assistantMessage.content.substring(0, 50) : 
+                      JSON.stringify(assistantMessage.content).substring(0, 50)}...`);
       
       // Make sure we have a valid sessionId
       if (!sessionId) {
@@ -145,7 +147,9 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       
       console.log(`PROCESS_ASSISTANT_RESPONSE for session ${sessionId}:`, 
                   `Current message count=${currentMessages.length}, ` +
-                  `Message content: ${assistantMessage.content.substring(0, 50)}...`);
+                  `Message content: ${typeof assistantMessage.content === 'string' ? 
+                      assistantMessage.content.substring(0, 50) : 
+                      JSON.stringify(assistantMessage.content).substring(0, 50)}...`);
       
       // Handle loading messages vs. real messages
       const updatedMessages = [...currentMessages];
@@ -159,6 +163,12 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
           if (assistantMessage.content === 'No response received' && originalContent) {
               console.log(`Fixing 'No response received' with original content:`, originalContent);
               assistantMessage.content = originalContent;
+          }
+          
+          // Make sure content is a string
+          if (typeof assistantMessage.content !== 'string') {
+              console.log(`Converting non-string content to string`, assistantMessage.content);
+              assistantMessage.content = JSON.stringify(assistantMessage.content);
           }
           
           // This is a real assistant message - find and replace loading message

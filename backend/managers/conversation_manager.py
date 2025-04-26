@@ -10,6 +10,7 @@ import requests
 import logging
 import importlib.util
 import time
+import uuid
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Generator, Tuple, Union
 from sqlalchemy.orm import Session as SQLAlchemySession
@@ -322,16 +323,19 @@ class ConversationManager:
         self.llm_api = get_llm_api()
         
         # Initialize the prompt builder
-        self.prompt_builder = PromptBuilder()
+        self.prompt_builder = PromptBuilder(
+            contextual_memory_manager=self.contextual_memory,
+            episodic_memory_manager=self.episodic_memory
+        )
         
         # Initialize the action handler for processing special commands
-        self.action_handler = ActionHandler(logger=self.logger)
+        self.action_handler = ActionHandler(
+            contextual_memory_manager=self.contextual_memory,
+            episodic_memory_manager=self.episodic_memory
+        )
         
         # Initialize memory importance scorer
-        self.memory_importance_scorer = MemoryImportanceScorer(
-            llm_api=self.llm_api,
-            logger=self.logger
-        )
+        self.memory_importance_scorer = MemoryImportanceScorer()
         
         # Initialize our refactored components
         self.search_handler = SearchHandler(
@@ -339,9 +343,15 @@ class ConversationManager:
             contextual_memory=self.contextual_memory
         )
         
+        # Get the memory system's context builder if we have access to it
+        memory_context_builder = None
+        if self.contextual_memory and hasattr(self.contextual_memory, 'context_builder'):
+            memory_context_builder = self.contextual_memory.context_builder
+            self.logger.info("Using contextual memory's existing context builder")
+        
         self.context_builder = context_builder or ContextBuilder(
             logger=self.logger,
-            context_builder=self.contextual_memory.context_builder if self.contextual_memory else None,
+            context_builder=memory_context_builder,  # Use the memory system's context builder
             memory_manager=self.contextual_memory
         )
         
@@ -354,11 +364,14 @@ class ConversationManager:
         
         # Keep track of memory pruning
         from managers.memory.memory_pruner import MemoryPruner
-        self.memory_pruner = MemoryPruner(
-            logger=self.logger,
-            contextual_memory=self.contextual_memory,
-            episodic_memory=self.episodic_memory
-        )
+        
+        # We'll need a database session for the memory pruner
+        with get_db() as db_session:
+            self.memory_pruner = MemoryPruner(
+                db_session=db_session,
+                episodic_memory_manager=self.episodic_memory,
+                token_limit=30000
+            )
         
         self.logger.info(f"ConversationManager initialized for user {user_id}")
     
@@ -441,8 +454,12 @@ class ConversationManager:
             user_input=user_input
         )
         
-        # Prepare the system prompt
-        system_prompt = self.prompt_builder.build_system_prompt(self.current_session_id)
+        # Prepare the system prompt using the correct method name (construct_prompt instead of build_system_prompt)
+        system_prompt = self.prompt_builder.construct_prompt(
+            session_id=self.current_session_id,
+            user_input=user_input,
+            web_search_results=search_results[0]['content'] if search_results else None
+        )
         
         # Generate and process the response
         yield from self.response_processor.generate_response(
@@ -460,6 +477,26 @@ class ConversationManager:
         except Exception as e:
             self.logger.error(f"Error in auto-upgrading messages: {str(e)}")
     
+    def process_message(self, user_input: str, session_id: Optional[str] = None):
+        """
+        Process a user message and yield response chunks.
+        This is an alias for process_tiered_message to maintain compatibility.
+        
+        Args:
+            user_input: The user's message
+            session_id: Optional session ID to use
+            
+        Yields:
+            Response chunks from the conversation
+        """
+        # Set the session if provided
+        if session_id and session_id != self.current_session_id:
+            self.load_session(session_id)
+            
+        # Process the message using our tiered implementation
+        for chunk in self.process_tiered_message(user_input):
+            yield chunk
+    
     def _store_user_message(self, user_input: str) -> Optional[str]:
         """
         Store a user message in the database with tiered representations.
@@ -475,26 +512,28 @@ class ConversationManager:
             return None
             
         try:
-            # Create the user message
-            user_message = {
-                'role': 'user',
-                'content': user_input,
-                'timestamp': datetime.now().isoformat()
-            }
+            # Instead of using add_user_message, use process_user_message
+            message_id = self._generate_message_id()
             
-            # Add to contextual memory
-            message_id = self.contextual_memory.add_user_message(user_message, self.current_session_id)
-            self.logger.info(f"Stored user message in contextual memory with ID {message_id}")
+            # Process the user message
+            self.contextual_memory.process_user_message(self.current_session_id, user_input)
+            
+            # Note: This method doesn't return a message ID, so we generate our own
+            self.logger.info(f"Processed user message in contextual memory with ID {message_id}")
             
             # Extract and store facts from the user message
-            # This helps the system remember important information mentioned by the user
-            self.contextual_memory.extract_and_store_facts(user_input, self.current_session_id)
+            # This functionality is built into the ContextualMemoryManager
+            # so we don't need to call extract_and_store_facts separately
             
             return message_id
             
         except Exception as e:
             self.logger.error(f"Error storing user message: {str(e)}")
             return None
+            
+    def _generate_message_id(self):
+        """Generate a unique message ID"""
+        return str(uuid.uuid4())
     
     def auto_upgrade_important_messages(self, session_id: str, message_limit: int = 10) -> int:
         """

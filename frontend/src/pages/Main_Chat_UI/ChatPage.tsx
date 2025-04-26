@@ -141,8 +141,12 @@ const ChatPage: React.FC<AppContentProps> = ({
     if (currentMessages.length > 0) {
       // Log the last message which should be the assistant's response
       const lastMessage = currentMessages[currentMessages.length - 1];
-      console.log(`STAGE 4 - Last message role: ${lastMessage.role}`);
-      console.log(`STAGE 4 - Last message content: ${lastMessage.content.substring(0, 100)}...`);
+      if (lastMessage) {
+        console.log(`STAGE 4 - Last message role: ${lastMessage.role}`);
+        console.log(`STAGE 4 - Last message content: ${typeof lastMessage.content === 'string' ? 
+          lastMessage.content.substring(0, 100) : 
+          JSON.stringify(lastMessage.content).substring(0, 100)}...`);
+      }
     }
   }, [currentMessages]);
 
@@ -179,7 +183,7 @@ const ChatPage: React.FC<AppContentProps> = ({
           // Handle chat library update
           onConfirmNewChat(`temp-${Date.now()}`, {
             id: newSessionId,
-            title: message.substring(0, 30) 
+            title: typeof message === 'string' ? message.substring(0, 30) : JSON.stringify(message).substring(0, 30)
           });
         }
       }
