@@ -30,278 +30,462 @@ logger = logging.getLogger(__name__)
 
 class TierManager:
     """
-    Manages the generation and processing of tiered content for messages.
-    Creates different representation tiers for conversation history to optimize token usage.
+    Manages the storage, retrieval and upgrading of tiered message content.
+    Does NOT generate tiers - only uses tiers already created by main LLM.
     """
     
     def __init__(self):
-        self.llm_api = get_llm_api()
-        if not self.llm_api:
-            logger.error("Failed to initialize LLM API client for TierManager")
-        else:
-            logger.info("TierManager initialized with LLM API client")
+        self.logger = logger
+        self.logger.info("TierManager initialized")
     
-    def generate_tiers(self, message_content: str, role: str) -> Dict[str, str]:
+    def store_message_tiers(self, message_id: str, session_id: str, user_id: int, 
+                          role: str, tier1: str, tier2: str, content: str) -> bool:
         """
-        Generate different tier representations for a message.
+        Store a message with all three tiers in the database.
         
         Args:
-            message_content: The original message content
-            role: The role of the message sender (user or assistant)
+            message_id: Unique message ID
+            session_id: The session ID
+            user_id: The user ID
+            role: Message role (user, assistant, system)
+            tier1: Tier 1 content (most concise)
+            tier2: Tier 2 content (medium detail)
+            content: Full message content (Tier 3)
             
         Returns:
-            Dictionary with tier1_content, tier2_content, and the original content
+            True if successfully stored, False otherwise
         """
-        # For user messages, we need to generate tier1 and tier2
-        if role == "user":
-            return self._generate_user_message_tiers(message_content)
-        # For assistant messages, we need all three tiers
-        elif role == "assistant":
-            return self._generate_assistant_message_tiers(message_content)
-        # For system messages, use default tiers
-        else:
-            return self._generate_system_message_tiers(message_content)
-    
-    def _generate_user_message_tiers(self, message_content: str) -> Dict[str, str]:
-        """
-        Generate tier1 (key-value) and tier2 (summary) for user messages.
-        
-        Args:
-            message_content: The user's message
-            
-        Returns:
-            Dictionary with tier1_content and tier2_content
-        """
-        tier_prompt = f"""
-        Convert the following user message into two tiers of representation:
-        
-        Tier 1: Key-value pairs representing core information (e.g., user_name=Jordan, project=RAI_Chat)
-        Tier 2: A brief 1-2 sentence summary capturing the essential meaning
-        
-        User message: {message_content}
-        
-        Output format:
-        TIER1: key1=value1, key2=value2, ...
-        TIER2: Brief summary here.
-        """
-        
         try:
-            # Generate tiers using LLM
-            result = self.llm_api.generate_response(tier_prompt)
+            from models.message import Message
             
-            # Extract the response content
-            if isinstance(result, dict) and "text" in result:
-                generated_text = result["text"]
-            elif isinstance(result, str):
-                generated_text = result
-            else:
-                logger.warning(f"Unexpected response format from LLM: {type(result)}")
-                return self._generate_fallback_tiers(message_content)
+            # Ensure content is a string
+            if isinstance(content, dict):
+                if 'original_text' in content:
+                    content = content['original_text']
+                else:
+                    content = str(content)
+                    
+            # Ensure tier1 is a string
+            if isinstance(tier1, dict):
+                if 'original_text' in tier1:
+                    tier1 = tier1['original_text']
+                else:
+                    tier1 = str(tier1)
+                    
+            # Ensure tier2 is a string
+            if isinstance(tier2, dict):
+                if 'original_text' in tier2:
+                    tier2 = tier2['original_text']
+                else:
+                    tier2 = str(tier2)
+                    
+            # Convert message_metadata to a JSON string if needed
+            message_metadata = {}
+            if isinstance(message_metadata, dict):
+                import json
+                message_metadata = json.dumps(message_metadata)
             
-            # Parse the result to extract tiers
-            tier1 = self._extract_section(generated_text, "TIER1:", "TIER2:")
-            tier2 = self._extract_after_marker(generated_text, "TIER2:")
+            # Format the timestamp as a proper datetime for MySQL
+            from datetime import datetime
+            current_time = datetime.now()
             
-            # If parsing failed, use fallback
-            if not tier1 or not tier2:
-                logger.warning("Failed to parse tier content from LLM response")
-                return self._generate_fallback_tiers(message_content)
-            
-            return {
-                "tier1_content": tier1.strip(),
-                "tier2_content": tier2.strip(),
-                "content": message_content  # Original message as tier3
-            }
-            
+            with get_db() as db_session:
+                # Create new message with all three tiers
+                new_message = Message(
+                    message_id=message_id,
+                    session_id=session_id,
+                    user_id=user_id,
+                    content=content,  # Tier 3 (full content)
+                    tier1_content=tier1,  # Tier 1 (most concise)
+                    tier2_content=tier2,  # Tier 2 (medium detail)
+                    required_tier_level=1,  # Default to Tier 1 for most efficient context
+                    role=role,
+                    timestamp=current_time,
+                    message_metadata="{}",  # Empty JSON object as string
+                    memory_status="contextual"  # Default to contextual memory
+                )
+                
+                db_session.add(new_message)
+                db_session.commit()
+                
+                self.logger.info(f"Stored {role} message with ID {message_id[:8]} in database")
+                return True
+                
         except Exception as e:
-            logger.error(f"Error generating tiers for user message: {e}")
-            return self._generate_fallback_tiers(message_content)
+            self.logger.error(f"Error storing message in database: {e}")
+            return False
     
-    def _generate_assistant_message_tiers(self, message_content: str) -> Dict[str, str]:
+    def get_session_messages(self, session_id: str, limit: int = 20):
         """
-        Handle assistant message tiers - may already be in tiered format.
+        Retrieve messages for a session with their appropriate tier content.
         
         Args:
-            message_content: The assistant's message or structured response
+            session_id: The session ID
+            limit: Maximum number of messages to retrieve
             
         Returns:
-            Dictionary with all tier contents
+            List of message objects with appropriate tier content
         """
-        # Check if the message is already in JSON format with tiers
-        if isinstance(message_content, dict):
-            # Extract from structured response if available
-            if "response_tiers" in message_content:
-                tiers = message_content["response_tiers"]
-                return {
-                    "tier1_content": tiers.get("tier1", ""),
-                    "tier2_content": tiers.get("tier2", ""),
-                    "content": tiers.get("tier3", message_content)  # Use tier3 or full message
-                }
-            # If it's a dict but doesn't have tiers, extract content first
-            elif "content" in message_content:
-                message_text = message_content["content"]
-            else:
-                # Just convert to string
-                message_text = str(message_content)
-        else:
-            message_text = message_content
-        
-        # Generate tiers for the text content
-        tier_prompt = f"""
-        Convert the following assistant message into two concise representation tiers:
-        
-        Tier 1: Key points in key-value format (e.g., greeting=hello, information=project_details)
-        Tier 2: A 1-2 sentence summary capturing the essential information
-        
-        Assistant message: {message_text}
-        
-        Output format:
-        TIER1: key1=value1, key2=value2, ...
-        TIER2: Brief summary here.
-        """
-        
         try:
-            # Generate tiers using LLM
-            result = self.llm_api.generate_response(tier_prompt)
+            from models.message import Message
+            from sqlalchemy import desc
             
-            # Extract the response content
-            if isinstance(result, dict) and "text" in result:
-                generated_text = result["text"]
-            elif isinstance(result, str):
-                generated_text = result
-            else:
-                logger.warning(f"Unexpected response format from LLM: {type(result)}")
-                return self._generate_fallback_tiers(message_text)
-            
-            # Parse the result to extract tiers
-            tier1 = self._extract_section(generated_text, "TIER1:", "TIER2:")
-            tier2 = self._extract_after_marker(generated_text, "TIER2:")
-            
-            # If parsing failed, use fallback
-            if not tier1 or not tier2:
-                logger.warning("Failed to parse tier content from LLM response")
-                return self._generate_fallback_tiers(message_text)
-            
-            return {
-                "tier1_content": tier1.strip(),
-                "tier2_content": tier2.strip(),
-                "content": message_text  # Original message
-            }
-            
+            with get_db() as db_session:
+                # Get messages from database, sorted by timestamp (newest first)
+                messages_query = (
+                    db_session.query(Message)
+                    .filter(Message.session_id == session_id)
+                    .order_by(desc(Message.timestamp))
+                    .limit(limit*2)  # Multiply by 2 to account for user/assistant pairs
+                )
+                
+                messages = list(messages_query)
+                messages.reverse()  # Reverse to get chronological order
+                
+                return messages
+                
         except Exception as e:
-            logger.error(f"Error generating tiers for assistant message: {e}")
-            return self._generate_fallback_tiers(message_text)
+            self.logger.error(f"Error retrieving messages from database: {e}")
+            return []
     
-    def _generate_system_message_tiers(self, message_content: str) -> Dict[str, str]:
+    def upgrade_message_tier(self, message_id: str, target_tier: int) -> bool:
         """
-        Generate simplified tiers for system messages.
+        Upgrades a specific message to a higher tier in the database.
         
         Args:
-            message_content: The system message
+            message_id: The ID of the message to upgrade
+            target_tier: The target tier level (1, 2, or 3)
             
         Returns:
-            Dictionary with all tier contents
+            True if successful, False if not found or invalid tier
         """
-        # For system messages, tier1 is just the action type if available
-        tier1 = ""
-        
-        # Try to extract action type if it's a JSON
+        if not message_id or target_tier not in [1, 2, 3]:
+            self.logger.warning(f"Invalid parameters for tier upgrade: message_id={message_id}, target_tier={target_tier}")
+            return False
+            
         try:
-            if message_content.strip().startswith('{'):
-                data = json.loads(message_content)
-                if 'action' in data and 'status' in data:
-                    tier1 = f"action={data['action']}, status={data['status']}"
-        except:
-            pass
-        
-        # If we couldn't extract a meaningful tier1, create a simple one
-        if not tier1:
-            tier1 = "message_type=system"
-        
-        # Tier2 is a short version of the content (first 50 chars)
-        if isinstance(message_content, str):
-            tier2 = message_content[:50] + "..." if len(message_content) > 50 else message_content
-        else:
-            tier2 = str(message_content)[:50] + "..." if len(str(message_content)) > 50 else str(message_content)
-        
-        return {
-            "tier1_content": tier1,
-            "tier2_content": tier2,
-            "content": message_content
-        }
-    
-    def _generate_fallback_tiers(self, message_content: str) -> Dict[str, str]:
+            from models.message import Message
+            
+            with get_db() as db_session:
+                # Find the message in the database
+                message = db_session.query(Message).filter(Message.message_id == message_id).first()
+                
+                if not message:
+                    self.logger.warning(f"Cannot upgrade tier: Message with ID {message_id} not found")
+                    return False
+                
+                # Update the required tier level
+                message.required_tier_level = target_tier
+                db_session.commit()
+                
+                self.logger.info(f"Upgraded message {message_id[:8]} to tier {target_tier}")
+                return True
+                
+        except Exception as e:
+            self.logger.error(f"Error upgrading message tier in database: {e}")
+            return False
+            
+    def format_message_history(self, messages, include_tier_level=True):
         """
-        Generate basic tiers when LLM generation fails.
+        Format a list of message objects into a readable history string.
         
         Args:
-            message_content: The message content
+            messages: List of Message objects from the database or dicts with message data
+            include_tier_level: Whether to include the tier level in the output
             
         Returns:
-            Dictionary with basic tier contents
+            Formatted history string
         """
-        # Create a simple key-value representation for tier1
-        tier1 = "message=present"
-        
-        # For tier2, use the first sentence or truncate to 100 chars
-        if isinstance(message_content, str):
-            first_sentence_match = re.search(r'^(.*?[.!?])\s', message_content)
-            if first_sentence_match:
-                tier2 = first_sentence_match.group(1)
+        if not messages:
+            return "Conversation history is empty."
+            
+        history_parts = []
+        for message in messages:
+            # Handle both SQLAlchemy model objects and dictionaries
+            if isinstance(message, dict):
+                role = message.get('role', 'unknown')
+                message_id = message.get('message_id', 'unknown')
+                required_tier_level = message.get('required_tier_level', 1)
+                timestamp = message.get('timestamp')
+                
+                # Get content based on tier level
+                if required_tier_level == 1:
+                    content = message.get('tier1_content', message.get('content', ''))
+                elif required_tier_level == 2:
+                    content = message.get('tier2_content', message.get('content', ''))
+                else:
+                    content = message.get('content', '')
+                    
+                was_recalled = message.get('was_recalled', False)
             else:
-                tier2 = message_content[:100] + "..." if len(message_content) > 100 else message_content
-        else:
-            tier2 = str(message_content)[:100] + "..." if len(str(message_content)) > 100 else str(message_content)
+                # Handle SQLAlchemy model object
+                role = message.role
+                message_id = message.message_id
+                required_tier_level = message.required_tier_level
+                timestamp = message.timestamp
+                
+                # Get content based on required tier level
+                content = message.get_tier_content() if hasattr(message, 'get_tier_content') else message.content
+                
+                was_recalled = hasattr(message, 'was_recalled') and message.was_recalled
+            
+            # Format timestamp if available
+            formatted_time = ""
+            if timestamp:
+                try:
+                    from datetime import datetime
+                    # Convert timestamp to datetime if it's a Unix timestamp
+                    if isinstance(timestamp, (int, float)):
+                        dt = datetime.fromtimestamp(timestamp)
+                    else:
+                        dt = timestamp
+                    formatted_time = dt.strftime("%Y-%m-%d %H:%M:%S")
+                except Exception as e:
+                    self.logger.error(f"Error formatting timestamp: {e}")
+                    formatted_time = str(timestamp)
+            
+            # Format the message with role, timestamp, ID, tier level and content
+            recalled_flag = " [recalled:yes]" if was_recalled else ""
+            
+            if include_tier_level:
+                tier_level = required_tier_level
+                if role == "user":
+                    history_parts.append(f"User ({formatted_time}) [id:{message_id}] [tier:{tier_level}]{recalled_flag}: {content}")
+                elif role == "assistant":
+                    history_parts.append(f"Assistant ({formatted_time}) [id:{message_id}] [tier:{tier_level}]{recalled_flag}: {content}")
+                else:
+                    history_parts.append(f"{role.capitalize()} ({formatted_time}) [id:{message_id}] [tier:{tier_level}]{recalled_flag}: {content}")
+            else:
+                if role == "user":
+                    history_parts.append(f"User ({formatted_time}) [id:{message_id}]{recalled_flag}: {content}")
+                elif role == "assistant":
+                    history_parts.append(f"Assistant ({formatted_time}) [id:{message_id}]{recalled_flag}: {content}")
+                else:
+                    history_parts.append(f"{role.capitalize()} ({formatted_time}) [id:{message_id}]{recalled_flag}: {content}")
         
-        return {
-            "tier1_content": tier1,
-            "tier2_content": tier2,
-            "content": message_content
-        }
-    
-    def _extract_section(self, text: str, start_marker: str, end_marker: str) -> Optional[str]:
+        return "\n".join(history_parts)
+
+    def get_contextual_messages(self, session_id: str, limit: int = 20):
         """
-        Extract a section of text between two markers.
+        Retrieve only contextual messages for a session.
         
         Args:
-            text: The text to search
-            start_marker: Start marker
-            end_marker: End marker
+            session_id: The session ID
+            limit: Maximum number of messages to retrieve
             
         Returns:
-            The extracted content or None
+            List of message objects with appropriate tier content
         """
         try:
-            # Use raw string for the regex pattern to avoid escape issues
-            pattern = rf"{re.escape(start_marker)}\s*(.*?)\s*{re.escape(end_marker)}"
-            match = re.search(pattern, text, re.DOTALL)
+            from models.message import Message
+            from sqlalchemy import desc
             
-            if match:
-                return match.group(1).strip()
-            return None
+            with get_db() as db_session:
+                # Get only contextual messages, sorted by timestamp
+                messages_query = (
+                    db_session.query(Message)
+                    .filter(Message.session_id == session_id)
+                    .filter(Message.memory_status == "contextual")
+                    .order_by(desc(Message.timestamp))
+                    .limit(limit*2)  # Multiply by 2 to account for user/assistant pairs
+                )
+                
+                # Load all data from the database objects while session is open
+                messages = []
+                for message in messages_query:
+                    # Create a dictionary with all needed attributes to avoid 
+                    # accessing the database object after the session is closed
+                    messages.append({
+                        'message_id': message.message_id,
+                        'role': message.role,
+                        'content': message.content,
+                        'tier1_content': message.tier1_content,
+                        'tier2_content': message.tier2_content,
+                        'required_tier_level': message.required_tier_level,
+                        'timestamp': message.timestamp,
+                        'memory_status': message.memory_status
+                    })
+                
+                # Reverse to get chronological order
+                messages.reverse()
+                
+                return messages
+                
         except Exception as e:
-            logger.error(f"Error extracting section: {e}")
-            return None
+            self.logger.error(f"Error retrieving contextual messages from database: {e}")
+            return []
     
-    def _extract_after_marker(self, text: str, marker: str) -> Optional[str]:
+    def search_episodic_memory(self, session_id: str, query: str, limit: int = 5):
         """
-        Extract text that follows a specific marker.
+        Search episodic memory for messages matching the query.
         
         Args:
-            text: The text to search
-            marker: The marker
+            session_id: The session ID
+            query: The search query
+            limit: Maximum number of messages to retrieve
             
         Returns:
-            The extracted content or None
+            List of message objects that match the query
         """
         try:
-            # Use raw string for the regex pattern to avoid escape issues
-            pattern = rf"{re.escape(marker)}\s*(.*)"
-            match = re.search(pattern, text, re.DOTALL)
+            from models.message import Message
             
-            if match:
-                return match.group(1).strip()
-            return None
+            with get_db() as db_session:
+                # Simple text-based search for now
+                # In a real implementation, this would use vector similarity search
+                messages_query = (
+                    db_session.query(Message)
+                    .filter(Message.session_id == session_id)
+                    .filter(Message.memory_status == "episodic")
+                    .filter(Message.content.ilike(f"%{query}%"))
+                    .limit(limit)
+                )
+                
+                messages = list(messages_query)
+                
+                # Mark messages as "recalled" for formatting
+                for message in messages:
+                    message.was_recalled = True
+                
+                return messages
+                
         except Exception as e:
-            logger.error(f"Error extracting after marker: {e}")
-            return None
+            self.logger.error(f"Error searching episodic memory: {e}")
+            return []
+    
+    def recall_from_episodic(self, message_id: str) -> bool:
+        """
+        Recall a message from episodic memory back to contextual memory.
+        
+        Args:
+            message_id: The ID of the message to recall
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            from models.message import Message
+            from datetime import datetime
+            
+            with get_db() as db_session:
+                # Find the message in the database
+                message = db_session.query(Message).filter(Message.message_id == message_id).first()
+                
+                if not message:
+                    self.logger.warning(f"Cannot recall message: ID {message_id} not found")
+                    return False
+                
+                if message.memory_status != "episodic":
+                    self.logger.info(f"Message {message_id[:8]} is already in contextual memory")
+                    return True
+                
+                # Update message to contextual status
+                message.memory_status = "contextual"
+                message.last_accessed = datetime.utcnow()
+                # Increase importance score to avoid quick re-pruning
+                message.importance_score += 1
+                
+                db_session.commit()
+                
+                self.logger.info(f"Recalled message {message_id[:8]} from episodic to contextual memory")
+                return True
+                
+        except Exception as e:
+            self.logger.error(f"Error recalling message from episodic memory: {e}")
+            return False
+    
+    def move_to_episodic(self, message_ids: list) -> bool:
+        """
+        Move messages from contextual to episodic memory.
+        
+        Args:
+            message_ids: List of message IDs to move
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            from models.message import Message
+            
+            with get_db() as db_session:
+                # Update all messages at once
+                result = (
+                    db_session.query(Message)
+                    .filter(Message.message_id.in_(message_ids))
+                    .update({"memory_status": "episodic"}, synchronize_session=False)
+                )
+                
+                db_session.commit()
+                
+                self.logger.info(f"Moved {result} messages to episodic memory")
+                return True
+                
+        except Exception as e:
+            self.logger.error(f"Error moving messages to episodic memory: {e}")
+            return False
+    
+    def prune_contextual_memory(self, session_id: str, max_tokens: int = 30000) -> bool:
+        """
+        Prune contextual memory when token limit is reached.
+        Move older/less important messages to episodic memory.
+        
+        Args:
+            session_id: The session ID
+            max_tokens: Maximum tokens to keep in contextual memory
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            from models.message import Message
+            from sqlalchemy import func
+            
+            with get_db() as db_session:
+                # Calculate current token usage
+                # This is a simplification - in reality, you'd use a proper tokenizer
+                contextual_messages = (
+                    db_session.query(Message)
+                    .filter(Message.session_id == session_id)
+                    .filter(Message.memory_status == "contextual")
+                    .all()
+                )
+                
+                # Estimate tokens (very roughly)
+                current_tokens = sum(len(m.get_tier_content()) // 4 for m in contextual_messages)
+                
+                if current_tokens <= max_tokens:
+                    return True  # No pruning needed
+                
+                # Calculate how many tokens to prune
+                tokens_to_prune = current_tokens - max_tokens
+                
+                # Sort messages by importance and recency
+                sorted_messages = sorted(
+                    contextual_messages,
+                    key=lambda m: (m.importance_score, m.last_accessed)  # Lower importance and older first
+                )
+                
+                # Find messages to prune
+                messages_to_prune = []
+                tokens_pruned = 0
+                
+                for message in sorted_messages:
+                    if tokens_pruned >= tokens_to_prune:
+                        break
+                    
+                    # Estimate message tokens
+                    message_tokens = len(message.get_tier_content()) // 4
+                    
+                    messages_to_prune.append(message.message_id)
+                    tokens_pruned += message_tokens
+                
+                # Move selected messages to episodic memory
+                if messages_to_prune:
+                    self.move_to_episodic(messages_to_prune)
+                    self.logger.info(f"Pruned {len(messages_to_prune)} messages from contextual memory")
+                
+                return True
+                
+        except Exception as e:
+            self.logger.error(f"Error pruning contextual memory: {e}")
+            return False

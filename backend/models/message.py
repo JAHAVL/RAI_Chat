@@ -26,6 +26,11 @@ class Message(Base):
     role = Column(String(20))  # user, assistant, system
     timestamp = Column(DateTime, default=datetime.utcnow)
     message_metadata = Column(JSON, nullable=True)  # Any additional metadata
+    
+    # New fields for unified memory architecture
+    memory_status = Column(String(20), default="contextual", index=True)  # "contextual" or "episodic"
+    last_accessed = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)  # When message was last accessed
+    importance_score = Column(Integer, default=1)  # Higher = more important to keep in context
 
     def __repr__(self):
         return f"<Message(message_id='{self.message_id}', role='{self.role}')>"

@@ -85,17 +85,43 @@ class PromptBuilder:
         forget_this_str = "" # No forget_this_content method in ContextualMemoryManager
         specialized_instructions_str = "" # TODO: How should this be handled? Passed in?
 
+        # Get tiered messages from the tier_manager
+        tier1_messages = self.contextual_memory.tier_manager.get_contextual_messages(session_id)
+        
         # --- Build Prompt ---
         # Start with the default system prompt
         system_prompt = DEFAULT_SYSTEM_PROMPT
         
-        # Add conversation history
-        if conversation_history_str:
-            system_prompt += f"\n\nCONVERSATION_HISTORY:\n{conversation_history_str}"
+        # Build comprehensive CONTEXTUAL_MEMORY section
+        contextual_memory_parts = []
         
-        # Add contextual memory
-        if contextual_memory_str:
-            system_prompt += f"\n\nCONTEXTUAL_MEMORY:\n{contextual_memory_str}"
+        # Add tiered messages section
+        if tier1_messages:
+            tier1_formatted = self.contextual_memory.tier_manager.format_message_history(tier1_messages, include_tier_level=True)
+            contextual_memory_parts.append(f"TIERED_MESSAGES:\n{tier1_formatted}")
+        
+        # Add current context summary if available
+        if current_context_summary:
+            contextual_memory_parts.append(f"CURRENT_CONTEXT_SUMMARY:\n{current_context_summary}")
+        
+        # Add conversation history to contextual memory with proper formatting
+        if conversation_history_str:
+            contextual_memory_parts.append(f"CONVERSATION_HISTORY (Tier 3 - Full Content):\n{conversation_history_str}")
+        
+        # Add episodic summaries if available
+        if episodic_summaries:
+            episodic_summaries_str = "\n".join([f"- {summary['summary']}" for summary in episodic_summaries])
+            contextual_memory_parts.append(f"RELATED_PAST_CONVERSATIONS (Summaries):\n{episodic_summaries_str}")
+        
+        # Add web search results if available
+        if web_search_results:
+            contextual_memory_parts.append(f"WEB_SEARCH_RESULTS:\n{web_search_results}")
+        
+        # Combine all contextual memory parts
+        if contextual_memory_parts:
+            combined_contextual_memory = "\n\n".join(contextual_memory_parts)
+            contextual_memory_placeholder = "CONTEXTUAL_MEMORY:\n# [Placeholder for dynamically injected contextual memory relevant to the current query]"
+            system_prompt = system_prompt.replace(contextual_memory_placeholder, f"CONTEXTUAL_MEMORY:\n{combined_contextual_memory}")
         
         # Add specialized instructions
         if specialized_instructions_str:
@@ -108,10 +134,6 @@ class PromptBuilder:
         # Add forget this content
         if forget_this_str:
             system_prompt += f"\n\nFORGET_THIS:\n{forget_this_str}"
-        
-        # Add web search results
-        if web_search_results:
-            system_prompt += f"\n\nWEB_SEARCH_RESULTS:\n{web_search_results}"
             
         logger.debug(f"Constructed system prompt (first 200 chars): {system_prompt[:200]}...")
         return system_prompt

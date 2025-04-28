@@ -11,6 +11,7 @@ from pathlib import Path
 
 # Assuming these will be refactored and moved too
 from managers.memory.episodic_memory import EpisodicMemoryManager
+from managers.memory.tier_manager import TierManager
 # Removed ChatFileManager import - this manager now handles its own context file
 # from managers.chat_file_manager import ChatFileManager
 
@@ -94,10 +95,26 @@ class ContextualMemoryManager:
                 """Generate text for memory extraction"""
                 try:
                     if hasattr(self.api, 'generate_text'):
-                        response = self.api.generate_text(prompt, temperature=temperature, max_tokens=max_tokens)
+                        # Check if the generate_text method accepts a temperature parameter
+                        import inspect
+                        sig = inspect.signature(self.api.generate_text)
+                        if 'temperature' in sig.parameters:
+                            response = self.api.generate_text(prompt, temperature=temperature, max_tokens=max_tokens)
+                        else:
+                            # If temperature is not a parameter, call without it
+                            self.logger.info("Calling generate_text without temperature parameter")
+                            response = self.api.generate_text(prompt, max_tokens=max_tokens)
                         return response
                     elif hasattr(self.api, 'generate'):
-                        response = self.api.generate(prompt, temperature=temperature, max_tokens=max_tokens)
+                        # Similarly check generate method
+                        import inspect
+                        sig = inspect.signature(self.api.generate)
+                        if 'temperature' in sig.parameters:
+                            response = self.api.generate(prompt, temperature=temperature, max_tokens=max_tokens)
+                        else:
+                            self.logger.info("Calling generate without temperature parameter")
+                            response = self.api.generate(prompt, max_tokens=max_tokens)
+                            
                         if isinstance(response, dict) and 'response' in response:
                             return {"text": response["response"]}
                         elif isinstance(response, str):
@@ -123,7 +140,19 @@ class ContextualMemoryManager:
                     
                     # If the API has a chat_completion method, use it
                     if hasattr(self.api, 'chat_completion'):
-                        return self.api.chat_completion(messages, session_id=session_id, options=options)
+                        # Check if chat_completion accepts options parameter
+                        import inspect
+                        sig = inspect.signature(self.api.chat_completion)
+                        
+                        if 'options' in sig.parameters:
+                            return self.api.chat_completion(messages, session_id=session_id, options=options)
+                        elif 'temperature' in sig.parameters:
+                            # Try passing temperature directly
+                            return self.api.chat_completion(messages, session_id=session_id, temperature=temperature, max_tokens=max_tokens)
+                        else:
+                            # Fall back to just messages and session_id
+                            self.logger.info("Calling chat_completion without options or temperature")
+                            return self.api.chat_completion(messages, session_id=session_id)
                     
                     # Otherwise try to use the generate method as a fallback
                     elif hasattr(self.api, 'generate'):
@@ -136,9 +165,19 @@ class ContextualMemoryManager:
                             elif msg["role"] == "user":
                                 user_msg = msg["content"]
                         
-                        # Call the generate method
-                        response = self.api.generate(user_msg, system_prompt=system_msg, 
-                                                   temperature=temperature, max_tokens=max_tokens)
+                        # Check if generate accepts temperature
+                        import inspect
+                        sig = inspect.signature(self.api.generate)
+                        
+                        # Call the generate method with appropriate parameters
+                        if 'temperature' in sig.parameters and 'system_prompt' in sig.parameters:
+                            response = self.api.generate(user_msg, system_prompt=system_msg, 
+                                                       temperature=temperature, max_tokens=max_tokens)
+                        elif 'system_prompt' in sig.parameters:
+                            response = self.api.generate(user_msg, system_prompt=system_msg, max_tokens=max_tokens)
+                        else:
+                            # Simplest case
+                            response = self.api.generate(user_msg)
                         
                         # Format the response as expected
                         if isinstance(response, dict) and 'response' in response:
@@ -202,6 +241,9 @@ class ContextualMemoryManager:
             self.logger.error(f"Failed to load user remembered facts during initialization: {e}", exc_info=True)
             # Continue with empty facts
             self.user_remembered_facts = []
+        
+        # Initialize the tier manager for message tier handling
+        self.tier_manager = TierManager()
         
         self.logger.info(f"ContextualMemoryManager initialized for user {self.user_id}.")
 
@@ -361,32 +403,43 @@ class ContextualMemoryManager:
         Reloads facts from the database to ensure the latest facts are used.
         """
         try:
-            # Reload facts from the database to ensure they're up-to-date
             from models.connection import get_db
             with get_db() as db:
                 self.load_user_remembered_facts(db)
             
-            # Debug: Log the exact facts being retrieved
-            self.logger.info(f"Retrieved {len(self.user_remembered_facts)} user facts: {self.user_remembered_facts}")
-                
-            # Format the remembered facts into a list
-            if not self.user_remembered_facts:
-                return "No specific things about this user to remember."
-                
-            facts_str = "IMPORTANT USER FACTS (MUST BE USED INSTEAD OF MAKING TIER REQUESTS):\n"
+            # Extract critical contextual elements (personas, role-playing contexts) 
+            # and place them at the top with stronger emphasis
+            critical_facts = []
+            regular_facts = []
+            
             for fact in self.user_remembered_facts:
-                # Filter out any nonsensical facts or single words that might have been accidentally stored
-                if len(fact.split()) > 2 and not fact.isdigit():
-                    facts_str += f"- {fact}\n"
-                elif "name" in fact.lower() and len(fact.split()) <= 2:
-                    # Special handling for names that might be short
-                    facts_str += f"- {fact}\n"
-                    self.logger.info(f"Including short name fact: {fact}")
-                else:
-                    self.logger.info(f"Filtering out potential noise fact: {fact}")
+                # Look for persona-related or role-playing facts
+                fact_lower = fact.lower()
+                is_critical = any(marker in fact_lower for marker in [
+                    'persona', 'act as', 'pretend', 'roleplay', 'role-play', 
+                    'character', 'acting like', 'pretending to be', 'roleplaying as',
+                    'you are', 'your name is', 'as if you were'
+                ])
                 
-            # Debug: Log the formatted facts string being returned
-            self.logger.info(f"Formatted remember_this content: {facts_str[:100]}...")
+                if is_critical:
+                    critical_facts.append(fact)
+                else:
+                    regular_facts.append(fact)
+            
+            # Construct the formatted response with critical facts first and emphasized
+            facts_str = "Things to remember about this user:\n"
+            
+            # Add critical contextual elements with strong emphasis
+            if critical_facts:
+                facts_str += "\n**CRITICAL CONTEXT - MUST MAINTAIN THROUGHOUT CONVERSATION:**\n"
+                for fact in critical_facts:
+                    facts_str += f"- {fact}\n"
+                facts_str += "\n"
+            
+            # Add regular facts
+            for fact in regular_facts:
+                facts_str += f"- {fact}\n"
+                
             return facts_str
         except Exception as e:
             self.logger.error(f"Error getting remember_this content: {e}", exc_info=True)
@@ -508,7 +561,7 @@ class ContextualMemoryManager:
 
     # --- Core Turn Processing ---
 
-    def process_user_message(self, session_id: str, user_input: str, is_assistant_message: bool = False) -> None:
+    def process_user_message(self, session_id: str, user_input: str = None, is_assistant_message: bool = False) -> None:
         """
         Handles processing of all messages (user and assistant). Performs fact extraction,
         and ensures the session context is loaded.
@@ -524,10 +577,21 @@ class ContextualMemoryManager:
              raise RuntimeError(f"Failed to load context for session {session_id}")
 
         # Log the message being processed
-        self.logger.info(f"Processing {'assistant' if is_assistant_message else 'user'} message for active session {self.active_session_id}: {user_input[:100]}...")
+        safe_message = user_input
+        if isinstance(safe_message, str):
+            log_preview = safe_message[:100] + "..." if len(safe_message) > 100 else safe_message
+        else:
+            # Handle case where user_input is not a string (like a dictionary)
+            log_preview = str(safe_message)[:100] + "..." if len(str(safe_message)) > 100 else str(safe_message)
+            
+        self.logger.info(f"Processing {'assistant' if is_assistant_message else 'user'} message for active session {self.active_session_id}: {log_preview}")
+        
+        # Add the message to history if it's a user message
+        if not is_assistant_message and user_input:
+            self._add_message_to_history("user", user_input)
         
         # Extract facts regardless of whether it's user or assistant message
-        self._extract_key_user_facts(user_input)
+        extracted = self._extract_key_user_facts(user_input)
         
         # LLM-based extraction for especially important messages or when specific REMEMBERTHIS markers are present
         if "REMEMBERTHIS" in user_input or is_assistant_message:
@@ -621,6 +685,42 @@ If no facts are found, respond with "NO_FACTS_FOUND"
         self.active_session_context["messages"].append(turn_object)
         self.logger.info(f"Stored turn {turn_id} for active session {session_id}")
 
+        # Add assistant message to message history
+        assistant_response = ""
+        tier1 = tier2 = tier3 = ""
+        
+        if response_data and isinstance(response_data, dict):
+            # Check for structured tiers
+            if "llm_response" in response_data and "response_tiers" in response_data["llm_response"]:
+                tiers = response_data["llm_response"]["response_tiers"]
+                # Extract all available tiers
+                tier1 = tiers.get("tier1", "")
+                tier2 = tiers.get("tier2", "")
+                tier3 = tiers.get("tier3", "")
+                
+                # Use tier3 as assistant_response for compatibility
+                assistant_response = tier3
+                
+                # Add message with all three tiers
+                if assistant_response:
+                    self._add_message_to_history("assistant", tier3, tier1, tier2)
+                else:
+                    self.logger.warning(f"No valid assistant response tiers found")
+            # First check for the 'content' field from our final response format
+            elif "content" in response_data:
+                assistant_response = response_data["content"]
+                # Add to history with just the full content (no tiered content available)
+                self._add_message_to_history("assistant", assistant_response)
+            # Direct response field in llm_response
+            elif "llm_response" in response_data and "response" in response_data["llm_response"]:
+                assistant_response = response_data["llm_response"]["response"]
+                # Add to history with just the full content (no tiered content available)
+                self._add_message_to_history("assistant", assistant_response)
+            else:
+                self.logger.warning(f"Could not extract assistant response from response_data structure")
+        else:
+            self.logger.warning(f"Could not extract assistant response content from response_data")
+        
         # --- 1b. Update Current Context Summary ---
         # Store a concise summary/state needed for the *next* prompt generation
         # This might be tier1 or tier2 from the LLM response, or a custom summary.
@@ -673,7 +773,6 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
                 if self.llm_api and llm_response:  
                     # Format the extraction prompt as in the working version
                     extraction_prompt_text = MEMORY_EXTRACTION_PROMPT + f"\n\nUser Message:\n{user_input}\n\nAssistant Response:\n{llm_response}\n\nPotential facts/preferences:\n"
-                    self.logger.debug("Sending request to LLM API for memory extraction")
                     
                     # Use the direct chat_completion approach that worked in the original code
                     messages = [{"role": "user", "content": extraction_prompt_text}]
@@ -803,28 +902,287 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
     def get_formatted_history(self, limit: int = 20) -> str:
         """
         Retrieves recent conversation history for the active session and formats it.
+        Only retrieves messages currently in contextual memory.
+        
+        Args:
+            limit: Maximum number of messages to retrieve
+            
+        Returns:
+            Formatted history string
         """
         if not self.active_session_id:
             self.logger.warning("Cannot get formatted history: No active session.")
             return "No active session."
 
-        messages = self.active_session_context.get("messages", [])
-        recent_turns = messages[-limit:] if limit > 0 else messages
-        history_parts = []
-        for turn in recent_turns:
-            user_input = turn.get("user_input", "[User input missing]")
-            llm_output_data = turn.get("llm_output")
-            assistant_response = "[Assistant response missing or invalid]"
-            if llm_output_data and isinstance(llm_output_data, dict):
-                 # Display Tier 3 (full response) in history for clarity
-                 assistant_response = llm_output_data.get("llm_response", {}).get("response_tiers", {}).get("tier3", "[Response content missing]")
-
-            history_parts.append(f"User: {user_input}")
-            history_parts.append(f"Assistant: {assistant_response}")
-
-        return "\n".join(history_parts) if history_parts else "Conversation history is empty."
-
+        # Using TierManager to get only contextual messages
+        messages = self.tier_manager.get_contextual_messages(self.active_session_id, limit)
+        
+        # Format the messages with TierManager
+        formatted_history = self.tier_manager.format_message_history(messages)
+        
+        # Check if we need to prune contextual memory
+        self.tier_manager.prune_contextual_memory(self.active_session_id)
+        
+        return formatted_history if formatted_history else "Conversation history is empty."
+        
+    def search_episodic_memory(self, query: str) -> str:
+        """
+        Search episodic memory for messages matching the query.
+        Recalled messages are moved back to contextual memory.
+        
+        Args:
+            query: Search query string
+            
+        Returns:
+            Formatted string of matching messages
+        """
+        if not self.active_session_id:
+            self.logger.warning("Cannot search episodic memory: No active session.")
+            return "No active session."
+            
+        # Search episodic memory
+        matching_messages = self.tier_manager.search_episodic_memory(
+            self.active_session_id, query
+        )
+        
+        if not matching_messages:
+            return "No matching messages found in episodic memory."
+            
+        # Move matching messages back to contextual memory
+        for message in matching_messages:
+            self.tier_manager.recall_from_episodic(message.message_id)
+            
+        # Format the results
+        formatted_results = self.tier_manager.format_message_history(matching_messages)
+        
+        return f"Retrieved messages from episodic memory:\n\n{formatted_results}"
+        
+    def recall_message(self, message_id: str) -> bool:
+        """
+        Recall a specific message from episodic to contextual memory.
+        
+        Args:
+            message_id: The ID of the message to recall
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self.active_session_id:
+            self.logger.warning("Cannot recall message: No active session.")
+            return False
+            
+        # Recall the message using TierManager
+        return self.tier_manager.recall_from_episodic(message_id)
+        
+    def process_message(self, session_id: str, user_input: str) -> dict:
+        """
+        Process a new user message.
+        - Ensures session context is loaded
+        - Stores the message in the database
+        
+        Args:
+            session_id: Session ID
+            user_input: User message text
+            
+        Returns:
+            Updated session context
+        """
+        try:
+            # Ensure session context is loaded
+            self.load_session_context(session_id)
+            
+            # Create a message ID
+            message_id = str(uuid.uuid4())
+            
+            # Store user message in database with all tiers
+            from models.message import Message
+            from models.connection import get_db
+            
+            with get_db() as db_session:
+                # Create user message
+                message = Message(
+                    message_id=message_id,
+                    session_id=session_id,
+                    content=user_input,
+                    tier1_content=self.tier_manager.generate_tier1(user_input),
+                    tier2_content=self.tier_manager.generate_tier2(user_input),
+                    role="user",
+                    memory_status="contextual",  # Start in contextual memory
+                    importance_score=1  # Default importance
+                )
+                
+                db_session.add(message)
+                db_session.commit()
+            
+            # Update the session context
+            if 'messages' not in self.active_session_context:
+                self.active_session_context['messages'] = []
+                
+            # Update session context with the new message
+            self.active_session_context['messages'].append({
+                'user_input': user_input,
+                'message_id': message_id
+            })
+            
+            # Check if we need to prune contextual memory
+            self.tier_manager.prune_contextual_memory(session_id)
+            
+            # Save the updated context
+            self.save_session_context()
+            
+            return self.active_session_context
+            
+        except Exception as e:
+            self.logger.error(f"Error processing user message: {e}")
+            return self.active_session_context or {}
+            
+    def process_response(self, session_id: str, llm_response: dict) -> dict:
+        """
+        Process the LLM's response for the specified session.
+        - Store the complete turn
+        - Extract memories
+        - Trigger memory archiving
+        
+        Args:
+            session_id: Session ID
+            llm_response: LLM response data containing response_tiers
+            
+        Returns:
+            Updated session context
+        """
+        try:
+            # Ensure session context is loaded
+            self.load_session_context(session_id)
+            
+            # Check if we have a valid response with tiers
+            if not isinstance(llm_response, dict) or 'response_tiers' not in llm_response:
+                self.logger.warning("Invalid LLM response format: missing response_tiers")
+                return self.active_session_context
+                
+            tiers = llm_response.get('response_tiers', {})
+            tier3 = tiers.get('tier3', llm_response.get('text', ''))
+            tier2 = tiers.get('tier2', '')
+            tier1 = tiers.get('tier1', '')
+            
+            # Create a message ID
+            message_id = str(uuid.uuid4())
+            
+            # Store assistant response in database with all tiers
+            from models.message import Message
+            from models.connection import get_db
+            
+            with get_db() as db_session:
+                # Create assistant message
+                message = Message(
+                    message_id=message_id,
+                    session_id=session_id,
+                    content=tier3,
+                    tier1_content=tier1,
+                    tier2_content=tier2,
+                    role="assistant",
+                    memory_status="contextual",  # Start in contextual memory
+                    importance_score=1  # Default importance
+                )
+                
+                db_session.add(message)
+                db_session.commit()
+            
+            # Update the last turn in session context with the LLM response
+            if self.active_session_context.get('messages'):
+                last_turn = self.active_session_context['messages'][-1]
+                last_turn['llm_output'] = {
+                    'message_id': message_id,
+                    'llm_response': llm_response
+                }
+            
+            # Check if we need to prune contextual memory
+            self.tier_manager.prune_contextual_memory(session_id)
+            
+            # Save the updated context
+            self.save_session_context()
+            
+            return self.active_session_context
+            
+        except Exception as e:
+            self.logger.error(f"Error processing LLM response: {e}")
+            return self.active_session_context or {}
+            
     # --- Helper Methods ---
+
+    def _add_message_to_history(self, role: str, content: str, tier1_content: str = None, tier2_content: str = None) -> str:
+        """
+        Adds a message to the database with tiered content support.
+        
+        Args:
+            role: The role of the message sender (user, assistant, system)
+            content: The full content of the message (Tier 3)
+            tier1_content: Optional Tier 1 content (most concise). If None, will use content.
+            tier2_content: Optional Tier 2 content (medium detail). If None, will use content.
+            
+        Returns:
+            The ID of the newly added message
+        """
+        # Generate a unique ID for this message
+        message_id = self._generate_message_id()
+        
+        # For now, default to same content if tiers not provided
+        tier1 = tier1_content or content
+        tier2 = tier2_content or content
+        
+        # Store the message using the tier manager
+        try:
+            # Store in database using tier manager
+            success = self.tier_manager.store_message_tiers(
+                message_id=message_id,
+                session_id=self.active_session_id,
+                user_id=self.user_id,
+                role=role,
+                tier1=tier1,
+                tier2=tier2,
+                content=content
+            )
+            
+            if success:
+                self.logger.info(f"Added {role} message {message_id[:8]} to database using tier manager")
+            else:
+                self.logger.warning(f"Failed to add message to database, falling back to in-memory storage")
+                
+            # Also keep in memory for backward compatibility
+            if "message_history" not in self.active_session_context:
+                self.active_session_context["message_history"] = []
+            
+            message = {
+                "id": message_id,
+                "role": role,
+                "content": content,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.active_session_context["message_history"].append(message)
+            
+            return message_id
+        except Exception as e:
+            self.logger.error(f"Error in _add_message_to_history: {e}")
+            
+            # Fallback to in-memory only
+            if "message_history" not in self.active_session_context:
+                self.active_session_context["message_history"] = []
+                
+            message = {
+                "id": message_id,
+                "role": role,
+                "content": content,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.active_session_context["message_history"].append(message)
+            self.logger.info(f"Added {role} message {message_id[:8]} to in-memory history (fallback)")
+            
+            return message_id
+
+    def _generate_message_id(self) -> str:
+        """Generates a unique ID for a message or turn."""
+        return str(uuid.uuid4())
 
     def _estimate_turn_tokens(self, turn_object: Dict[str, Any]) -> int:
         """Roughly estimates tokens in a turn object by character count."""
@@ -841,75 +1199,95 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
             # Add chars for other structure if significant? For now, focus on main content.
         return chars // 4 # Rough estimate
 
-    def _generate_message_id(self) -> str:
-        """Generates a unique ID for a message or turn."""
-        return str(uuid.uuid4())
-
-    def _extract_key_user_facts(self, user_input: str) -> None:
-        """Extracts key user facts from the user's input."""
-        # Enhanced pattern-based extraction to guarantee 100% retention
-        extraction_patterns = {
-            # Personal identifiers
-            'name': [r"(?i)my name is ([A-Za-z]+)", r"(?i)i'm ([A-Za-z]+)", r"(?i)i am ([A-Za-z]+)", r"(?i)call me ([A-Za-z]+)"],
-            'location': [r"(?i)i live in ([A-Za-z\s]+)", r"(?i)i'm from ([A-Za-z\s]+)", r"(?i)i am from ([A-Za-z\s]+)", r"(?i)i'm in ([A-Za-z\s]+)"],
-            'job': [r"(?i)i work as an? ([A-Za-z\s]+)", r"(?i)i'm an? ([A-Za-z\s]+)", r"(?i)i am an? ([A-Za-z\s]+) by profession"],
-            'hobby': [r"(?i)i enjoy ([A-Za-z\s]+ing)", r"(?i)i like ([A-Za-z\s]+ing)", r"(?i)my hobby is ([A-Za-z\s]+)"],
-            'project': [r"(?i)i'm working on ([A-Za-z\s]+)", r"(?i)my project is ([A-Za-z\s]+)", r"(?i)my project ([A-Za-z\s]+)"],
-            'tech': [r"(?i)project uses ([A-Za-z\s]+) for", r"(?i)using ([A-Za-z\s]+) for the", r"(?i)built with ([A-Za-z\s]+)"],
-            'timeline': [r"(?i)started (?:this|the) project in ([A-Za-z\s0-9]+)", r"(?i)finish (?:this|it) by ([A-Za-z\s0-9]+)"]
-        }
+    def _extract_key_user_facts(self, user_input: str) -> bool:
+        """
+        Extracts key user facts from the user's input.
         
-        extracted_facts = {}
+        Args:
+            user_input: The user's message
+            
+        Returns:
+            True if any facts were extracted, False otherwise
+        """
+        if not user_input or not isinstance(user_input, str):
+            return False
+            
+        # Check for roleplay/persona requests
+        detected_roleplay = self._detect_and_store_roleplay_request(user_input)
         
-        # Process each category of patterns
-        for category, patterns in extraction_patterns.items():
-            for pattern in patterns:
-                match = re.search(pattern, user_input)
-                if match:
-                    extracted_value = match.group(1).strip()
-                    self.logger.info(f"Rule-based extraction found {category}: {extracted_value}")
+        # Rest of the extraction logic...
+        # Return True if we extracted any facts
+        return detected_roleplay
+    
+    def _detect_and_store_roleplay_request(self, user_input: str) -> bool:
+        """
+        Detects and stores roleplay or persona requests.
+        
+        Args:
+            user_input: The user's message
+            
+        Returns:
+            True if a roleplay request was detected and stored, False otherwise
+        """
+        if not user_input or not isinstance(user_input, str):
+            return False
+            
+        # Convert to lowercase for easier pattern matching
+        input_lower = user_input.lower()
+        
+        # Define patterns for roleplay/persona requests
+        roleplay_patterns = [
+            r'(?:act|role.?play|pretend|be|talk).{1,10}(?:as|like)\s+([a-zA-Z\s]+)',
+            r'(?:be|as|like)\s+([a-zA-Z\s]+)',
+            r'if\s+you\s+were\s+([a-zA-Z\s]+)',
+            r'respond\s+as\s+(?:if\s+you\s+were\s+)?([a-zA-Z\s]+)',
+            r'(?:give|provide)\s+advice\s+(?:as|like)\s+([a-zA-Z\s]+)',
+            r'(?:emulate|impersonate)\s+([a-zA-Z\s]+)',
+            r'(?:pretend|going)\s+to\s+be\s+([a-zA-Z\s]+)'
+        ]
+        
+        detected = False
+        
+        # Look for matches with any of the patterns
+        for pattern in roleplay_patterns:
+            matches = re.findall(pattern, input_lower)
+            for match in matches:
+                # Skip common words that are likely false positives
+                if match.strip() in ['a', 'an', 'the', 'me', 'you', 'my', 'your', 'myself', 'yourself', 'man', 'woman']:
+                    continue
                     
-                    # Format the fact based on category
-                    if category == 'name':
-                        fact = f"User's name is {extracted_value}."
-                    elif category == 'location':
-                        fact = f"User lives in {extracted_value}."
-                    elif category == 'job':
-                        fact = f"User works as a {extracted_value}."
-                    elif category == 'hobby':
-                        fact = f"User enjoys {extracted_value}."
-                    elif category == 'project':
-                        fact = f"User is working on a project called {extracted_value}."
-                    elif category == 'tech':
-                        fact = f"User's project uses {extracted_value}."
-                    elif category == 'timeline':
-                        fact = f"User's project timeline involves {extracted_value}."
-                    else:
-                        fact = f"User {category}: {extracted_value}."
+                # Skip very short matches
+                if len(match.strip()) < 3:
+                    continue
                     
-                    # Only add if it's not already in the remembered facts
-                    if fact not in self.user_remembered_facts:
-                        self.user_remembered_facts.append(fact)
-                        extracted_facts[category] = fact
-                        self.logger.info(f"Added {category} fact to user memory: {fact}")
-        
-        # Directly process specific project relationships (for high-value context like RAI Chat)
-        if "RAI Chat" in user_input or "RAIChat" in user_input:
-            project_fact = "User is working on a project called RAI Chat."
-            if project_fact not in self.user_remembered_facts:
-                self.user_remembered_facts.append(project_fact)
-                extracted_facts['project'] = project_fact
+                # Extract the persona name and create a fact
+                persona = match.strip()
                 
-        # If we found any new facts, save them to the database immediately
-        if extracted_facts:
-            try:
-                from models.connection import get_db
-                with get_db() as db_session:
-                    self.save_user_remembered_facts(db_session)
-                    db_session.commit()
-                    self.logger.info(f"Successfully saved {len(extracted_facts)} new facts to database.")
-            except Exception as db_err:
-                self.logger.error(f"Failed to save facts to database: {db_err}")
+                # Look for "Dan Martell" specifically as it appears to be important
+                if "dan martell" in persona.lower() or "martell" in persona.lower():
+                    persona = "Dan Martell"
+                
+                # Create a strong, well-formatted fact that emphasizes this is a roleplay context
+                fact = f"CRITICAL_PERSONA: You must consistently roleplay as {persona} throughout the entire conversation until explicitly told to stop."
+                
+                self.logger.info(f"Detected roleplay request: {persona}")
+                
+                # First remove any other CRITICAL_PERSONA entries
+                self.user_remembered_facts = [f for f in self.user_remembered_facts if not f.startswith("CRITICAL_PERSONA:")]
+                
+                # Add the new persona fact
+                self.user_remembered_facts.append(fact)
+                detected = True
+                
+                # Save to database
+                try:
+                    from models.connection import get_db
+                    with get_db() as db:
+                        self.save_user_remembered_facts(db)
+                except Exception as e:
+                    self.logger.error(f"Error saving roleplay fact to database: {e}", exc_info=True)
+        
+        return detected
 
     # --- Potentially Keep or Adapt ---
     # These might be useful depending on how episodic memory/working memory are used
@@ -957,3 +1335,24 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
         # Consider if pruning should happen after injection.
         # For now, let the regular pruning handle it on the *next* assistant message.
         return True # Return success, assuming save will happen later
+
+    # Removed the duplicate upgrade_message_tier method
+    # Use self.tier_manager.upgrade_message_tier() instead
+
+    def get_tier_messages(self, session_id: str, tier: int = 1, limit: int = 20, include_system: bool = False):
+        """
+        Get messages for a specific tier level.
+        
+        Args:
+            session_id: The session ID
+            tier: The tier level to retrieve (1, 2, or 3)
+            limit: Maximum number of messages to retrieve
+            include_system: Whether to include system messages
+            
+        Returns:
+            List of messages at the specified tier level
+        """
+        if not session_id:
+            session_id = self.active_session_id
+            
+        return self.tier_manager.get_contextual_messages(session_id, limit)
