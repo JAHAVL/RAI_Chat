@@ -439,59 +439,75 @@ class ActionHandler:
         Returns:
             Tuple of (action signal type, action result, action type)
         """
-        # Check for specific action markers
-        web_search_match = re.search(r"\[WEB_SEARCH:([^\]]+)\]", tier3_response)
-        # Also check for the [SEARCH:query] pattern that the LLM is using
-        search_match = re.search(r"\[SEARCH:([^\]]+)\]", tier3_response)
-        calculation_match = re.search(r"\[CALCULATE:([^\]]+)\]", tier3_response)
-        command_match = re.search(r"\[COMMAND:([^\]]+)\]", tier3_response)
-        execution_match = re.search(r"\[EXECUTE:([^\]]+)\]", tier3_response)
-        remember_match = re.search(r"\[REMEMBER:([^\]]+)\]", tier3_response)
-        forget_match = re.search(r"\[FORGET_THIS:([^\]]+)\]", tier3_response)
-        correct_match = re.search(r"\[CORRECT:([^\]]+):([^\]]+)\]", tier3_response)
+        # First, let's check for and extract content from LLM markers if present
+        # This includes both the potential tier3 content AND any separate action signals
         
-        # Check for tier upgrade requests and episodic memory searches using exact test patterns
-        tier_request_pattern = r"\[REQUEST_TIER:(\d+):([^\]]+)\]"
-        episodic_search_pattern = r"\[SEARCH_EPISODIC:([^\]]+)\]"
+        # Handle the response format from DockerLLMAPI, which returns a dict with a "response" key
+        # instead of "llm_response"
+        response_content = ""
+        tier3_response = ""
         
-        has_tier_requests = re.search(tier_request_pattern, tier3_response) is not None
-        has_episodic_search = re.search(episodic_search_pattern, tier3_response) is not None
-        
-        # Log if we found any special action commands
-        if has_tier_requests:
-            self.logger.info(f"Detected tier request in: {tier3_response[:100]}...")
-        if has_episodic_search:
-            self.logger.info(f"Detected episodic search in: {tier3_response[:100]}...")
-        
-        if web_search_match:
-            self.logger.info(f"Detected [WEB_SEARCH:] pattern with query: {web_search_match.group(1)}")
-            return ACTION_SEARCH_DETECTED, web_search_match.group(1), ACTION_SEARCH
-        elif search_match:
-            self.logger.info(f"Detected [SEARCH:] pattern with query: {search_match.group(1)}")
-            return ACTION_SEARCH_DETECTED, search_match.group(1), ACTION_SEARCH
-        elif calculation_match:
-            return ACTION_CALCULATE_DETECTED, calculation_match.group(1), ACTION_CALCULATE_DETECTED
-        elif command_match:
-            return ACTION_COMMAND_DETECTED, command_match.group(1), ACTION_COMMAND_DETECTED
-        elif execution_match:
-            return ACTION_EXECUTE_DETECTED, execution_match.group(1), ACTION_EXECUTE_DETECTED
-        elif remember_match:
-            self.logger.info(f"Detected [REMEMBER:] pattern with fact: {remember_match.group(1)}")
-            # Extract fact to be remembered
-            return ACTION_REMEMBER_DETECTED, remember_match.group(1), ACTION_REMEMBER
-        elif forget_match:
-            self.logger.info(f"Detected [FORGET_THIS:] pattern with fact: {forget_match.group(1)}")
-            # Extract fact to be forgotten
-            return ACTION_FORGET_DETECTED, forget_match.group(1), ACTION_FORGET
-        elif correct_match:
-            self.logger.info(f"Detected [CORRECT:] pattern with old_fact: {correct_match.group(1)} and new_fact: {correct_match.group(2)}")
-            # Extract old_fact and new_fact to be corrected
-            return ACTION_CORRECT_DETECTED, {"old_fact": correct_match.group(1), "new_fact": correct_match.group(2)}, ACTION_CORRECT
-        elif has_tier_requests or has_episodic_search:
-            return ACTION_COMMAND_DETECTED, tier3_response, ACTION_COMMAND_DETECTED
+        if isinstance(response_data, dict):
+            # Extract content from various possible formats
+            if "llm_response" in response_data:
+                llm_resp_obj = response_data["llm_response"]
+                if isinstance(llm_resp_obj, dict) and "response_tiers" in llm_resp_obj:
+                    response_tiers = llm_resp_obj["response_tiers"]
+                    tier3_response = response_tiers.get("tier3", "")
+            elif "response" in response_data:
+                # This is the format returned by DockerLLMAPI.generate_response
+                response_content = response_data["response"]
+                llm_resp_obj = response_data  # Store the whole response object
+            elif "tier3_response" in response_data:
+                # Direct tier3 content
+                tier3_response = response_data["tier3_response"]
+            elif "text" in response_data:
+                # Another possible format
+                response_content = response_data["text"]
+            elif "content" in response_data:
+                # Another possible format
+                response_content = response_data["content"]
+            else:
+                self.logger.error(f"Unexpected response_data format: no recognizable content fields found")
+                return ACTION_BREAK, "Unexpected response format from LLM.", ACTION_ERROR
+        elif isinstance(response_data, str):
+            # Direct string response
+            response_content = response_data
         else:
-            return ACTION_NONE, "", ACTION_NONE
-
+            self.logger.error(f"response_data is not a dictionary or string: {type(response_data)}")
+            return ACTION_BREAK, "Invalid response type from LLM.", ACTION_ERROR
+                
+        # Combine tier3_response and response_content to check for action signals in either
+        full_content_to_check = f"{tier3_response}\n{response_content}"
+        
+        # Log the content we'll be checking for action signals
+        if len(full_content_to_check) > 100:
+            self.logger.info(f"Extracted content (first 100 chars): {full_content_to_check[:100]}...")
+        else:
+            self.logger.info(f"Extracted content: {full_content_to_check}")
+            
+        # Check for action signals in the combined content
+        action_signal, action_result, action_type = self.detect_action(full_content_to_check, user_input, session_id)
+        
+        # Always return a valid tuple with fallback values
+        if not action_signal:
+            action_signal = ACTION_BREAK
+        if not action_type:
+            action_type = ACTION_ANSWER
+            
+        # Store this turn to memory
+        try:
+            if self.contextual_memory:
+                # Create a simplified response structure for storage
+                simplified_response = {"content": full_content_to_check}
+                # Fix parameter order - session_id should be first, then content
+                self.contextual_memory.process_assistant_message(simplified_response, user_input, session_id)
+        except Exception as mem_ex:
+            self.logger.error(f"Error saving to contextual memory: {mem_ex}")
+            
+        # Return valid action signal
+        return action_signal, full_content_to_check, action_type
+                
     def process_llm_response(self,
                              session_id: str,
                              user_input: str, # Needed for storing turn data
@@ -515,129 +531,77 @@ class ActionHandler:
             - action_result (Optional[Any]): Data resulting from the action (e.g., search results, final answer text, chunk_id).
             - action_type (Optional[str]): The type of action detected (ACTION_ANSWER, ACTION_FETCH, etc.).
         """
-        self.logger.info(f"Processing LLM response for session {session_id}, user {self.user_id}") 
+        self.logger.info(f"Processing LLM response for session {session_id}, user {self.user_id}") # Correct indentation
 
-        # Debug the response data
-        if response_data is None:
-            self.logger.error(f"Response data is None for session {session_id}")
-        else:
+        if not response_data:
+            self.logger.error(f"Invalid or missing response_data received from LLM for session {session_id}.")
+            # Store error turn? Maybe handle this upstream in ConversationManager?
+            # For now, signal break with error.
+            # Note: Need 'yield from []' or similar if we want this to be a generator in error cases too,
+            # but returning directly is fine if CM handles the StopIteration correctly.
+            # For simplicity, we'll assume returning is okay for now.
+            # If issues arise, change to: yield from []; return ACTION_BREAK, ...
+            return ACTION_BREAK, "LLM response was invalid or missing.", ACTION_ERROR
+
+        try:
+            # Log the response data type for debugging
             self.logger.info(f"Response data type: {type(response_data)}")
             if isinstance(response_data, dict):
                 self.logger.info(f"Response data keys: {list(response_data.keys())}")
-            elif isinstance(response_data, str):
-                self.logger.info(f"Response data is string: {response_data[:100]}...")
-            else:
-                self.logger.info(f"Response data is type {type(response_data)}: {str(response_data)[:100]}...")
-
-        # Handle response data regardless of format
-        try:
-            # Get content for the response
-            content = ""
-            
-            # Check for direct action signals first (new format for interrupting actions)
-            if isinstance(response_data, str) and response_data.strip().startswith('[') and (':' in response_data):
-                # This might be a direct action signal like [SEARCH:query]
-                self.logger.info(f"Detected potential direct action signal: {response_data}")
                 
-                # Just use the string directly as content - our existing regex patterns will handle it
-                content = response_data
-                
-                # Skip the JSON extraction attempts since this is a direct action signal
-                self.logger.info("Using direct action signal format")
+            # First, let's extract all the possible content to check for action signals
+            # This includes both the potential tier3 content AND any separate action signals
             
-            # Otherwise handle different possible response formats
-            elif response_data is None:
-                content = "I'm sorry, but I couldn't generate a response at this time."
-            elif isinstance(response_data, str):
-                # The response is directly a string
-                content = response_data
-            elif isinstance(response_data, dict):
-                # Try various common key patterns for responses
+            # Handle the response format from DockerLLMAPI, which returns a dict with a "response" key
+            # instead of "llm_response"
+            response_content = ""
+            tier3_response = ""
+            
+            if isinstance(response_data, dict):
+                # Extract content from various possible formats
                 if "llm_response" in response_data:
-                    llm_resp = response_data["llm_response"]
-                    if isinstance(llm_resp, dict) and "content" in llm_resp:
-                        content = llm_resp["content"]
-                    elif isinstance(llm_resp, str):
-                        content = llm_resp
+                    llm_resp_obj = response_data["llm_response"]
+                    if isinstance(llm_resp_obj, dict) and "response_tiers" in llm_resp_obj:
+                        response_tiers = llm_resp_obj["response_tiers"]
+                        tier3_response = response_tiers.get("tier3", "")
                 elif "response" in response_data:
-                    content = response_data["response"]
+                    # This is the format returned by DockerLLMAPI.generate_response
+                    response_content = response_data["response"]
+                    llm_resp_obj = response_data  # Store the whole response object
+                elif "tier3_response" in response_data:
+                    # Direct tier3 content
+                    tier3_response = response_data["tier3_response"]
                 elif "text" in response_data:
-                    # This is the format returned by DockerLLMAPI - text might contain
-                    # markdown code blocks with JSON inside
-                    text_content = response_data["text"]
-                    
-                    # Check if the text contains markdown code blocks with JSON
-                    if text_content and '```json' in text_content:
-                        self.logger.info("Found markdown JSON block in response, attempting to extract tier3 content")
-                        import re
-                        import json
-                        
-                        # Extract the JSON content from markdown code blocks
-                        json_match = re.search(r'```json\s*\n(.*?)\n\s*```', text_content, re.DOTALL)
-                        if json_match:
-                            try:
-                                json_str = json_match.group(1)
-                                parsed_json = json.loads(json_str)
-                                self.logger.info(f"Successfully parsed JSON from markdown block, keys: {list(parsed_json.keys())}")
-                                
-                                # Extract tier3 content from the parsed JSON
-                                if "llm_response" in parsed_json and "response_tiers" in parsed_json["llm_response"]:
-                                    tier3 = parsed_json["llm_response"]["response_tiers"].get("tier3", "")
-                                    if tier3:
-                                        self.logger.info(f"Successfully extracted tier3 content: {tier3[:100]}...")
-                                        content = tier3
-                                    else:
-                                        self.logger.warning("tier3 content was empty in parsed JSON")
-                                        content = text_content
-                                elif "response_tiers" in parsed_json:
-                                    # Structure: {"response_tiers": {"tier3": "..."}}
-                                    tier3 = parsed_json['response_tiers'].get('tier3', '')
-                                    if tier3:
-                                        self.logger.info(f"Successfully extracted tier3 content: {tier3[:100]}...")
-                                        content = tier3
-                                    else:
-                                        self.logger.warning("tier3 content was empty in parsed JSON")
-                                        content = text_content
-                                else:
-                                    self.logger.warning("Expected JSON structure not found in parsed JSON")
-                                    content = text_content
-                            except json.JSONDecodeError as e:
-                                self.logger.error(f"Failed to parse JSON from markdown block: {e}")
-                                content = text_content
-                        else:
-                            self.logger.warning("Found ```json marker but couldn't extract valid JSON content")
-                            content = text_content
-                    else:
-                        content = text_content
+                    # Another possible format
+                    response_content = response_data["text"]
                 elif "content" in response_data:
-                    content = response_data["content"]
-                elif "message" in response_data:
-                    content = response_data["message"]
-                elif "answer" in response_data:
-                    content = response_data["answer"]
-                elif len(response_data) > 0:
-                    # Just take the first key's value
-                    first_key = list(response_data.keys())[0]
-                    content = str(response_data[first_key])
-                    self.logger.info(f"Using first key {first_key} for content")
+                    # Another possible format
+                    response_content = response_data["content"]
+                else:
+                    self.logger.error(f"Unexpected response_data format: no recognizable content fields found")
+                    return ACTION_BREAK, "Unexpected response format from LLM.", ACTION_ERROR
+            elif isinstance(response_data, str):
+                # Direct string response
+                response_content = response_data
             else:
-                # For any other type, convert to string
-                content = str(response_data)
+                self.logger.error(f"response_data is not a dictionary or string: {type(response_data)}")
+                return ACTION_BREAK, "Invalid response type from LLM.", ACTION_ERROR
+                
+            # Combine tier3_response and response_content to check for action signals in either
+            full_content_to_check = f"{tier3_response}\n{response_content}"
             
-            # Make sure we actually have some content
-            if not content:
-                content = "I'm sorry, but I couldn't generate a meaningful response."
-                self.logger.warning(f"No content extracted from response for session {session_id}")
-            
-            # Log what we got
-            self.logger.info(f"Extracted content (first 100 chars): {content[:100]}...")
-            
-            # Process with standard action detection (without complex error handling at this point)
-            action_signal_type, action_result, action_type = self.detect_action(content, user_input, session_id)
+            # Log the content we'll be checking for action signals
+            if len(full_content_to_check) > 100:
+                self.logger.info(f"Extracted content (first 100 chars): {full_content_to_check[:100]}...")
+            else:
+                self.logger.info(f"Extracted content: {full_content_to_check}")
+                
+            # Check for action signals in the combined content
+            action_signal, action_result, action_type = self.detect_action(full_content_to_check, user_input, session_id)
             
             # Always return a valid tuple with fallback values
-            if not action_signal_type:
-                action_signal_type = ACTION_BREAK
+            if not action_signal:
+                action_signal = ACTION_BREAK
             if not action_type:
                 action_type = ACTION_ANSWER
                 
@@ -645,20 +609,20 @@ class ActionHandler:
             try:
                 if self.contextual_memory:
                     # Create a simplified response structure for storage
-                    simplified_response = {"content": content}
+                    simplified_response = {"content": full_content_to_check}
                     # Fix parameter order - session_id should be first, then content
-                    self.contextual_memory.process_user_message(session_id, content, is_assistant_message=True)
+                    self.contextual_memory.process_assistant_message(simplified_response, user_input, session_id)
             except Exception as mem_ex:
                 self.logger.error(f"Error saving to contextual memory: {mem_ex}")
                 
             # Return valid action signal
-            return action_signal_type, content, action_type
+            return action_signal, full_content_to_check, action_type
                 
         except Exception as e:
             self.logger.error(f"Error in process_llm_response: {str(e)}", exc_info=True)
             # Attempt to store turn data even if processing failed
             if response_data:
-                 self.contextual_memory.process_user_message(session_id, str(response_data))
+                 self.contextual_memory.process_assistant_message(response_data, user_input, session_id)
             return ACTION_BREAK, "I encountered an error processing the response.", ACTION_ERROR
 
     def process_llm_response_original(self,
@@ -1168,5 +1132,5 @@ class ActionHandler:
             self.logger.error(f"!!! EXCEPTION during LLM response processing in ActionHandler: {proc_ex} !!!", exc_info=True)
             # Attempt to store turn data even if processing failed
             if response_data:
-                 self.contextual_memory.process_user_message(session_id, str(response_data))
+                 self.contextual_memory.process_assistant_message(response_data, user_input, session_id)
             return ACTION_BREAK, f"Error processing LLM response: {proc_ex}", ACTION_ERROR

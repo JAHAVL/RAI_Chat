@@ -28,13 +28,14 @@ export type ChatAction =
   | { type: 'REMOVE_LOADING_INDICATOR'; payload: { sessionId: SessionId } }
   | { type: 'ADD_SYSTEM_MESSAGE'; payload: { sessionId: SessionId; message: Message } }
   | { type: 'UPDATE_SYSTEM_MESSAGE'; payload: { sessionId: SessionId; systemMessageId: string; message: Message } }
-  | { type: 'SET_CURRENT_SESSION'; payload: SessionId };
+  | { type: 'SET_CURRENT_SESSION'; payload: SessionId }
+  | { type: 'CLEAR_ALL_MESSAGES'; payload: SessionId };
 
 export interface ChatContextType {
   state: ChatState;
   dispatch: React.Dispatch<ChatAction>;
   sendMessage: (message: string, sessionId: string) => Promise<string>;
-  createNewChat: () => void;
+  createNewChat: () => Promise<void>;
   setCurrentSession: (sessionId: string) => void;
 }
 
@@ -96,14 +97,63 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case 'INITIALIZE_SESSION': {
       const { temporarySessionId, finalSessionId } = action.payload;
       
-      // Get existing messages and system messages
+      console.log('INITIALIZE_SESSION - Starting', { 
+        temporarySessionId, 
+        finalSessionId,
+        tempMessagesCount: state.messagesBySession[temporarySessionId]?.length || 0
+      });
+      
+      // Special handling for new chat sessions
+      if (temporarySessionId === NEW_CHAT_SESSION_ID) {
+        console.log(`Initializing new chat session with ID: ${finalSessionId}`);
+        
+        // Get any existing messages from the temporary session
+        const existingMessages = state.messagesBySession[temporarySessionId] || [];
+        console.log(`Existing messages in temporary session: ${existingMessages.length}`);
+        
+        if (existingMessages.length > 0) {
+          console.log(`Message details:`, JSON.stringify(existingMessages.map(m => ({ 
+            id: m.id, 
+            role: m.role,
+            content: typeof m.content === 'string' ? m.content.substring(0, 20) : '[complex content]' 
+          }))));
+        }
+        
+        // For new chats, transfer any existing messages to the new session
+        // This ensures messages sent while in "new_chat" mode appear in the final session
+        const newMessagesBySession = {
+          ...state.messagesBySession,
+          [finalSessionId]: [...existingMessages] // Transfer existing messages
+        };
+        
+        const newSystemMessagesBySession = {
+          ...state.systemMessagesBySession,
+          [finalSessionId]: state.systemMessagesBySession[temporarySessionId] || [] // Transfer system messages
+        };
+        
+        // Create new state with all messages properly transferred
+        const newState = {
+          ...state,
+          messagesBySession: newMessagesBySession,
+          systemMessagesBySession: newSystemMessagesBySession,
+          currentSessionId: finalSessionId
+        };
+        
+        console.log('INITIALIZE_SESSION - Result', { 
+          currentSessionId: newState.currentSessionId,
+          finalMessagesCount: newState.messagesBySession[finalSessionId]?.length || 0
+        });
+        
+        return newState;
+      }
+      
+      // Normal session initialization for existing chats (non-new-chat)
       const messagesFromTempSession = state.messagesBySession[temporarySessionId] || [];
       const systemMessagesFromTempSession = state.systemMessagesBySession[temporarySessionId] || [];
       
       console.log(`Messages to transfer: ${messagesFromTempSession.length}`);
       
       // Create a copy of the state structures with both temporaryId messages and finalId references
-      // This is critical - we need to have both the old and new references for a consistent state
       const newMessagesBySession = {
         ...state.messagesBySession,
         [finalSessionId]: [...messagesFromTempSession] // Ensure we clone the array
@@ -143,6 +193,23 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       
       // Get current messages (or empty array if none)
       const currentMessagesBySession = { ...state.messagesBySession };
+      
+      // CRITICAL FIX: Look for NEW_CHAT_SESSION_ID and check if there are messages there
+      // This handles the case where messages are still in the temporary session 
+      // but we're processing in the new session
+      const newChatMessages = currentMessagesBySession[NEW_CHAT_SESSION_ID] || [];
+      if (sessionId !== NEW_CHAT_SESSION_ID && newChatMessages.length > 0 && 
+          (currentMessagesBySession[sessionId]?.length === 0 || !currentMessagesBySession[sessionId])) {
+        console.log(`WARNING: Found ${newChatMessages.length} messages in temp session that should be in ${sessionId}`);
+        
+        // Copy all messages from NEW_CHAT_SESSION_ID to this session
+        currentMessagesBySession[sessionId] = [...newChatMessages];
+        
+        // Clear the temporary session to avoid duplicates
+        delete currentMessagesBySession[NEW_CHAT_SESSION_ID];
+      }
+      
+      // Now get messages for this session (which may have been updated above)
       const currentMessages = currentMessagesBySession[sessionId] || [];
       
       console.log(`PROCESS_ASSISTANT_RESPONSE for session ${sessionId}:`, 
@@ -250,6 +317,24 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
     
     case 'SET_CURRENT_SESSION': {
+      // When switching to a new chat session, make sure it has the initial system message
+      if (action.payload === NEW_CHAT_SESSION_ID && 
+          (!state.messagesBySession[NEW_CHAT_SESSION_ID] || 
+           state.messagesBySession[NEW_CHAT_SESSION_ID].length === 0)) {
+        
+        console.log('Initializing NEW_CHAT_SESSION_ID with welcome message');
+        
+        return {
+          ...state,
+          currentSessionId: action.payload,
+          // Initialize with the welcome message for new chats
+          messagesBySession: {
+            ...state.messagesBySession,
+            [NEW_CHAT_SESSION_ID]: [initialSystemMessage]
+          }
+        };
+      }
+      
       return {
         ...state,
         currentSessionId: action.payload
@@ -269,6 +354,23 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       };
     }
     
+    case 'CLEAR_ALL_MESSAGES': {
+      const sessionId = action.payload;
+      console.log(`Clearing all messages for session: ${sessionId}`);
+      
+      return {
+        ...state,
+        messagesBySession: {
+          ...state.messagesBySession,
+          [sessionId]: [initialSystemMessage] // Reset to only the welcome message
+        },
+        systemMessagesBySession: {
+          ...state.systemMessagesBySession,
+          [sessionId]: [] // Reset system messages
+        }
+      };
+    }
+    
     default:
       console.log(`Unknown action type: ${(action as any)?.type}`);
       return state;
@@ -280,7 +382,7 @@ const defaultContextValue: ChatContextType = {
   state: initialState,
   dispatch: () => {},
   sendMessage: async () => { return ''; }, 
-  createNewChat: () => {},
+  createNewChat: async () => {}, // Update return type to Promise<void>
   setCurrentSession: () => {}
 };
 
@@ -323,13 +425,25 @@ export const ChatProvider: React.FC<{
 }> = ({ children, apiUrl }) => {
   const [state, dispatch] = useReducer(chatReducer, initialState);
   
-  // Function to create a new chat
-  const createNewChat = useCallback(() => {
+  // Function to create a new chat session
+  const createNewChat = useCallback(async (): Promise<void> => {
+    console.log('Creating new chat...');
+    
+    // First, clear any existing messages to ensure a clean UI immediately
+    dispatch({
+      type: 'CLEAR_ALL_MESSAGES',
+      payload: NEW_CHAT_SESSION_ID
+    });
+    
+    // Update the UI to show we're creating a new chat
     dispatch({
       type: 'SET_CURRENT_SESSION',
       payload: NEW_CHAT_SESSION_ID
     });
-  }, []);
+    
+    // That's it - we'll get the real session ID when the first message is sent
+    return Promise.resolve();
+  }, [dispatch]);
   
   // Function to set the current session
   const setCurrentSession = useCallback((sessionId: string) => {
@@ -341,6 +455,8 @@ export const ChatProvider: React.FC<{
   
   // Function to send a message to the backend
   const sendMessage = useCallback(async (messageContent: string, sessionId: string) => {
+    console.log(`SendMessage [START]: sessionId=${sessionId}, currentSession=${state.currentSessionId}`);
+    
     try {
       // Check if this is a search query
       const searchPattern = /\[SEARCH:\s*(.+?)\s*\]/i;
@@ -350,7 +466,10 @@ export const ChatProvider: React.FC<{
       // Create user message
       const userMessage = createUserMessage(messageContent);
       
-      // Add user message to state
+      // Store original session ID for tracking
+      const originalSessionId = sessionId;
+      
+      // Add user message to state immediately, so it's visible in the UI
       dispatch({
         type: 'ADD_USER_MESSAGE',
         payload: {
@@ -371,18 +490,41 @@ export const ChatProvider: React.FC<{
         }
       });
       
-      // Create a temporary ID for new chats
-      let tempSessionId = '';
-      if (sessionId === NEW_CHAT_SESSION_ID) {
-        tempSessionId = `temp-${Date.now()}`;
-      }
-      
-      // Send the message to the backend
+      // Send the message to the backend - let it handle creating new sessions
       let response;
       try {
         const api = backendApiInterface;
-        response = await api.sendMessage(sessionId, messageContent);
+        // Send flag for creating new session if needed
+        const isNewChat = sessionId === NEW_CHAT_SESSION_ID;
+        response = await api.sendMessage(
+          sessionId, 
+          messageContent,
+          isNewChat ? { new_chat: true } : {}
+        );
         console.log('Message API Response:', response);
+        
+        // If we got a new session ID back, update our state
+        if (response.session_id && response.session_id !== sessionId) {
+          console.log(`Got new session ID: ${response.session_id}, updating state...`);
+          
+          // Initialize the session with the new ID
+          dispatch({
+            type: 'INITIALIZE_SESSION',
+            payload: {
+              temporarySessionId: sessionId,
+              finalSessionId: response.session_id
+            }
+          });
+          
+          // Update the current session
+          dispatch({
+            type: 'SET_CURRENT_SESSION',
+            payload: response.session_id
+          });
+          
+          // Update our local variable for subsequent processing
+          sessionId = response.session_id;
+        }
       } catch (apiError) {
         console.error('API Error:', apiError);
         
@@ -410,12 +552,7 @@ export const ChatProvider: React.FC<{
       }
       
       // Handle search-specific responses
-      if (isSearchQuery || (response && (
-          response.type === 'search_start' || 
-          response.type === 'search_results' ||
-          response.action === 'web_search' || 
-          response.status === 'searching' || 
-          response.status === 'search_error'))) {
+      if (isSearchQuery || response.type === 'search_start' || response.status === 'searching') {
         
         console.log('Handling search response:', response);
         
@@ -425,7 +562,7 @@ export const ChatProvider: React.FC<{
           const searchMessage: Message = {
             id: `search-${Date.now()}`,
             role: 'system',
-            content: response.content || `Searching for: ${searchMatch ? searchMatch[1] : messageContent}...`,
+            content: response.content || (searchMatch ? `Searching for: ${searchMatch[1]}...` : `Searching...`),
             timestamp: new Date(),
             messageType: 'info',
             isSearchMessage: true
@@ -449,9 +586,7 @@ export const ChatProvider: React.FC<{
         if (response.type === 'search_results') {
           let content = '';
           
-          if (response.content) {
-            content = response.content;
-          } else if (response.raw_results) {
+          if (response.raw_results) {
             // Format raw results if available
             content = 'Search results:\n\n';
             try {
@@ -467,7 +602,7 @@ export const ChatProvider: React.FC<{
             content = 'Search complete, but no results were found.';
           }
           
-          // Create a search result message
+          // Create search result message
           const resultMessage: Message = {
             id: `search-result-${Date.now()}`,
             role: 'assistant',
@@ -490,22 +625,6 @@ export const ChatProvider: React.FC<{
           
           return sessionId;
         }
-      }
-      
-      // If this is a new chat and we received a real session ID, initialize the session
-      if (sessionId === NEW_CHAT_SESSION_ID && response.session_id) {
-        console.log(`Initializing session from temporary to real: ${response.session_id}`);
-        
-        dispatch({
-          type: 'INITIALIZE_SESSION',
-          payload: {
-            temporarySessionId: NEW_CHAT_SESSION_ID,
-            finalSessionId: response.session_id
-          }
-        });
-        
-        // Update the session ID for subsequent processing
-        sessionId = response.session_id;
       }
       
       // Extract the content from the response
@@ -537,6 +656,10 @@ export const ChatProvider: React.FC<{
         messageType: response.status === 'error' ? 'error' : 'normal'
       };
       
+      // Log the final session and message before dispatching
+      console.log(`SendMessage: Final processing - Adding assistant response to session=${sessionId}`);
+      console.log(`SendMessage: Current messages in this session: ${state.messagesBySession[sessionId]?.length || 0}`);
+      
       // Add assistant message to state
       dispatch({
         type: 'PROCESS_ASSISTANT_RESPONSE',
@@ -547,8 +670,33 @@ export const ChatProvider: React.FC<{
           originalContent: responseContent
         }
       });
+
+      // Double-check that messages exist in this session after processing
+      setTimeout(() => {
+        const currentSessionMessages = state.messagesBySession[sessionId] || [];
+        const originalSessionMessages = state.messagesBySession[originalSessionId] || [];
+        const messageCount = currentSessionMessages.length;
+        console.log(`SendMessage: After processing - Session ${sessionId} has ${messageCount} messages`);
+        
+        // If we don't have messages in this session but do in the original, something went wrong
+        if (messageCount === 0 && originalSessionMessages.length > 0) {
+          console.warn(`SendMessage: Messages appear to be in wrong session! Copying from ${originalSessionId} to ${sessionId}`);
+          
+          // As a last resort, copy messages from original to new session
+          dispatch({
+            type: 'SET_MESSAGES',
+            payload: {
+              sessionId: sessionId,
+              messages: [...originalSessionMessages]
+            }
+          });
+        }
+      }, 100);
       
-      return response.session_id || sessionId;
+      // Return final session ID
+      const finalSessionId = response.session_id || sessionId;
+      console.log(`SendMessage: Returning finalSessionId=${finalSessionId}`);
+      return finalSessionId;
       
     } catch (error) {
       console.error('Error in sendMessage flow:', error);
@@ -567,8 +715,8 @@ export const ChatProvider: React.FC<{
         dispatch({
           type: 'PROCESS_ASSISTANT_RESPONSE',
           payload: {
-            sessionId,
-            loadingId: `loading-${Date.now() - 1000}`, // Create a fallback ID in case the original was lost
+            sessionId: sessionId,
+            loadingId: `loading-error-${Date.now()}`,
             assistantMessage: errorMessage,
             originalContent: errorMessage.content
           }
@@ -587,7 +735,7 @@ export const ChatProvider: React.FC<{
       
       return sessionId; // Return original session ID
     }
-  }, []);
+  }, [dispatch, state, createUserMessage, backendApiInterface, createNewChat]);
   
   return (
     <ChatContext.Provider value={{ 

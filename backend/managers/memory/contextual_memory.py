@@ -657,6 +657,21 @@ If no facts are found, respond with "NO_FACTS_FOUND"
         Returns:
             True if processing and saving were successful, False otherwise.
         """
+        # Extract content to check if it's a system command before proceeding
+        if isinstance(response_data, dict):
+            content_to_check = ""
+            # Check for tiers in response
+            if "llm_response" in response_data and "response_tiers" in response_data["llm_response"]:
+                tier3 = response_data["llm_response"]["response_tiers"].get("tier3", "")
+                content_to_check = tier3
+            elif "content" in response_data:
+                content_to_check = response_data["content"]
+            
+            # Check if this is a system command and skip storing if it is
+            if content_to_check and self._is_system_command(content_to_check):
+                self.logger.info(f"Detected system command in assistant message, not storing: {content_to_check[:30]}...")
+                return True  # Return success but don't store the command
+        
         # If session_id is provided and different from active, try to load it
         if session_id and session_id != self.active_session_id:
             self.logger.info(f"Loading session {session_id} for processing assistant message")
@@ -698,6 +713,11 @@ If no facts are found, respond with "NO_FACTS_FOUND"
                 tier2 = tiers.get("tier2", "")
                 tier3 = tiers.get("tier3", "")
                 
+                # Clean up any LLM markers from the content
+                tier1 = self._clean_llm_markers(tier1)
+                tier2 = self._clean_llm_markers(tier2)
+                tier3 = self._clean_llm_markers(tier3)
+                
                 # Use tier3 as assistant_response for compatibility
                 assistant_response = tier3
                 
@@ -709,11 +729,15 @@ If no facts are found, respond with "NO_FACTS_FOUND"
             # First check for the 'content' field from our final response format
             elif "content" in response_data:
                 assistant_response = response_data["content"]
+                # Clean up LLM markers
+                assistant_response = self._clean_llm_markers(assistant_response)
                 # Add to history with just the full content (no tiered content available)
                 self._add_message_to_history("assistant", assistant_response)
             # Direct response field in llm_response
             elif "llm_response" in response_data and "response" in response_data["llm_response"]:
                 assistant_response = response_data["llm_response"]["response"]
+                # Clean up LLM markers
+                assistant_response = self._clean_llm_markers(assistant_response)
                 # Add to history with just the full content (no tiered content available)
                 self._add_message_to_history("assistant", assistant_response)
             else:
@@ -1289,6 +1313,26 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
         
         return detected
 
+    def _clean_llm_markers(self, content: str) -> str:
+        """
+        Removes LLM_START and LLM_END markers from the content.
+        
+        Args:
+            content: The content to clean
+        
+        Returns:
+            The cleaned content
+        """
+        if not content or not isinstance(content, str):
+            return content
+        
+        # Remove LLM markers
+        content = re.sub(r"LLM_START.*?LLM_END", "", content, flags=re.DOTALL)
+        content = re.sub(r"LLM_START", "", content)
+        content = re.sub(r"LLM_END", "", content)
+        
+        return content.strip()
+
     # --- Potentially Keep or Adapt ---
     # These might be useful depending on how episodic memory/working memory are used
 
@@ -1356,3 +1400,87 @@ Example: ["User's dog is named Max.", "User prefers short summaries."] Potential
             session_id = self.active_session_id
             
         return self.tier_manager.get_contextual_messages(session_id, limit)
+
+    def process_user_message(self, session_id: str, user_id: int, message_content: str) -> str:
+        """
+        Process a new user message for a session and add it to the history.
+        
+        Args:
+            session_id: The conversation session ID
+            user_id: The user ID
+            message_content: The user's message content
+            
+        Returns:
+            The unique message ID generated for this message
+        """
+        # Check if this is a system command like [REQUEST_TIER:3:...]
+        if self._is_system_command(message_content):
+            self.logger.info(f"Detected system command, not storing in message history: {message_content[:30]}...")
+            return "system_command"  # Return a placeholder ID for system commands
+        
+        # Load the session context if it's not the active one
+        if session_id != self.active_session_id:
+            self.load_session_context(session_id)
+            
+        # Generate a unique ID for this message
+        message_id = self._generate_message_id()
+        
+        # Clean any LLM markers that might have been accidentally included
+        message_content = self._clean_llm_markers(message_content)
+        
+        # Store the message with the tier manager
+        self.tier_manager.store_message_tiers(
+            message_id=message_id,
+            session_id=session_id,
+            user_id=user_id,
+            role="user",
+            tier1=message_content,
+            tier2=message_content,
+            content=message_content
+        )
+        
+        # Also update the in-memory context
+        if not self.active_session_context:
+            self.active_session_context = {"session_id": session_id}
+            
+        if "message_history" not in self.active_session_context:
+            self.active_session_context["message_history"] = []
+            
+        message = {
+            "id": message_id,
+            "role": "user",
+            "content": message_content,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.active_session_context["message_history"].append(message)
+        
+        # Save the updated context back to Redis
+        self._save_session_context()
+        
+        return message_id
+
+    def _is_system_command(self, content: str) -> bool:
+        """
+        Checks if the content is a system command that shouldn't be stored as a regular message.
+        
+        Args:
+            content: The message content to check
+            
+        Returns:
+            True if it's a system command, False otherwise
+        """
+        if not content or not isinstance(content, str):
+            return False
+            
+        # Check for system command patterns
+        system_command_patterns = [
+            r"\[REQUEST_TIER:[0-9]+:[a-zA-Z0-9\-]+\]",
+            r"\[SYSTEM_COMMAND:.*?\]"
+        ]
+        
+        for pattern in system_command_patterns:
+            if re.search(pattern, content):
+                return True
+                
+        return False

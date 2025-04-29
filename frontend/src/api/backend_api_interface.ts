@@ -6,6 +6,7 @@
  */
 
 import tokenService from '../services/TokenService';
+import { NEW_CHAT_SESSION_ID } from '../contexts/ChatContext/ChatContext';
 
 // Base API response interface
 export interface ApiResponse {
@@ -91,7 +92,7 @@ export interface Session {
 interface FetchOptions {
   method: string;
   headers: Record<string, string>;
-  body?: string;
+  body?: any;
   signal?: AbortSignal;
 }
 
@@ -106,6 +107,12 @@ export class ApiError extends Error {
     this.status = status;
     this.responseText = responseText;
   }
+}
+
+interface InitChatResponse {
+  type: 'success' | 'error';
+  session_id?: string;
+  error?: string;
 }
 
 class BackendApiClient {
@@ -226,6 +233,32 @@ class BackendApiClient {
   }
 
   /**
+   * Helper function for making authenticated fetch requests
+   */
+  private async fetchWithAuth(
+    url: string, 
+    options: FetchOptions
+  ): Promise<Response> {
+    // Get the current authentication token
+    const token = tokenService.getToken();
+    
+    // Create headers with authentication
+    const headers = {
+      ...options.headers,
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Make the fetch request with authentication header
+    return fetch(url, {
+      ...options,
+      headers
+    });
+  }
+
+  /**
    * Send a message to the chat API
    */
   async sendMessage(
@@ -235,16 +268,26 @@ class BackendApiClient {
   ): Promise<ChatMessageResponse> {
     try {
       console.log('BackendApiClient: Sending message to session:', sessionId);
+      
+      // Determine if this is a new chat request (check for both possible values)
+      const isNewChat = sessionId === NEW_CHAT_SESSION_ID;
+      
       // Make the API request
       const response = await this.request<any>(`chat`, 'POST', {
         session_id: sessionId,
         message,
+        new_chat: isNewChat, // Explicitly include new_chat flag if session_id is 'new_chat'
         ...options
       });
       
       // Add detailed debug logging to examine response structure
       console.log('BackendApiClient: Raw API response:', JSON.stringify(response));
       console.log('BackendApiClient: Raw response keys:', Object.keys(response));
+      
+      // Log session ID information for debugging
+      console.log('BackendApiClient: Original sessionId:', sessionId);
+      console.log('BackendApiClient: Response session_id:', response.session_id);
+      console.log('BackendApiClient: Response sessionId:', response.sessionId);
       
       // Log any content/message fields for debugging
       if (response.content) console.log('BackendApiClient: Content field:', response.content);
@@ -254,7 +297,8 @@ class BackendApiClient {
       // Just ensure session IDs are consistent and properly typed
       return {
         ...response,
-        // Ensure sessionId is always present for frontend
+        // Ensure both session_id and sessionId are present for frontend
+        session_id: response.session_id || response.sessionId || sessionId,
         sessionId: response.sessionId || response.session_id || sessionId
       };
     } catch (error) {
@@ -264,6 +308,7 @@ class BackendApiClient {
       return {
         status: 'error',
         session_id: sessionId,
+        sessionId: sessionId,
         response: error instanceof ApiError 
           ? `Error: ${error.message}` 
           : 'An unexpected error occurred',
@@ -282,11 +327,15 @@ class BackendApiClient {
     options: object = {}
   ): Promise<ChatMessageResponse> {
     try {
+      // Determine if this is a new chat request
+      const isNewChat = sessionId === NEW_CHAT_SESSION_ID;
+      
       // Make request with longer timeout
       const response = await this.request<ChatMessageResponse>('chat', 'POST', {
         session_id: sessionId,
         message,
         streaming: true,
+        new_chat: isNewChat, // Explicitly include new_chat flag if session_id is 'new_chat'
         ...options
       }, 120000);
       
@@ -533,6 +582,42 @@ class BackendApiClient {
     } catch (error) {
       console.error('BackendApiClient: Error logging in user:', error);
       return { status: 'error', message: 'Failed to login user' };
+    }
+  }
+
+  /**
+   * Initialize a new chat session
+   * @returns The session response with the new session ID
+   */
+  async initNewChat(): Promise<InitChatResponse> {
+    try {
+      console.log('Initializing new chat session');
+      
+      // Use the existing request method which already handles auth tokens
+      const data = await this.request<ChatMessageResponse>('chat', 'POST', {
+        session_id: 'new_chat',
+        init_only: true,
+        new_chat: true
+      });
+      
+      console.log('Successfully initialized new chat session:', data);
+      
+      // Verify we got a session ID back
+      if (!data.session_id) {
+        console.error('No session ID returned from initialization!', data);
+        throw new Error('Server did not return a session ID');
+      }
+      
+      return {
+        type: 'success',
+        session_id: data.session_id
+      };
+    } catch (error) {
+      console.error('Error in initNewChat:', error);
+      return {
+        type: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
     }
   }
 }

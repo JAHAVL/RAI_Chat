@@ -95,7 +95,7 @@ class PromptBuilder:
         # Build comprehensive CONTEXTUAL_MEMORY section
         contextual_memory_parts = []
         
-        # Add tiered messages section
+        # Add tiered messages section - this already contains the full conversation history with proper roles
         if tier1_messages:
             tier1_formatted = self.contextual_memory.tier_manager.format_message_history(tier1_messages, include_tier_level=True)
             contextual_memory_parts.append(f"TIERED_MESSAGES:\n{tier1_formatted}")
@@ -104,9 +104,8 @@ class PromptBuilder:
         if current_context_summary:
             contextual_memory_parts.append(f"CURRENT_CONTEXT_SUMMARY:\n{current_context_summary}")
         
-        # Add conversation history to contextual memory with proper formatting
-        if conversation_history_str:
-            contextual_memory_parts.append(f"CONVERSATION_HISTORY (Tier 3 - Full Content):\n{conversation_history_str}")
+        # Note: We're not adding conversation_history_str here since it would be duplicate information
+        # that's already present in the TIERED_MESSAGES section with proper roles and timestamps
         
         # Add episodic summaries if available
         if episodic_summaries:
